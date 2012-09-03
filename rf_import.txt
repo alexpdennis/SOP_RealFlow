@@ -1,0 +1,104 @@
+
+
+
+  <html><body>
+
+    "<h3>Real Flow Geometry Import SOP</h3>
+    The Real Flow Geomtery Import SOP will 
+    allow the user to import Real Flow Particle, Mesh files 
+    and SD files (Real Wave surfaces and dynamics), with the 
+    option of including any of the attributes generated in the 
+    Real Flow simulation.
+    <br>
+    <br>
+    <b>Setup Tab:</b>
+    <br>
+    <b>File Name: </b><br>
+     Name of the Real Flow particle, mesh or sd file to read.<br>
+    <br>
+    <b>File Type: </b><br>
+     Type of Real Flow file to read, particle/mesh/sd<br>
+    <br>
+    <b>Particle Tab:</b><br>
+     When checked, the Real Flow particle attributes are 
+     imported and assigned to the point attributes
+    <br>
+    <pre>
+       velocity:                   vector<br>
+       force:                      vector<br>
+       voriticity                  vector<br>
+       normal:                     vector<br>
+       number of neighbors:        int<br>
+       texture vector:             vector<br>
+       information bits:           int<br>
+       age:                        float<br>
+       isolation time:             float<br>
+       viscosity:                  float<br>
+       density:                    float<br>
+       pressure:                   float<br>
+       mass:                       float<br>
+       temperature:                float<br>
+       ID:                         int<br>
+    </pre>
+    <br>
+    	The following detail attributes are always imported:<br>
+    <br>
+    <pre>
+       scene_scale                 float <br>
+       fluid_type                  int<br>
+       elapsed_time                float<br>
+       frame_number                int<br>
+       fps                         int <br>
+       num_particles               int<br>
+       radius                      float<br>
+       pressure_min                float<br>
+       pressure_max                float<br>
+       pressure_avg                float<br>
+       speed_min                   float<br>
+       speed_max                   float<br>
+       speed_avg                   float<br>
+       temperature_min             float<br>
+       temperature_max             float<br>
+       temperature_avg             float<br>
+       emitter_pos[x,y,z]          vector<br>
+       emitter_rot[x,y,z]          vector<br>
+       emitter_scale[x,y,z]        vector<br>
+    </pre>
+    <br>
+    <b>Mesh Tab: </b><br>
+     When checked, the Real Flow mesh attributes are 
+     imported and assigned to the point attributes
+    <br>
+    <pre>
+       texture:                    vector<br>
+       texture weight [0-15]:      float<br>
+       velocity:                   vector<br>
+    </pre>
+    <br>
+    <b>SD Tab:</b><br>
+     When checked, the Real Flow SD file attributes are imported. Real Flow SD
+     Texture coordinates are assigned as point attributes and the CG data are
+     assigned to the geometry as detail attributes.
+    <br>
+    <br>
+    <pre>
+       texture U:                  vector<br>
+       texture V:                  vector<br>
+       texture W:                  vector<br>
+       CG_position:                vector<br>
+       CG_velocity:                vector<br>
+       CG_rotation:                vector<br>
+    </pre>
+    <br>
+    <b>Local Variables:</b><br>
+       N/A<br>
+    <br>
+    <b>Version:</b><br>
+    1.0.0<br>
+    <br>
+    Digital Cinema Arts: Houdini/Real Flow web page:<br>
+    <a href=\"http://www.digitalcinemaarts.com/dev/real_flow/\">www.digitalcinemaarts.com/dev/real_flow/</a><br>
+    <br>
+
+  </body></html>
+

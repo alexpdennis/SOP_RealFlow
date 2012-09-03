@@ -1,0 +1,179 @@
+#type: node
+#context: sop
+#internal: rf_export
+#icon: SOP/rf_export
+
+= Real Flow Export ROP =
+
+"""This  operator is used to write RealFlow files."""
+
+    Real Flow Geometry Export SOP
+    The Real Flow SD File Export SOP will export Houdini
+    geometry to Real Flow SD (Scene Description) files including animated objects.
+    You can also export any set of points from
+    Houdini as Real Flow particle BIN2 files.
+    All Real Flow attributes in the geometry will be written to
+    the file if present in the geometry.  This SOP supports multiple inputs
+
+@inputs
+
+Geometry to Export:
+
+     The geometry to export to Real Flow
+
+@parameters
+
+== Setup Tab ==
+
+    File Name:
+
+     The name of the Real Flow file to save. (for BIN2 particle file, the frame number is appended to the file name)
+
+    File Format:
+
+        'Select the type of Real Flow file to export'
+
+        *SD file*   Scene file
+
+        *Real Flow Particles* particles
+
+        *RW Cache* Real Wave Cache
+
+
+
+    Animated (for SD files only):
+
+     If checked, the exported Real Flow SD file will
+     contain animation information for the exported geometry over the
+     desired range of frames as set in the \"Start/End\" fields.
+
+    Start/End:
+
+     The frame range to export to the Real Flow file.
+
+    Echo Data to Console (debug):
+
+     If checked, the geometry being processed
+     will be echoed to the system console for debugging purposes.
+     This is helpful for determining if the incoming geometry
+     is in fact triangular polygon geometry (be careful, for complex
+     geometry, this can slow your computer for some time).
+
+    __Write the SD File__:
+
+     When pressed, the Real Flow SD file will be written to disk.
+
+
+
+== SD File Tab ==
+
+    Object Color:
+
+    The color of the object to be exported in the SD file.
+
+    Mode:
+
+    The mode the SD file is exported as, matrix or vertex.  Vertex mode
+    will includeing deforming geometry data in the SD file
+
+
+== Particle File Tab ==
+
+     Fluid Name
+
+    	The name of the fluid being exported.
+
+     Fluid Type
+
+        The type of Real Flow fluid: Gas, Liquid, Dumb, Elastics
+
+     Frames/Sec
+
+        The frame rate: 24/25/30
+
+     Scene Scale
+
+        The scene scale in Real Flow
+
+     Particle Radius
+
+        The radius of the particles being exported to Real Flow
+
+     Pressure (Min, Max, Avg)
+
+        The pressure bounds and average of the particles.
+
+     Speed (Min, Max, Avg)
+
+        The speed bounds and average of the particles.
+
+     Temperature (Min, Max, Avg)
+
+        The temperature bounds and average of the particles.
+
+     Emitter Position
+
+        The position coordinates for the particle emitter.
+
+
+    <w:include href="standard" idref="valid_frame_range"/>
+
+    SOP Path
+
+        The SOP node which contains the points used to write the file.
+
+    Output File
+
+        Name of the BIN file to write.
+
+    File Type
+
+        File type to export: BIN or Proxy.
+
+    Scale
+
+        Specifies a scale on the geometry before written out.
+
+    Relative Time Values
+
+        If set, time values will be written out relative to the starting frame.
+
+        TIP
+
+            To import an MDD file that was saved with this option enabled, the
+            _Frame_ parameter of the [Node:sop/rf_particle_export] surface node should use the
+            expression `$FF+1-`_start frame_ instead of `$FF`. For sequences
+            starting at frame 1 though, this is not necessary.
+
+    Initialize Simulation OPs
+
+        Force all simulation OPs to be reset. This includes DOP
+        Networks, POP SOPs, and other OPs that cache their results.
+
+        This is the safest way to render out a simulation, because it
+        starts the simulation from scratch and discards any partial
+        simulations you might have done with different parameters.
+
+@locals
+
+    N
+
+        The current frame of the range specified. This always starts at 1.
+
+    NRENDER
+
+        Total number of frames being rendered.
+
+
+== Version ==
+
+    1.1.0
+
+    Digital Cinema Arts: Houdini/Real Flow web page:
+    [http://www.digitalcinemaarts.com/dev/real_flow/]
+
+
+@related
+    - [Node:sop/rf_import]
+    - [Node:out/mdd]
+
