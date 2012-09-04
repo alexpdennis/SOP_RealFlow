@@ -69,18 +69,18 @@ void dump_header(RealFlow_Particle_File * myRFParticleFile)
     printf("min temp: \t%f\n", myRFParticleFile->part_header.temperature[1]);
     printf("avg. temp: \t%f\n", myRFParticleFile->part_header.temperature[2]);
 
-	printf("emitter position: \t%f\t%f\t%f\n",
-	       myRFParticleFile->part_header.emitter_pos[0],
-	       myRFParticleFile->part_header.emitter_pos[1],
-	       myRFParticleFile->part_header.emitter_pos[2]);
-	printf("emitter rotation: \t%f\t%f\t%f\n",
-	       myRFParticleFile->part_header.emitter_rot[0],
-	       myRFParticleFile->part_header.emitter_rot[1],
-	       myRFParticleFile->part_header.emitter_rot[2]);
-	printf("emitter scale: \t%f\t%f\t%f\n",
-	       myRFParticleFile->part_header.emitter_scale[0],
-	       myRFParticleFile->part_header.emitter_scale[1],
-	       myRFParticleFile->part_header.emitter_scale[2]);
+    printf("emitter position: \t%f\t%f\t%f\n",
+           myRFParticleFile->part_header.emitter_pos[0],
+           myRFParticleFile->part_header.emitter_pos[1],
+           myRFParticleFile->part_header.emitter_pos[2]);
+    printf("emitter rotation: \t%f\t%f\t%f\n",
+           myRFParticleFile->part_header.emitter_rot[0],
+           myRFParticleFile->part_header.emitter_rot[1],
+           myRFParticleFile->part_header.emitter_rot[2]);
+    printf("emitter scale: \t%f\t%f\t%f\n",
+           myRFParticleFile->part_header.emitter_scale[0],
+           myRFParticleFile->part_header.emitter_scale[1],
+           myRFParticleFile->part_header.emitter_scale[2]);
 
     return;
 }
@@ -93,36 +93,36 @@ void dump_data(RealFlow_Particle_File * myRFParticleFile, int i)
     printf("\n\n### Particle record num: %-8d ###\n", i);
 
     printf("particle position: \t%f\t%f\t%f\n",
-	   myRFParticleFile->part_data.pos[0],
-	   myRFParticleFile->part_data.pos[1],
-	   myRFParticleFile->part_data.pos[2]);
+           myRFParticleFile->part_data.pos[0],
+           myRFParticleFile->part_data.pos[1],
+           myRFParticleFile->part_data.pos[2]);
 
     printf("particle velocity: \t%f\t%f\t%f\n",
-	   myRFParticleFile->part_data.vel[0],
-	   myRFParticleFile->part_data.vel[1],
-	   myRFParticleFile->part_data.vel[2]);
+           myRFParticleFile->part_data.vel[0],
+           myRFParticleFile->part_data.vel[1],
+           myRFParticleFile->part_data.vel[2]);
 
     printf("particle force: \t%f\t%f\t%f\n",
-	   myRFParticleFile->part_data.force[0],
-	   myRFParticleFile->part_data.force[1],
-	   myRFParticleFile->part_data.force[2]);
+           myRFParticleFile->part_data.force[0],
+           myRFParticleFile->part_data.force[1],
+           myRFParticleFile->part_data.force[2]);
 
     printf("particle vorticity: \t%f\t%f\t%f\n",
-	   myRFParticleFile->part_data.vorticity[0],
-	   myRFParticleFile->part_data.vorticity[1],
-	   myRFParticleFile->part_data.vorticity[2]);
+           myRFParticleFile->part_data.vorticity[0],
+           myRFParticleFile->part_data.vorticity[1],
+           myRFParticleFile->part_data.vorticity[2]);
 
     printf("particle normal: \t%f\t%f\t%f\n",
-	   myRFParticleFile->part_data.normal[0],
-	   myRFParticleFile->part_data.normal[1],
-	   myRFParticleFile->part_data.normal[2]);
+           myRFParticleFile->part_data.normal[0],
+           myRFParticleFile->part_data.normal[1],
+           myRFParticleFile->part_data.normal[2]);
 
     printf("number of neighbors: \t\t%d\n", myRFParticleFile->part_data.num_neighbors);
 
     printf("texture vector: \t%f\t%f\t%f\n",
-	   myRFParticleFile->part_data.texture_vector[0],
-	   myRFParticleFile->part_data.texture_vector[1],
-	   myRFParticleFile->part_data.texture_vector[2]);
+           myRFParticleFile->part_data.texture_vector[0],
+           myRFParticleFile->part_data.texture_vector[1],
+           myRFParticleFile->part_data.texture_vector[2]);
 
     printf("information bits: \t\t%d\n", myRFParticleFile->part_data.info_bits);
 
@@ -148,60 +148,59 @@ int read_part_file(char *file_name)
     RealFlow_Particle_File *myRFParticleFile = new RealFlow_Particle_File();
 
     if (myRFParticleFile->open_part_file(file_name, RF_FILE_READ)) {
-      std::cerr << "Can't open Real Flow particle file for reading" << std::endl;
-      return 1;
+        std::cerr << "Can't open Real Flow particle file for reading" << std::endl;
+        return 1;
     }
     std::cout << "Opened Real Flow particle file: " << file_name << std::endl << std::endl;
 
     if (myRFParticleFile->read_part_file_header()) {
-      std::cerr << "Can't read Real Flow particle file header" << std::endl;
-      return 1;
+        std::cerr << "Can't read Real Flow particle file header" << std::endl;
+        return 1;
     }
 
     dump_header(myRFParticleFile);
 
     for (i = 0; i < myRFParticleFile->part_header.num_particles; i++) {
-      //  printf("\nreading particle data record\n");
-      if (myRFParticleFile->read_part_data()) {
-         std::cerr << "Can't read Real Flow particle data" << std::endl;;
-         return 1;
-      }
-      dump_data(myRFParticleFile, i);
+        //  printf("\nreading particle data record\n");
+        if (myRFParticleFile->read_part_data()) {
+            std::cerr << "Can't read Real Flow particle data" << std::endl;;
+            return 1;
+        }
+        dump_data(myRFParticleFile, i);
     }
 
-   std::cout << std::endl;
+    std::cout << std::endl;
 //
 //   std::cout << "Reading additional data record" << std::endl;
 //   myRFParticleFile->read_additional_data();
 
-   std::cout << "Closing Real Flow particle file" << std::endl;
-   myRFParticleFile->close_part_file(RF_FILE_READ);
+    std::cout << "Closing Real Flow particle file" << std::endl;
+    myRFParticleFile->close_part_file(RF_FILE_READ);
 
-   delete(myRFParticleFile);
+    delete(myRFParticleFile);
 
-   return 0;
+    return 0;
 }
 
 
 int main(int argc, char *argv[])
 {
 
-try {
+    try {
 
-   std::cout << "dump_rf_part -  ver. 0.05 -  Digital Cinema Arts (C) 2008" << std::endl;
-   std::cout << "Dumping Real Flow Particle File" << endl << endl;
+        std::cout << "dump_rf_part -  ver. 0.05 -  Digital Cinema Arts (C) 2008" << std::endl;
+        std::cout << "Dumping Real Flow Particle File" << endl << endl;
 
-    if (read_part_file(argv[1]))
-	      exit(1);
+        if (read_part_file(argv[1]))
+            exit(1);
 
-   }
-catch(...) {
+    } catch (...) {
 
-   std::cerr << "Unknown error ocurred, exiting program ..." << std::endl;
-    exit(1);
-   }
+        std::cerr << "Unknown error ocurred, exiting program ..." << std::endl;
+        exit(1);
+    }
 
-exit(0);
+    exit(0);
 }
 
 
