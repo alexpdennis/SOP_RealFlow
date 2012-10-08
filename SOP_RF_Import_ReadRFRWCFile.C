@@ -34,161 +34,162 @@
  *  Return Value : OP_ERROR
  *
  ***************************************************************************** */
-OP_ERROR SOP_RF_Import::ReadRFRWCFile (OP_Context & context) {
+OP_ERROR SOP_RF_Import::ReadRFRWCFile (OP_Context & context)
+{
 
-	float now = context.getTime();
+    float now = context.getTime();
 
-	GEO_Point *ppt = NULL;
+    GEO_Point *ppt = NULL;
     GA_RWAttributeRef  p_velocity_ref;
 
-	int t_velocity;
+    int t_velocity;
 
-	UT_Interrupt *boss;
-	char GUI_str[128];
+    UT_Interrupt *boss;
+    char GUI_str[128];
 
-	t_velocity = RWC_VELOCITY (now);
+    t_velocity = RWC_VELOCITY (now);
 
-   try {
+    try {
 
-      // Check to see that there hasn't been a critical error in cooking the SOP.
-	   if(error () < UT_ERROR_ABORT) {
-         boss = UTgetInterrupt ();
+        // Check to see that there hasn't been a critical error in cooking the SOP.
+        if (error () < UT_ERROR_ABORT) {
+            boss = UTgetInterrupt ();
 
-		   gdp->clearAndDestroy ();
+            gdp->clearAndDestroy ();
 
-		   // Start the interrupt server
-		   boss->opStart ("Importing Real Flow RWC file");
+            // Start the interrupt server
+            boss->opStart ("Importing Real Flow RWC file");
 
 #ifdef DEBUG
-std::cout << "myFileName:" << (const char *) myFileName << endl;
+            std::cout << "myFileName:" << (const char *) myFileName << endl;
 #endif
 
-		   // Open the Real Flow RWC file
-		   if(myRFRWCFile->openRWCFile ((const char *) myFileName, RF_FILE_READ))
-            throw SOP_RF_Import_Exception(canNotOpenRealFlowRWCFileForReading, exceptionError);
+            // Open the Real Flow RWC file
+            if (myRFRWCFile->openRWCFile ((const char *) myFileName, RF_FILE_READ))
+                throw SOP_RF_Import_Exception(canNotOpenRealFlowRWCFileForReading, exceptionError);
 
-		   // Read the RWC file header
-		   if(myRFRWCFile->readRWCFileHeader ())
-            throw SOP_RF_Import_Exception(canNotReadTheRWCFileHeader, exceptionError);
+            // Read the RWC file header
+            if (myRFRWCFile->readRWCFileHeader ())
+                throw SOP_RF_Import_Exception(canNotReadTheRWCFileHeader, exceptionError);
 
-           GA_RWAttributeRef  attrRef;
-           GA_RWHandleI attrIntHandle;
-           GA_RWHandleF attrFloatHandle;
-           GA_RWHandleV3 attrVector3Handle;
+            GA_RWAttributeRef  attrRef;
+            GA_RWHandleI attrIntHandle;
+            GA_RWHandleF attrFloatHandle;
+            GA_RWHandleV3 attrVector3Handle;
 
-           // Set the position and rotation detail attributes
-           attrRef = gdp->addFloatTuple(GA_ATTRIB_DETAIL, "pos_X", 1);
-                if (attrRef.isValid()) {
-                    attrFloatHandle.bind(attrRef.getAttribute());
-                    attrFloatHandle.set(0, (float)myRFRWCFile->RWC_header.RW_pos_X);
-                }
-           attrRef.clear();
-           attrRef = gdp->addFloatTuple(GA_ATTRIB_DETAIL, "pos_Y", 1);
-                if (attrRef.isValid()) {
-                    attrFloatHandle.bind(attrRef.getAttribute());
-                    attrFloatHandle.set(0, (float)myRFRWCFile->RWC_header.RW_pos_Y);
-                }
-           attrRef = gdp->addFloatTuple(GA_ATTRIB_DETAIL, "pos_Z", 1);
-                if (attrRef.isValid()) {
-                    attrFloatHandle.bind(attrRef.getAttribute());
-                    attrFloatHandle.set(0, (float)myRFRWCFile->RWC_header.RW_pos_Z);
-                }
-           attrRef = gdp->addFloatTuple(GA_ATTRIB_DETAIL, "rot_X", 1);
-                if (attrRef.isValid()) {
-                    attrFloatHandle.bind(attrRef.getAttribute());
-                    attrFloatHandle.set(0, (float)myRFRWCFile->RWC_header.RW_rot_X);
-                }
-           attrRef = gdp->addFloatTuple(GA_ATTRIB_DETAIL, "rot_Y", 1);
-                if (attrRef.isValid()) {
-                    attrFloatHandle.bind(attrRef.getAttribute());
-                    attrFloatHandle.set(0, (float)myRFRWCFile->RWC_header.RW_rot_Y);
-                }
-           attrRef = gdp->addFloatTuple(GA_ATTRIB_DETAIL, "rot_Z", 1);
-                if (attrRef.isValid()) {
-                    attrFloatHandle.bind(attrRef.getAttribute());
-                    attrFloatHandle.set(0, (float)myRFRWCFile->RWC_header.RW_rot_Z);
-                }
+            // Set the position and rotation detail attributes
+            attrRef = gdp->addFloatTuple(GA_ATTRIB_DETAIL, "pos_X", 1);
+            if (attrRef.isValid()) {
+                attrFloatHandle.bind(attrRef.getAttribute());
+                attrFloatHandle.set(0, (float)myRFRWCFile->RWC_header.RW_pos_X);
+            }
+            attrRef.clear();
+            attrRef = gdp->addFloatTuple(GA_ATTRIB_DETAIL, "pos_Y", 1);
+            if (attrRef.isValid()) {
+                attrFloatHandle.bind(attrRef.getAttribute());
+                attrFloatHandle.set(0, (float)myRFRWCFile->RWC_header.RW_pos_Y);
+            }
+            attrRef = gdp->addFloatTuple(GA_ATTRIB_DETAIL, "pos_Z", 1);
+            if (attrRef.isValid()) {
+                attrFloatHandle.bind(attrRef.getAttribute());
+                attrFloatHandle.set(0, (float)myRFRWCFile->RWC_header.RW_pos_Z);
+            }
+            attrRef = gdp->addFloatTuple(GA_ATTRIB_DETAIL, "rot_X", 1);
+            if (attrRef.isValid()) {
+                attrFloatHandle.bind(attrRef.getAttribute());
+                attrFloatHandle.set(0, (float)myRFRWCFile->RWC_header.RW_rot_X);
+            }
+            attrRef = gdp->addFloatTuple(GA_ATTRIB_DETAIL, "rot_Y", 1);
+            if (attrRef.isValid()) {
+                attrFloatHandle.bind(attrRef.getAttribute());
+                attrFloatHandle.set(0, (float)myRFRWCFile->RWC_header.RW_rot_Y);
+            }
+            attrRef = gdp->addFloatTuple(GA_ATTRIB_DETAIL, "rot_Z", 1);
+            if (attrRef.isValid()) {
+                attrFloatHandle.bind(attrRef.getAttribute());
+                attrFloatHandle.set(0, (float)myRFRWCFile->RWC_header.RW_rot_Z);
+            }
 
-         // Set the "number of X & Z" detail attribute
-           attrRef = gdp->addIntTuple(GA_ATTRIB_DETAIL, "num_X", 1);
-                if (attrRef.isValid()) {
-                    attrIntHandle.bind(attrRef.getAttribute());
-                    attrIntHandle.set(0, (int)myRFRWCFile->RWC_header.num_X_vtx);
-                }
-           attrRef = gdp->addIntTuple(GA_ATTRIB_DETAIL, "num_Z", 1);
-                if (attrRef.isValid()) {
-                    attrIntHandle.bind(attrRef.getAttribute());
-                    attrIntHandle.set(0, (int)myRFRWCFile->RWC_header.num_Z_vtx);
-                }
+            // Set the "number of X & Z" detail attribute
+            attrRef = gdp->addIntTuple(GA_ATTRIB_DETAIL, "num_X", 1);
+            if (attrRef.isValid()) {
+                attrIntHandle.bind(attrRef.getAttribute());
+                attrIntHandle.set(0, (int)myRFRWCFile->RWC_header.num_X_vtx);
+            }
+            attrRef = gdp->addIntTuple(GA_ATTRIB_DETAIL, "num_Z", 1);
+            if (attrRef.isValid()) {
+                attrIntHandle.bind(attrRef.getAttribute());
+                attrIntHandle.set(0, (int)myRFRWCFile->RWC_header.num_Z_vtx);
+            }
 
-         // Write the RWC version number to the GUI
-		   sprintf (GUI_str, "%s%d", "RF RWC File Version #", myRFRWCFile->RWC_header.version);
-		   setString ((UT_String) GUI_str, CH_STRING_LITERAL, ARG_RF_IMPORT_VER, 0, now);
+            // Write the RWC version number to the GUI
+            sprintf (GUI_str, "%s%d", "RF RWC File Version #", myRFRWCFile->RWC_header.version);
+            setString ((UT_String) GUI_str, CH_STRING_LITERAL, ARG_RF_IMPORT_VER, 0, now);
 
-		   // If the user wants velocity attribute
-		   if(t_velocity)
-			   p_velocity_ref = gdp->addVelocityAttribute(GEO_POINT_DICT);
+            // If the user wants velocity attribute
+            if (t_velocity)
+                p_velocity_ref = gdp->addVelocityAttribute(GEO_POINT_DICT);
 
-         myCurrPoint = 0;
+            myCurrPoint = 0;
 
-         // For each point in the RWC file, create a point and assign it's position
-         for(long int i = 0; i < myRFRWCFile->RWC_header.num_X_vtx; i++) {
+            // For each point in the RWC file, create a point and assign it's position
+            for (long int i = 0; i < myRFRWCFile->RWC_header.num_X_vtx; i++) {
 
 // std::cout << "X: " << i << endl;
 
-         // Check to see if the user has interrupted us...
-            if (boss->opInterrupt ())
-               throw SOP_RF_Import_Exception(cookInterrupted, exceptionWarning);
+                // Check to see if the user has interrupted us...
+                if (boss->opInterrupt ())
+                    throw SOP_RF_Import_Exception(cookInterrupted, exceptionWarning);
 
-            if(!(i%2))
-               for(int j = 0; j < myRFRWCFile->RWC_header.num_Z_vtx; j++) {
-                  myRFRWCFile->readRWCData();
-                  ReadRFRWCFileAddPoint(ppt, t_velocity, p_velocity_ref, myCurrPoint);
+                if (!(i%2))
+                    for (int j = 0; j < myRFRWCFile->RWC_header.num_Z_vtx; j++) {
+                        myRFRWCFile->readRWCData();
+                        ReadRFRWCFileAddPoint(ppt, t_velocity, p_velocity_ref, myCurrPoint);
 // std::cout << "even Z: " << j << endl;
-               }
-            else
-               for(int k = 0; k < myRFRWCFile->RWC_header.num_Z_vtx + 1; k++) {
-                  myRFRWCFile->readRWCData();
-                  ReadRFRWCFileAddPoint(ppt, t_velocity, p_velocity_ref, myCurrPoint);
+                    }
+                else
+                    for (int k = 0; k < myRFRWCFile->RWC_header.num_Z_vtx + 1; k++) {
+                        myRFRWCFile->readRWCData();
+                        ReadRFRWCFileAddPoint(ppt, t_velocity, p_velocity_ref, myCurrPoint);
 // std::cout << "odd Z: " << k << endl;
-               }
+                    }
 #ifdef DEBUG
-std::cout << "RF RWC pos:" << myRFRWCFile->RWC_vtx_data.X << " " << myRFRWCFile->RWC_vtx_data.Y
-         << " " << myRFRWCFile->RWC_vtx_data.Z << endl;
+                std::cout << "RF RWC pos:" << myRFRWCFile->RWC_vtx_data.X << " " << myRFRWCFile->RWC_vtx_data.Y
+                          << " " << myRFRWCFile->RWC_vtx_data.Z << endl;
 #endif
-         }
+            }
 
-         // Set my total number of points from the point counter.
-         myCurrPoint++;
-         myTotalPoints = myCurrPoint;
+            // Set my total number of points from the point counter.
+            myCurrPoint++;
+            myTotalPoints = myCurrPoint;
 
-         // Close the Real Flow RWC file
-         if (myRFRWCFile->closeRWCFile (RF_FILE_READ))
-            throw SOP_RF_Import_Exception(canNotCloseRealFlowRWCFile, exceptionError);
+            // Close the Real Flow RWC file
+            if (myRFRWCFile->closeRWCFile (RF_FILE_READ))
+                throw SOP_RF_Import_Exception(canNotCloseRealFlowRWCFile, exceptionError);
 
-		   // We're done
-		   boss->opEnd ();
-	   }
+            // We're done
+            boss->opEnd ();
+        }
     }
 
-catch (SOP_RF_Import_Exception e) {
-   e.what();
+    catch (SOP_RF_Import_Exception e) {
+        e.what();
 
-   if(e.getSeverity() == exceptionWarning)
-      addWarning(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
-   else if(e.getSeverity() == exceptionError)
-      addError(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
+        if (e.getSeverity() == exceptionWarning)
+            addWarning(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
+        else if (e.getSeverity() == exceptionError)
+            addError(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
 
-      if(myRFRWCFile->RWCifstream.is_open()) {
-         myRFRWCFile->closeRWCFile(RF_FILE_READ);
-      }
+        if (myRFRWCFile->RWCifstream.is_open()) {
+            myRFRWCFile->closeRWCFile(RF_FILE_READ);
+        }
 
-   boss->opEnd();
-   return error();
-   }
+        boss->opEnd();
+        return error();
+    }
 
 
-return error ();
+    return error ();
 }
 
 
@@ -203,31 +204,32 @@ return error ();
  *  Return Value :
  *
  ***************************************************************************** */
-inline void SOP_RF_Import::ReadRFRWCFileAddPoint(GEO_Point *ppt, int t_velocity, GA_RWAttributeRef p_velocity_ref, int pt_num) {
+inline void SOP_RF_Import::ReadRFRWCFileAddPoint(GEO_Point *ppt, int t_velocity, GA_RWAttributeRef p_velocity_ref, int pt_num)
+{
 
-   GA_RWHandleV3 attrVector3Handle;
+    GA_RWHandleV3 attrVector3Handle;
 
-   // Append a point the geometry detail and set it's position
-   ppt = gdp->appendPointElement();
+    // Append a point the geometry detail and set it's position
+    ppt = gdp->appendPointElement();
 
-   gdp->points()[pt_num]->setPos((float) myRFRWCFile->RWC_vtx_data.X,
-                  (float) myRFRWCFile->RWC_vtx_data.Y,
-                  (float) myRFRWCFile->RWC_vtx_data.Z, 1.0);
+    gdp->points()[pt_num]->setPos((float) myRFRWCFile->RWC_vtx_data.X,
+                                  (float) myRFRWCFile->RWC_vtx_data.Y,
+                                  (float) myRFRWCFile->RWC_vtx_data.Z, 1.0);
 
-   if (t_velocity) {
-      if (p_velocity_ref.isValid()) {
-        attrVector3Handle.bind(p_velocity_ref.getAttribute());
-        attrVector3Handle.set(gdp->pointOffset(pt_num),
-                UT_Vector3((float) myRFRWCFile->RWC_vel_data.X,
-                            (float) myRFRWCFile->RWC_vel_data.Y,
-                            (float) myRFRWCFile->RWC_vel_data.Z));
-      }
+    if (t_velocity) {
+        if (p_velocity_ref.isValid()) {
+            attrVector3Handle.bind(p_velocity_ref.getAttribute());
+            attrVector3Handle.set(gdp->pointOffset(pt_num),
+                                  UT_Vector3((float) myRFRWCFile->RWC_vel_data.X,
+                                             (float) myRFRWCFile->RWC_vel_data.Y,
+                                             (float) myRFRWCFile->RWC_vel_data.Z));
+        }
 
 //         vel = ppt->castAttribData<UT_Vector3>(p_velocity_v);
 //         vel->assign ((float) myRFRWCFile->RWC_vel_data.X,
 //               (float) myRFRWCFile->RWC_vel_data.Y,
 //               (float) myRFRWCFile->RWC_vel_data.Z);
-   }
+    }
 
 }
 

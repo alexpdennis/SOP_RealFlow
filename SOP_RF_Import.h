@@ -88,79 +88,79 @@ const std::string SOP_Version = "2.0.0";
 
 
 enum enumExceptionSeverity {
-   exceptionNone = 0,
-   exceptionWarning,
-   exceptionError,
-   exceptionCritical
-   };
+    exceptionNone = 0,
+    exceptionWarning,
+    exceptionError,
+    exceptionCritical
+};
 
 // An enum for all the error messages
 enum enumErrorList {
 
-   import_success = 0,
-   import_fail,
+    import_success = 0,
+    import_fail,
 
-   endFrameMustBeGreaterThanBeginningFrame,
-   currentFrameGreaterThanEndFrame,
-   currentFrameLessThenZero,
-   currentFrameLessThenOne,
-   cookInterrupted,
+    endFrameMustBeGreaterThanBeginningFrame,
+    currentFrameGreaterThanEndFrame,
+    currentFrameLessThenZero,
+    currentFrameLessThenOne,
+    cookInterrupted,
 
-   canNotOpenRealFlowParticleFileForReading,
-   canNotReadTheParticleFileHeader,
-   canNotReadRealFlowParticleData,
-   canNotCloseRealFlowParticleFile,
+    canNotOpenRealFlowParticleFileForReading,
+    canNotReadTheParticleFileHeader,
+    canNotReadRealFlowParticleData,
+    canNotCloseRealFlowParticleFile,
 
-   canNotOpenRealFlowMeshFileForReading,
-   canNotReadTheMeshFileHeader,
-   notARealFlowMeshFile,
-   numRealFlowMeshVerticesInvalid,
-   canNotReadRealFlowMeshData,
-   canNotReadTheMeshFileNumFaces,
-   canNotReadTheMeshFileFaceData,
-   canNotReadTheMeshFileTextureChunkCode,
-   canNotReadTheMeshFileNumFluids,
-   canNotReadTheMeshFileTextureData,
-   canNotReadTheMeshFileVelocityChunk,
-   canNotReadTheMeshFileVelocityData,
-   canNotReadTheMeshFileVertextData,
-   canNotReadTheMeshFileEOF,
-   canNotCloseRealFlowMeshFile,
+    canNotOpenRealFlowMeshFileForReading,
+    canNotReadTheMeshFileHeader,
+    notARealFlowMeshFile,
+    numRealFlowMeshVerticesInvalid,
+    canNotReadRealFlowMeshData,
+    canNotReadTheMeshFileNumFaces,
+    canNotReadTheMeshFileFaceData,
+    canNotReadTheMeshFileTextureChunkCode,
+    canNotReadTheMeshFileNumFluids,
+    canNotReadTheMeshFileTextureData,
+    canNotReadTheMeshFileVelocityChunk,
+    canNotReadTheMeshFileVelocityData,
+    canNotReadTheMeshFileVertextData,
+    canNotReadTheMeshFileEOF,
+    canNotCloseRealFlowMeshFile,
 
-   canNotOpenRealFlowRWCFileForReading,
-   canNotReadTheRWCFileHeader,
-   canNotReadRealFlowRWCData,
-   canNotCloseRealFlowRWCFile,
+    canNotOpenRealFlowRWCFileForReading,
+    canNotReadTheRWCFileHeader,
+    canNotReadRealFlowRWCData,
+    canNotCloseRealFlowRWCFile,
 
-   canNotOpenRealFlowSDFileForReading,
-   canNotReadTheSDFileHeader,
-   versionNotSupportedSDFile,
-   canNotReadTheSDObjectHeader,
-   canNotReadTheSDFaceCoords,
-   canNotReadRealFlowSDData,
-   theSDPointCreationInterrupt,
-   theSDPolygonCreationInterrupt,
-   canNotReadTheSDFaceVertexIndex,
-   canNotReadTheSDFaceTexture,
-   canNotReadTheSDFaceVisibility,
-   canNotReadTheSDFaceMaterialIndex,
-   tooManyObjectsInSDFile,
-   canNotReadSDCameraData,
-   incorrectSDCurrentFrame,
-   canNotReadSDCameraFrameData,
-   canNotCreateSDRestGeometry,
-   canNotCreateSDAnimatedGeometry,
-   canNotReadSDCurrentFrame,
-   canNotReadSDObjectFrameHeader,
-   theSDAnimGeoCreationInterrupt,
-   canNotReadSDAnimFaceData,
-   theSDAnimGeoCreationPointNULL,
-   canNotCloseRealFlowSDFile,
+    canNotOpenRealFlowSDFileForReading,
+    canNotReadTheSDFileHeader,
+    versionNotSupportedSDFile,
+    canNotReadTheSDObjectHeader,
+    canNotReadTheSDFaceCoords,
+    canNotReadRealFlowSDData,
+    theSDPointCreationInterrupt,
+    theSDPolygonCreationInterrupt,
+    canNotReadTheSDFaceVertexIndex,
+    canNotReadTheSDFaceTexture,
+    canNotReadTheSDFaceVisibility,
+    canNotReadTheSDFaceMaterialIndex,
+    tooManyObjectsInSDFile,
+    canNotReadSDCameraData,
+    incorrectSDCurrentFrame,
+    canNotReadSDCameraFrameData,
+    canNotCreateSDRestGeometry,
+    canNotCreateSDAnimatedGeometry,
+    canNotReadSDCurrentFrame,
+    canNotReadSDObjectFrameHeader,
+    theSDAnimGeoCreationInterrupt,
+    canNotReadSDAnimFaceData,
+    theSDAnimGeoCreationPointNULL,
+    canNotCloseRealFlowSDFile,
 
-   numRFImportErrors
-   };
+    numRFImportErrors
+};
 
-   static UT_String errorMsgs[numRFImportErrors];
+static UT_String errorMsgs[numRFImportErrors];
 
 
 /* ******************************************************************************
@@ -196,18 +196,24 @@ public:
 ***************************************************************************** */
 
 class SOP_RF_Import_Exception {
-   std::string e_msg;
-   enumErrorList e_code;
-   enumExceptionSeverity severity;
+    std::string e_msg;
+    enumErrorList e_code;
+    enumExceptionSeverity severity;
 
 public:
-   SOP_RF_Import_Exception(enumErrorList code, enumExceptionSeverity severity);
+    SOP_RF_Import_Exception(enumErrorList code, enumExceptionSeverity severity);
 //   ~SOP_RF_Import_Exception();
 
-   void what() {  std::cout << "SOP_RF_Import_Exception::what() - Real Flow import exception:  " << e_msg << endl; }
-   enumErrorList getErrorCode() { return e_code; }
-   enumExceptionSeverity getSeverity() { return severity; }
-   };
+    void what() {
+        std::cout << "SOP_RF_Import_Exception::what() - Real Flow import exception:  " << e_msg << endl;
+    }
+    enumErrorList getErrorCode() {
+        return e_code;
+    }
+    enumExceptionSeverity getSeverity() {
+        return severity;
+    }
+};
 
 
 
@@ -223,8 +229,7 @@ public:
 *
 ***************************************************************************** */
 
-class SOP_RF_Import : public SOP_Node
-{
+class SOP_RF_Import : public SOP_Node {
 public:
     static OP_Node      *myConstructor(OP_Network*, const char *, OP_Operator *);
 
@@ -242,150 +247,174 @@ protected:
 private:
 
 // Real Flow file name and type (particles, mesh or SD)
-    void    FNAME(UT_String &label, float t)
-            { evalString(label, ARG_RF_IMPORT_FNAME, 0, t); }
-    int     FTYPE(float t)
-            { return evalInt(ARG_RF_IMPORT_FTYPE, 0, t); }
+    void    FNAME(UT_String &label, float t) {
+        evalString(label, ARG_RF_IMPORT_FNAME, 0, t);
+    }
+    int     FTYPE(float t) {
+        return evalInt(ARG_RF_IMPORT_FTYPE, 0, t);
+    }
 
 // Import options for Real Flow particles
-    int     VELOCITY(float t)
-            { return evalInt(ARG_RF_IMPORT_VELOCITY, 0, t); }
-    int     FORCE(float t)
-            { return evalInt(ARG_RF_IMPORT_FORCE, 0, t); }
-    int     VORTICITY(float t)
-            { return evalInt(ARG_RF_IMPORT_VORTICITY, 0, t); }
-    int     NORMAL(float t)
-            { return evalInt(ARG_RF_IMPORT_NORMAL, 0, t); }
-    int     NUM_NEIGHBORS(float t)
-            { return evalInt(ARG_RF_IMPORT_NUM_NEIGHBORS, 0, t); }
-    int     TEX_VECTOR(float t)
-            { return evalInt(ARG_RF_IMPORT_TEX_VECTOR, 0, t); }
-    int     INFO_BITS(float t)
-            { return evalInt(ARG_RF_IMPORT_INFO_BITS, 0, t); }
-    int     AGE(float t)
-            { return evalInt(ARG_RF_IMPORT_AGE, 0, t); }
-    int     ISO_TIME(float t)
-            { return evalInt(ARG_RF_IMPORT_ISO_TIME, 0, t); }
-    int     VISCOSITY(float t)
-            { return evalInt(ARG_RF_IMPORT_VISCOSITY, 0, t); }
-    int     DENSITY(float t)
-            { return evalInt(ARG_RF_IMPORT_DENSITY, 0, t); }
-    int     PRESSURE(float t)
-            { return evalInt(ARG_RF_IMPORT_PRESSURE, 0, t); }
-    int     MASS(float t)
-            { return evalInt(ARG_RF_IMPORT_MASS, 0, t); }
-    int     TEMPERATURE(float t)
-            { return evalInt(ARG_RF_IMPORT_TEMPERATURE, 0, t); }
-    int     PARTICLE_ID(float t)
-            { return evalInt(ARG_RF_IMPORT_PARTICLE_ID, 0, t); }
+    int     VELOCITY(float t) {
+        return evalInt(ARG_RF_IMPORT_VELOCITY, 0, t);
+    }
+    int     FORCE(float t) {
+        return evalInt(ARG_RF_IMPORT_FORCE, 0, t);
+    }
+    int     VORTICITY(float t) {
+        return evalInt(ARG_RF_IMPORT_VORTICITY, 0, t);
+    }
+    int     NORMAL(float t) {
+        return evalInt(ARG_RF_IMPORT_NORMAL, 0, t);
+    }
+    int     NUM_NEIGHBORS(float t) {
+        return evalInt(ARG_RF_IMPORT_NUM_NEIGHBORS, 0, t);
+    }
+    int     TEX_VECTOR(float t) {
+        return evalInt(ARG_RF_IMPORT_TEX_VECTOR, 0, t);
+    }
+    int     INFO_BITS(float t) {
+        return evalInt(ARG_RF_IMPORT_INFO_BITS, 0, t);
+    }
+    int     AGE(float t) {
+        return evalInt(ARG_RF_IMPORT_AGE, 0, t);
+    }
+    int     ISO_TIME(float t) {
+        return evalInt(ARG_RF_IMPORT_ISO_TIME, 0, t);
+    }
+    int     VISCOSITY(float t) {
+        return evalInt(ARG_RF_IMPORT_VISCOSITY, 0, t);
+    }
+    int     DENSITY(float t) {
+        return evalInt(ARG_RF_IMPORT_DENSITY, 0, t);
+    }
+    int     PRESSURE(float t) {
+        return evalInt(ARG_RF_IMPORT_PRESSURE, 0, t);
+    }
+    int     MASS(float t) {
+        return evalInt(ARG_RF_IMPORT_MASS, 0, t);
+    }
+    int     TEMPERATURE(float t) {
+        return evalInt(ARG_RF_IMPORT_TEMPERATURE, 0, t);
+    }
+    int     PARTICLE_ID(float t) {
+        return evalInt(ARG_RF_IMPORT_PARTICLE_ID, 0, t);
+    }
 
 // Import options for Real Flow mesh
-    int     MESH_TEX(float t)
-            { return evalInt(ARG_RF_IMPORT_MESH_TEX, 0, t); }
-    int     MESH_VEL(float t)
-            { return evalInt(ARG_RF_IMPORT_MESH_VEL, 0, t); }
+    int     MESH_TEX(float t) {
+        return evalInt(ARG_RF_IMPORT_MESH_TEX, 0, t);
+    }
+    int     MESH_VEL(float t) {
+        return evalInt(ARG_RF_IMPORT_MESH_VEL, 0, t);
+    }
 
 // Import options for Real Flow SD files
-    int     SD_TEX(float t)
-            { return evalInt(ARG_RF_IMPORT_SD_TEX, 0, t); }
-    int     SD_CG(float t)
-            { return evalInt(ARG_RF_IMPORT_SD_CG, 0, t); }
-    int     SD_OBJ_XFORM(float t)
-            { return evalInt(ARG_RF_IMPORT_SD_OBJ_XFORM, 0, t); }
-    int     SD_CG_XFORM(float t)
-            { return evalInt(ARG_RF_IMPORT_SD_CG_XFORM, 0, t); }
+    int     SD_TEX(float t) {
+        return evalInt(ARG_RF_IMPORT_SD_TEX, 0, t);
+    }
+    int     SD_CG(float t) {
+        return evalInt(ARG_RF_IMPORT_SD_CG, 0, t);
+    }
+    int     SD_OBJ_XFORM(float t) {
+        return evalInt(ARG_RF_IMPORT_SD_OBJ_XFORM, 0, t);
+    }
+    int     SD_CG_XFORM(float t) {
+        return evalInt(ARG_RF_IMPORT_SD_CG_XFORM, 0, t);
+    }
 
 // Import options for Real Flow RWC files
-    int     RWC_VELOCITY(float t)
-            { return evalInt(ARG_RF_IMPORT_RWC_VELOCITY, 0, t); }
+    int     RWC_VELOCITY(float t) {
+        return evalInt(ARG_RF_IMPORT_RWC_VELOCITY, 0, t);
+    }
 
-   static int  updateTheMenu(void *data, int index, float time, const PRM_Template *tplate );
+    static int  updateTheMenu(void *data, int index, float time, const PRM_Template *tplate );
 //   static int  updateVersion(void *data, int index, float time, const PRM_Template *tplate );
 
-   struct GUI_state {
-	   bool
-         t_velocity,
-         t_force,
-         t_vorticity,
-         t_normal,
-         t_num_neighbors,
-         t_texture_vector,
-         t_info_bits,
-         t_age,
-         t_isolation_time,
-         t_viscosity,
-         t_density,
-         t_pressure,
-         t_mass,
-         t_temperature,
-         t_id,
+    struct GUI_state {
+        bool
+        t_velocity,
+        t_force,
+        t_vorticity,
+        t_normal,
+        t_num_neighbors,
+        t_texture_vector,
+        t_info_bits,
+        t_age,
+        t_isolation_time,
+        t_viscosity,
+        t_density,
+        t_pressure,
+        t_mass,
+        t_temperature,
+        t_id,
 
-         t_mesh_tex,
-         t_mesh_vel,
+        t_mesh_tex,
+        t_mesh_vel,
 
-         t_sd_tex,
-         t_sd_cg,
-         t_sd_obj_xform,
-         t_sd_cg_xform;
+        t_sd_tex,
+        t_sd_cg,
+        t_sd_obj_xform,
+        t_sd_cg_xform;
 
-   }myGUIState;
+    } myGUIState;
 
 
-   struct Attribute_offsets {
-      GA_RWAttributeRef
+    struct Attribute_offsets {
+        GA_RWAttributeRef
 
-         // Particle file offsets
-         p_velocity,
-         p_force,
-         p_vorticity,
-         p_normal_N,
-         p_num_neighbors,
-         p_texture_vector_uv,
-         p_info_bits,
-         p_age,
-         p_isolation_time,
-         p_viscosity,
-         p_density,
-         p_pressure,
-         p_mass,
-         p_temperature,
-         p_id,
-         p_min_pressure, p_max_pressure, p_avg_pressure,
-         p_min_speed, p_max_speed, p_avg_speed,
-         p_min_temp,p_max_temp, p_avg_temp,
-         p_scene_scale,
-         p_fluid_type,
-         p_elapsed_time,
-         p_frame_number,
-         p_fps,
-         p_num_particles,
-         p_radius,
-         p_emit_pos, p_emit_rot, p_emit_scale,
+        // Particle file references
+        p_velocity,
+        p_force,
+        p_vorticity,
+        p_normal_N,
+        p_num_neighbors,
+        p_texture_vector_uv,
+        p_info_bits,
+        p_age,
+        p_isolation_time,
+        p_viscosity,
+        p_density,
+        p_pressure,
+        p_mass,
+        p_temperature,
+        p_id,
+        p_min_pressure, p_max_pressure, p_avg_pressure,
+        p_min_speed, p_max_speed, p_avg_speed,
+        p_min_temp,p_max_temp, p_avg_temp,
+        p_scene_scale,
+        p_fluid_type,
+        p_elapsed_time,
+        p_frame_number,
+        p_fps,
+        p_num_particles,
+        p_radius,
+        p_emit_pos, p_emit_rot, p_emit_scale,
 
-         //SD file offsets
-         sd_CG_pos, sd_CG_vel, sd_CG_rot,
-         sd_texture_0, sd_texture_1, sd_texture_2;
+        //SD file references
+        sd_CG_pos, sd_CG_vel, sd_CG_rot,
+        sd_texture_0, sd_texture_1, sd_texture_2;
 
-   }myAttributeRefs;
+    } myAttributeRefs;
 
-   GA_PointGroup        *objPointGrpList[maxNumObjects];
-   GA_PrimitiveGroup    *objPrimitiveGrpList[maxNumObjects];
+    GA_PointGroup        *objPointGrpList[maxNumObjects];
+    GA_PrimitiveGroup    *objPrimitiveGrpList[maxNumObjects];
 
-   OP_ERROR ReadRFParticleFile(OP_Context &context);
-   int ReadRFParticleFileCreateAttrs();
-   int ReadRFParticleFileSetAttrs(long int pt_num);
+    OP_ERROR ReadRFParticleFile(OP_Context &context);
+    int ReadRFParticleFileCreateAttrs();
+    int ReadRFParticleFileSetAttrs(long int pt_num);
 
-   OP_ERROR ReadRFMeshFile(OP_Context &context);
+    OP_ERROR ReadRFMeshFile(OP_Context &context);
 
-   OP_ERROR ReadRFSDFile(OP_Context &context);
-   int ReadRFSDReadHeader(float now);
-   int ReadRFSDCreateRestGeo(UT_Interrupt *boss);
-   int ReadRFSDCreateAnimGeo(UT_Interrupt *boss);
+    OP_ERROR ReadRFSDFile(OP_Context &context);
+    int ReadRFSDReadHeader(float now);
+    int ReadRFSDCreateRestGeo(UT_Interrupt *boss);
+    int ReadRFSDCreateAnimGeo(UT_Interrupt *boss);
 
-   OP_ERROR ReadRFRWCFile(OP_Context &context);
-   void ReadRFRWCFileAddPoint(GEO_Point *ppt, int t_velocity, GA_RWAttributeRef p_velocity_v, int pt_num);
+    OP_ERROR ReadRFRWCFile(OP_Context &context);
+    void ReadRFRWCFileAddPoint(GEO_Point *ppt, int t_velocity, GA_RWAttributeRef p_velocity_v, int pt_num);
 
-   short   myParmBase; // parameter offsets
+    short   myParmBase; // parameter offsets
 
     RealFlow_Particle_File *myRFParticleFile;
     RealFlow_Mesh_File     *myRFMeshFile;

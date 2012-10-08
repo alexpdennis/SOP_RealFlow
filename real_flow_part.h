@@ -34,21 +34,23 @@
 namespace dca {
 
 #ifndef RF_FILE_READ
-   #define RF_FILE_READ 0
-   #define RF_FILE_WRITE 1
+#define RF_FILE_READ 0
+#define RF_FILE_WRITE 1
 #endif
 
 #define RF_PART_HDR_SIZE sizeof(part_header)
 #define RF_PART_DATA_SIZE sizeof(part_data)
 
 class RF_Particle_Exception {
-   std::string e_msg;
+    std::string e_msg;
 
 public:
-   RF_Particle_Exception(std::string msg);
+    RF_Particle_Exception(std::string msg);
 
-   void what() {  std::cout << "RF_Particle_Exception: " << e_msg << std::endl; }
-   };
+    void what() {
+        std::cout << "RF_Particle_Exception: " << e_msg << std::endl;
+    }
+};
 
 
 const int RF_PART_FLUID_NAME_SZ = 250;
@@ -76,7 +78,7 @@ public:
         float       emitter_pos[3];     // emitter position                               320
         float       emitter_rot[3];     // emitter rotation                               332
         float       emitter_scale[3];   // emitter scale                                  344
-    }part_header;
+    } part_header;
 
     // RealFlow particle data structure
     struct rf_part_data {
@@ -96,7 +98,7 @@ public:
         float       mass;               // particle mass                                  454
         float       temperature;        // particle temperature                           458
         int         id;                 // particle ID                                    462
-    }part_data;
+    } part_data;
 
     int open_part_file(char *file_name, int mode);
     int read_part_file_header();

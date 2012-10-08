@@ -94,11 +94,11 @@ const std::string SOP_Version = "2.0.0";
 
 
 enum enumExceptionSeverity {
-   exceptionNone = 0,
-   exceptionWarning,
-   exceptionError,
-   exceptionCritical
-   };
+    exceptionNone = 0,
+    exceptionWarning,
+    exceptionError,
+    exceptionCritical
+};
 
 
 // An enum for all the error messages
@@ -144,36 +144,36 @@ enum enumErrorList {
     canNotCloseTheRealFlowBINFile,
 
     // RWC file errror messages
-   canNotLockInputsInWriteRWCFile,
-   couldNotLockInputInWriteRWCFile,
-   canNotWriteHeaderRWCFile,
-   canNotOpenRWCFileForWriting,
-   canNotWriteDataToRWCFile,
-   canNotCloseTheRealFlowRWCFile,
+    canNotLockInputsInWriteRWCFile,
+    couldNotLockInputInWriteRWCFile,
+    canNotWriteHeaderRWCFile,
+    canNotOpenRWCFileForWriting,
+    canNotWriteDataToRWCFile,
+    canNotCloseTheRealFlowRWCFile,
 
-   invalidAttrHandleVel,
-   invalidAttrHandleForce,
-   invalidAttrHandleNormal,
-   invalidAttrHandleVorticity,
-   invalidAttrHandleUV,
-   invalidAttrHandleInfoBits,
-   invalidAttrHandleAge,
-   invalidAttrHandleIsolation,
-   invalidAttrHandleViscosity,
-   invalidAttrHandlePressure,
-   invalidAttrHandleDensity,
-   invalidAttrHandleMass,
-   invalidAttrHandleTemperature,
-   invalidAttrHandleNumNeighbors,
-   invalidAttrHandleID,
+    invalidAttrHandleVel,
+    invalidAttrHandleForce,
+    invalidAttrHandleNormal,
+    invalidAttrHandleVorticity,
+    invalidAttrHandleUV,
+    invalidAttrHandleInfoBits,
+    invalidAttrHandleAge,
+    invalidAttrHandleIsolation,
+    invalidAttrHandleViscosity,
+    invalidAttrHandlePressure,
+    invalidAttrHandleDensity,
+    invalidAttrHandleMass,
+    invalidAttrHandleTemperature,
+    invalidAttrHandleNumNeighbors,
+    invalidAttrHandleID,
 
-   invalidAttrHandle,
+    invalidAttrHandle,
 
-   numRFExportErrors
+    numRFExportErrors
 
 };
 
-   static UT_String errorMsgs[numRFExportErrors];
+static UT_String errorMsgs[numRFExportErrors];
 
 
 /* ******************************************************************************
@@ -190,7 +190,7 @@ enum enumErrorList {
 
 class OP_RF_Export_Operator : public OP_Operator {
 public:
-	OP_RF_Export_Operator();
+    OP_RF_Export_Operator();
     virtual ~OP_RF_Export_Operator();
 //    virtual bool getHDKHelp(UT_String &str) const;
 
@@ -211,18 +211,24 @@ public:
 ***************************************************************************** */
 
 class SOP_RF_Export_Exception {
-   std::string e_msg;
-   enumErrorList e_code;
-   enumExceptionSeverity severity;
+    std::string e_msg;
+    enumErrorList e_code;
+    enumExceptionSeverity severity;
 
 public:
-   SOP_RF_Export_Exception(enumErrorList code, enumExceptionSeverity severity);
+    SOP_RF_Export_Exception(enumErrorList code, enumExceptionSeverity severity);
 //   ~SOP_RF_Export_Exception();
 
-   void what() {  std::cout << "SOP_RF_Export_Exception::what() - Real Flow Export exception:  " << e_msg << endl; }
-   enumErrorList getErrorCode() { return e_code; }
-   enumExceptionSeverity getSeverity() { return severity; }
-   };
+    void what() {
+        std::cout << "SOP_RF_Export_Exception::what() - Real Flow Export exception:  " << e_msg << endl;
+    }
+    enumErrorList getErrorCode() {
+        return e_code;
+    }
+    enumExceptionSeverity getSeverity() {
+        return severity;
+    }
+};
 
 
 
@@ -238,10 +244,9 @@ public:
 *
 ***************************************************************************** */
 
-class SOP_RF_Export : public SOP_Node
-{
+class SOP_RF_Export : public SOP_Node {
 public:
-	SOP_RF_Export(OP_Network *net, const char *name, OP_Operator *op);
+    SOP_RF_Export(OP_Network *net, const char *name, OP_Operator *op);
 
     virtual ~SOP_RF_Export();
 
@@ -257,142 +262,169 @@ protected:
 private:
 
     // Functions for GUI widgets (Setup page)
-    void    FNAME(UT_String &label, float t)
-            { evalString(label, ARG_RF_EXPORT_FNAME, 0, t); }
-    int     FILE_FORMAT(float t)
-            { return evalInt(ARG_RF_EXPORT_SD_BIN, 0, t); }
-    int     ANIM(float t)
-            { return evalInt(ARG_RF_EXPORT_ANIM, 0, t); }
-    void    BEGIN_END (float *val, float t)
-            { evalFloats(ARG_RF_EXPORT_BEGIN_END, val, t); }
-    int     ECHO_CONSOLE(float t)
-            { return evalInt(ARG_RF_EXPORT_ECHO_CONSOLE, 0, t); }
+    void    FNAME(UT_String &label, float t) {
+        evalString(label, ARG_RF_EXPORT_FNAME, 0, t);
+    }
+    int     FILE_FORMAT(float t) {
+        return evalInt(ARG_RF_EXPORT_SD_BIN, 0, t);
+    }
+    int     ANIM(float t) {
+        return evalInt(ARG_RF_EXPORT_ANIM, 0, t);
+    }
+    void    BEGIN_END (float *val, float t) {
+        evalFloats(ARG_RF_EXPORT_BEGIN_END, val, t);
+    }
+    int     ECHO_CONSOLE(float t) {
+        return evalInt(ARG_RF_EXPORT_ECHO_CONSOLE, 0, t);
+    }
 
     // SD file parms
-    int	   FPS(float t)
-            { return evalInt(ARG_RF_EXPORT_FPS, 0, t); }
-    void    OBJ_COLOR(float *val, float t)
-            { evalFloats(ARG_RF_EXPORT_OBJ_COLOR, val, t); }
-    int     OBJ_XFORM(float t)
-            { return evalInt(ARG_RF_EXPORT_OBJ_XFORM, 0, t); }
-    int     MODE(float t)
-            { return evalInt(ARG_RF_EXPORT_MODE, 0, t); }
+    int	   FPS(float t) {
+        return evalInt(ARG_RF_EXPORT_FPS, 0, t);
+    }
+    void    OBJ_COLOR(float *val, float t) {
+        evalFloats(ARG_RF_EXPORT_OBJ_COLOR, val, t);
+    }
+    int     OBJ_XFORM(float t) {
+        return evalInt(ARG_RF_EXPORT_OBJ_XFORM, 0, t);
+    }
+    int     MODE(float t) {
+        return evalInt(ARG_RF_EXPORT_MODE, 0, t);
+    }
 
 
     // Particle BIN2 file parms
-    void    FLUID_NAME(UT_String &label, float t)
-            { evalString(label, ARG_RF_EXPORT_FLUID_NAME, 0, t); }
-    int     FLUID_TYPE(float t)
-            { return evalInt(ARG_RF_EXPORT_FLUID_TYPE, 0, t); }
-    float  SCENE_SCALE(float t)
-            { return evalFloat(ARG_RF_EXPORT_SCENE_SCALE, 0, t); }
-    float  RADIUS(float t)
-            { return evalFloat(ARG_RF_EXPORT_RADIUS, 0, t); }
-    float  PRESSURE_MIN(float t)
-            { return evalFloat(ARG_RF_EXPORT_PRESSURE_MIN, 0, t); }
-    float  PRESSURE_MAX(float t)
-            { return evalFloat(ARG_RF_EXPORT_PRESSURE_MAX, 0, t); }
-    float  PRESSURE_AVG(float t)
-            { return evalFloat(ARG_RF_EXPORT_PRESSURE_AVG, 0, t); }
-    float  SPEED_MIN(float t)
-            { return evalFloat(ARG_RF_EXPORT_SPEED_MIN, 0, t); }
-    float  SPEED_MAX(float t)
-            { return evalFloat(ARG_RF_EXPORT_SPEED_MAX, 0, t); }
-    float  SPEED_AVG(float t)
-            { return evalFloat(ARG_RF_EXPORT_SPEED_AVG, 0, t); }
-    float  TEMP_MIN(float t)
-            { return evalFloat(ARG_RF_EXPORT_TEMP_MIN, 0, t); }
-    float  TEMP_MAX(float t)
-            { return evalFloat(ARG_RF_EXPORT_TEMP_MAX, 0, t); }
-    float  TEMP_AVG(float t)
-            { return evalFloat(ARG_RF_EXPORT_TEMP_AVG, 0, t); }
-    void   EMITTER_POS(float *val, float t)
-            { evalFloats(ARG_RF_EXPORT_EMITTER_POS, val, t); }
-    void   EMITTER_ROT(float *val, float t)
-            { evalFloats(ARG_RF_EXPORT_EMITTER_ROT, val, t); }
-    void   EMITTER_SCALE(float *val, float t)
-            { evalFloats(ARG_RF_EXPORT_EMITTER_SCALE, val, t); }
+    void    FLUID_NAME(UT_String &label, float t) {
+        evalString(label, ARG_RF_EXPORT_FLUID_NAME, 0, t);
+    }
+    int     FLUID_TYPE(float t) {
+        return evalInt(ARG_RF_EXPORT_FLUID_TYPE, 0, t);
+    }
+    float  SCENE_SCALE(float t) {
+        return evalFloat(ARG_RF_EXPORT_SCENE_SCALE, 0, t);
+    }
+    float  RADIUS(float t) {
+        return evalFloat(ARG_RF_EXPORT_RADIUS, 0, t);
+    }
+    float  PRESSURE_MIN(float t) {
+        return evalFloat(ARG_RF_EXPORT_PRESSURE_MIN, 0, t);
+    }
+    float  PRESSURE_MAX(float t) {
+        return evalFloat(ARG_RF_EXPORT_PRESSURE_MAX, 0, t);
+    }
+    float  PRESSURE_AVG(float t) {
+        return evalFloat(ARG_RF_EXPORT_PRESSURE_AVG, 0, t);
+    }
+    float  SPEED_MIN(float t) {
+        return evalFloat(ARG_RF_EXPORT_SPEED_MIN, 0, t);
+    }
+    float  SPEED_MAX(float t) {
+        return evalFloat(ARG_RF_EXPORT_SPEED_MAX, 0, t);
+    }
+    float  SPEED_AVG(float t) {
+        return evalFloat(ARG_RF_EXPORT_SPEED_AVG, 0, t);
+    }
+    float  TEMP_MIN(float t) {
+        return evalFloat(ARG_RF_EXPORT_TEMP_MIN, 0, t);
+    }
+    float  TEMP_MAX(float t) {
+        return evalFloat(ARG_RF_EXPORT_TEMP_MAX, 0, t);
+    }
+    float  TEMP_AVG(float t) {
+        return evalFloat(ARG_RF_EXPORT_TEMP_AVG, 0, t);
+    }
+    void   EMITTER_POS(float *val, float t) {
+        evalFloats(ARG_RF_EXPORT_EMITTER_POS, val, t);
+    }
+    void   EMITTER_ROT(float *val, float t) {
+        evalFloats(ARG_RF_EXPORT_EMITTER_ROT, val, t);
+    }
+    void   EMITTER_SCALE(float *val, float t) {
+        evalFloats(ARG_RF_EXPORT_EMITTER_SCALE, val, t);
+    }
 
     // RWC file parms
-    int     RWC_NUM_X(float t)
-            { return evalInt(ARG_RF_EXPORT_RWC_NUM_X, 0, t); }
-    int     RWC_NUM_Y(float t)
-            { return evalInt(ARG_RF_EXPORT_RWC_NUM_Y, 0, t); }
+    int     RWC_NUM_X(float t) {
+        return evalInt(ARG_RF_EXPORT_RWC_NUM_X, 0, t);
+    }
+    int     RWC_NUM_Y(float t) {
+        return evalInt(ARG_RF_EXPORT_RWC_NUM_Y, 0, t);
+    }
 
 
     // Callbacks for various GUI widgets
-	static int updateAnim(void *data, int index, float time, const PRM_Template *tplate );
-	static int updateVersion(void *data, int index, float time, const PRM_Template *tplate );
-	static int updateMode(void *data, int index, float time, const PRM_Template *tplate );
+    static int updateAnim(void *data, int index, float time, const PRM_Template *tplate );
+    static int updateVersion(void *data, int index, float time, const PRM_Template *tplate );
+    static int updateMode(void *data, int index, float time, const PRM_Template *tplate );
     static int updateFileFormat(void *data, int index, float time, const PRM_Template *tplate );
-	static int updateFluidType(void *data, int index, float time, const PRM_Template *tplate );
-	static int updateFPS(void *data, int index, float time, const PRM_Template *tplate );
+    static int updateFluidType(void *data, int index, float time, const PRM_Template *tplate );
+    static int updateFPS(void *data, int index, float time, const PRM_Template *tplate );
 
-	unsigned myupdateMenuStatus;
-	unsigned myupdateVersionStatus;
-	unsigned myupdateAnimStatus;
-	unsigned myupdateModeStatus;
-	unsigned myupdateFluidTypeStatus;
-	unsigned myupdateFPSStatus;
+    unsigned myupdateMenuStatus;
+    unsigned myupdateVersionStatus;
+    unsigned myupdateAnimStatus;
+    unsigned myupdateModeStatus;
+    unsigned myupdateFluidTypeStatus;
+    unsigned myupdateFPSStatus;
 
-	static int 	writeTheFile(void *data, int index, float time, const PRM_Template *tplate );
+    static int 	writeTheFile(void *data, int index, float time, const PRM_Template *tplate );
 
-	OP_ERROR writeSDFile(OP_Context& context);
+    OP_ERROR writeSDFile(OP_Context& context);
     int calculateChunkSizes(OP_Context& context);
     int writeSDFileRestGeo(OP_Context& context, UT_Interrupt *boss);
     int writeSDFileAnimGeo(OP_Context& context, UT_Interrupt *boss);
 
-	OP_ERROR writeBINFile(OP_Context& context);
+    OP_ERROR writeBINFile(OP_Context& context);
     OP_ERROR writeRWCFile(OP_Context& context);
 
-	void doObjectXForm(UT_DMatrix4& xform);
+    void doObjectXForm(UT_DMatrix4& xform);
 
-	bool calledFromCallback;
-	OP_ERROR myCallBackError;
-	enum enumErrorList   myCallBackFlags;
+    bool calledFromCallback;
+    OP_ERROR myCallBackError;
+    enum enumErrorList   myCallBackFlags;
 
-	OP_ERROR reportCallBackErrors(enum enumErrorList errorCode);
+    OP_ERROR reportCallBackErrors(enum enumErrorList errorCode);
 
     int myNumInputs;
     int myStartFrame;
     int myEndFrame;
 
-	UT_String	myFileName;
-	int         myFileFormat;
-	bool        myStaticAnim;
-  	bool        myObjXform;
+    UT_String	myFileName;
+    int         myFileFormat;
+    bool        myStaticAnim;
+    bool        myObjXform;
     bool        myMode;
-	float 		myBeginEnd[2];
-	float 		myObjColor[3];
+    float 		myBeginEnd[2];
+    float 		myObjColor[3];
 
-	UT_String 	myFluidName;
-	int         myFluidType;
-	int         myFPS;
-	float       myRadius;
-	float       mySceneScale;
-	float       myPressureMin;
-	float       myPressureMax;
-	float       myPressureAvg;
-	float       mySpeedMin;
-	float       mySpeedMax;
-	float       mySpeedAvg;
-	float       myTempMin;
-	float       myTempMax;
-	float       myTempAvg;
-	UT_Vector3	myEmitterPos;
-	UT_Vector3	myEmitterRot;
-	UT_Vector3	myEmitterScale;
+    UT_String 	myFluidName;
+    int         myFluidType;
+    int         myFPS;
+    float       myRadius;
+    float       mySceneScale;
+    float       myPressureMin;
+    float       myPressureMax;
+    float       myPressureAvg;
+    float       mySpeedMin;
+    float       mySpeedMax;
+    float       mySpeedAvg;
+    float       myTempMin;
+    float       myTempMax;
+    float       myTempAvg;
+    UT_Vector3	myEmitterPos;
+    UT_Vector3	myEmitterRot;
+    UT_Vector3	myEmitterScale;
 
-   UT_StringArray objectNames;
-   UT_StringArray objectTextureNames;
+    UT_StringArray objectNames;
+    UT_StringArray objectTextureNames;
 
-	bool		myEchoData;
+    bool		myEchoData;
 
-	RealFlow_SD_File        *myRFSDFile;
-	RealFlow_Particle_File	*myRFBINFile;
-	RealFlow_RWC_File       *myRFRWCFile;
+    RealFlow_SD_File        *myRFSDFile;
+    RealFlow_Particle_File	*myRFBINFile;
+    RealFlow_RWC_File       *myRFRWCFile;
 
-   short myParmBase;
+    short myParmBase;
 };
 
 #endif

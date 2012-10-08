@@ -15,7 +15,7 @@
 *
 *    Digital Cinema Arts (C) 2005
 *
-* This work is licensed under the Creative Commons Attribution-ShareAlike 2.5 License. 
+* This work is licensed under the Creative Commons Attribution-ShareAlike 2.5 License.
 * To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/2.5/ or send a letter to
 * Creative Commons, 543 Howard Street, 5th Floor, San Francisco, California, 94105, USA.
 *
@@ -33,44 +33,46 @@
 namespace dca {
 
 #ifndef RF_FILE_READ
-   #define RF_FILE_READ 0
-   #define RF_FILE_WRITE 1
+#define RF_FILE_READ 0
+#define RF_FILE_WRITE 1
 #endif
 
 #define MAX_NUM_FLUIDS 64
 
 class RF_Mesh_Exception {
-   std::string e_msg;
+    std::string e_msg;
 
 public:
-   RF_Mesh_Exception(std::string msg);
-   
-   void what() {  std::cout << "RF_Mesh_Exception: " << e_msg << std::endl; }
-   };
+    RF_Mesh_Exception(std::string msg);
+
+    void what() {
+        std::cout << "RF_Mesh_Exception: " << e_msg << std::endl;
+    }
+};
 
 
 class RealFlow_Mesh_File {
-    public:
-        RealFlow_Mesh_File();
-        ~RealFlow_Mesh_File();
+public:
+    RealFlow_Mesh_File();
+    ~RealFlow_Mesh_File();
 
     struct rf_mesh_header {
         unsigned int    ID_code;    // ID code = 0xDADADADA
         unsigned int    version;    // version = 4
         unsigned int    code;       // geometry chunk code = 0xCCCCCCCC
-    }mesh_header;
+    } mesh_header;
 
     struct rf_mesh_vertex_data {
         int     num_vertices;
         float   X;
         float   Y;
         float   Z;
-    }mesh_vertex_data;
+    } mesh_vertex_data;
 
-    struct rf_mesh_face_data { 
+    struct rf_mesh_face_data {
         int num_faces;
         int vertex[3];
-    }mesh_face_data;
+    } mesh_face_data;
 
     struct rf_mesh_texture_data {
         unsigned int    code;   // Texture chunk code = 0xCCCCCC00
@@ -79,14 +81,14 @@ class RealFlow_Mesh_File {
         float   U;
         float   V;
         float   W;
-    }mesh_tex_data;
+    } mesh_tex_data;
 
     struct rf_mesh_velocity_data {
         unsigned int    code;   // ID code = 0xCCCCCC11
         float   X;
         float   Y;
         float   Z;
-    }mesh_vel_data;
+    } mesh_vel_data;
 
     int     openMeshFile(char *file_name);
     int     readMeshFileHeader(int *hdr_status);

@@ -10,7 +10,7 @@
 *  Digital Cinema Arts (C) 2005
 
 *
-* This work is licensed under the Creative Commons Attribution-ShareAlike 2.5 License. 
+* This work is licensed under the Creative Commons Attribution-ShareAlike 2.5 License.
 * To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/2.5/ or send a letter to
 * Creative Commons, 543 Howard Street, 5th Floor, San Francisco, California, 94105, USA.
 *
@@ -47,30 +47,30 @@ int main(int argc, char *argv[])
 
 // cout.precision(12);
 
-cout << "dump_rf -  ver. 0.05 -  Digital Cinema Arts (C) 2006" << endl;
-cout << "Dumping Real Flow File" << endl;
+    cout << "dump_rf -  ver. 0.05 -  Digital Cinema Arts (C) 2006" << endl;
+    cout << "Dumping Real Flow File" << endl;
 
 //RealFlow_Mesh_File *myRFMeshFile;
 //myRFMeshFile = new RealFlow_Mesh_File();
 
 
-RealFlow_SD_File *mySDFile = new RealFlow_SD_File();
+    RealFlow_SD_File *mySDFile = new RealFlow_SD_File();
 //RealFlow_Particle_File *myRFParticleFile = new RealFlow_Particle_File();
 
 //read_sd_file(argv[1]);
 
-delete(mySDFile);
+    delete(mySDFile);
 //delete(myRFParticleFile);
 //delete(myRFMeshFile);
 
-exit(0);
+    exit(0);
 }
 
 
 
 /*
 
-$Log: 
+$Log:
 
 
 */

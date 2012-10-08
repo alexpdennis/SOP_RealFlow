@@ -1,5 +1,5 @@
 SHELL=/bin/csh
-SRC_VER = 2.0.0
+SRC_VER = 2.0.1
 
 TAGINFO = $(shell (echo -n "Compiled on:" `date`"\nby:" `whoami`@`hostname`"\n$(SESI_TAGINFO)") | sesitag -m)
 CFLAGS := $(CFLAGS) ${TAGINFO} -DHOUDINI_MAJOR_RELEASE=${HOUDINI_MAJOR_RELEASE} -DHOUDINI_MINOR_RELEASE=${HOUDINI_MINOR_RELEASE} -DHOUDINI_BUILD_VERSION=${HOUDINI_BUILD_VERSION}
@@ -67,7 +67,7 @@ archive_src:
 		html/	\
 		Makefile Doxyfile \
 		README.txt \
-		SOP_RF_Import_help.txt  SOP_RF_Export_help.txt
+		rf_import.txt  rf_export.txt
 
 clean:
 	rm -f *.o dump_rf_part dump_rf_mesh dump_rf_sd dump_rf_rwc *.so *.dll *.dylib
