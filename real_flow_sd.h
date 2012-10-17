@@ -31,7 +31,8 @@
 #include <fstream>
 #include <string>
 
-namespace dca {
+namespace dca
+{
 
 #ifndef RF_FILE_READ
 #define RF_FILE_READ 0
@@ -47,7 +48,8 @@ const int sdCamFrameDataSize = 104;
 
 const int maxNumObjects = 1024;
 
-class RF_SD_Exception {
+class RF_SD_Exception
+{
     std::string e_msg;
 
 public:
@@ -61,20 +63,21 @@ public:
 
 
 // The Real Flow SD File Class
-class RealFlow_SD_File {
+class RealFlow_SD_File
+{
 public:
     RealFlow_SD_File();
     ~RealFlow_SD_File();
 
     struct rf_sd_header {
-        char	file_id[30];   // File identifier
-        float	version;       // Version (current = 6)
+        char   file_id[30];   // File identifier
+        float  version;       // Version (current = 6)
 
-        int	header_chk_size;  // header chunk size in bytes version >=5
-        int	frame_chk_size;   // frame chunk size in bytes version>= 5
+        int header_chk_size;  // header chunk size in bytes version >=5
+        int frame_chk_size;   // frame chunk size in bytes version>= 5
 
         char   cam_data;      // Camera data present (0=no, 1=yes) version >= 2
-        int		server;        // Server (1=LW, 2=MAX, 3=XSI, 4, 5=MAYA 6=CINEMA4D, 7=HOUDINI)
+        int    server;        // Server (1=LW, 2=MAX, 3=XSI, 4, 5=MAYA 6=CINEMA4D, 7=HOUDINI)
 
         int    internal_use_1;     // Internal use.
         int         internal_use_2;     // Internal use (month)
@@ -84,16 +87,16 @@ public:
         int         internal_use_6;     // Internal use (sec).
 
         int       num_objects;    // Number of objects
-        int    	beg_frame;      // Begin frame
-        int    	end_frame;      // End frame
+        int       beg_frame;      // Begin frame
+        int       end_frame;      // End frame
     } myRF_SD_Header;
 
     struct rf_sd_obj_header {
         char    obj_mode;        // matrix mode (0) || vertex mode (1)
         float   obj_color[3];    // color of the object
-        int	    obj_name_len;    // Length of the object's name = L
+        int     obj_name_len;    // Length of the object's name = L
         std::string    obj_name; // Object's name  (max length = 256 bytes)
-        int	    obj_tex_len;     // Length of the object's texture file path
+        int     obj_tex_len;     // Length of the object's texture file path
         std::string    obj_tex_name; // Object's texture file path (max length = 1024 bytes)
         int     num_vertices;    // Object's number of vertices
         int     num_faces;       // Object's number of faces
@@ -153,20 +156,20 @@ public:
     int readSDFaceVis();
     int readSDFaceMat();
     int readSDCamFrameData();
-    int readSDCurrFrame(int &cur_frame);
+    int readSDCurrFrame(int & cur_frame);
     int readSDObjFrameHdr();
 
     int writeSDHeader();
     int writeSDObjHdr();
     int writeSDObjFrameHdr();
-    int writeSDFaceCoord(float &x, float &y, float &z);
-    int writeSDFaceIndex(int &vtx_index_num);
+    int writeSDFaceCoord(float & x, float & y, float & z);
+    int writeSDFaceIndex(int & vtx_index_num);
     int writeSDCurrFrame(int cur_frame);
-    int writeSDCamData(int &camera_present);
+    int writeSDCamData(int & camera_present);
     int writeSDCamFrameData();
     int writeSDFaceTexture();
-    int writeSDFaceVis(int &visible);
-    int writeSDFaceMat(int &material);
+    int writeSDFaceVis(int & visible);
+    int writeSDFaceMat(int & material);
 
     std::string myFileName;
     std::ifstream SDifstream;

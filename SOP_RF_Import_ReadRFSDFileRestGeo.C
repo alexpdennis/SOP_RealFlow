@@ -30,23 +30,23 @@
 *  Return Value : int
 *
 ***************************************************************************** */
-inline int SOP_RF_Import::ReadRFSDCreateRestGeo(UT_Interrupt *boss)
+inline int SOP_RF_Import::ReadRFSDCreateRestGeo(UT_Interrupt * boss)
 {
 
-    GEO_Point *ppt;
-    GU_PrimPoly *poly;
+    GEO_Point * ppt;
+    GU_PrimPoly * poly;
     long int vtx_idx, point_idx = 0;
 
 
     try {
 
         // For each object in the SD file, read it's geometry and create it
-        for (int cur_object = 0; cur_object < myRFSDFile->myRF_SD_Header.num_objects; cur_object++) {
+        for(int cur_object = 0; cur_object < myRFSDFile->myRF_SD_Header.num_objects; cur_object++) {
 
             myRFSDFile->myRF_SD_Obj_Header.obj_name = "";
 
             // Read the object header
-            if (myRFSDFile->readSDObjHdr())
+            if(myRFSDFile->readSDObjHdr())
                 throw SOP_RF_Import_Exception(canNotReadTheSDObjectHeader, exceptionError);
 
             // set the total number of points for this geometry
@@ -77,7 +77,7 @@ inline int SOP_RF_Import::ReadRFSDCreateRestGeo(UT_Interrupt *boss)
 #ifdef DEBUG
             std::cout << std::endl << "Object Header: " << std::endl;
 
-            if (myRFSDFile->myRF_SD_Obj_Header.obj_mode == 0)
+            if(myRFSDFile->myRF_SD_Obj_Header.obj_mode == 0)
                 std::cout << "obj_mode: matrix mode " << std::endl;
             else
                 std::cout << "obj_mode: vertex mode " << std::endl;
@@ -103,10 +103,10 @@ inline int SOP_RF_Import::ReadRFSDCreateRestGeo(UT_Interrupt *boss)
 
 
             // For each vertex, read it's coordinates, add a point, and set it's coordinates.
-            for (int cur_point=0; cur_point < myRFSDFile->myRF_SD_Obj_Header.num_vertices; cur_point++) {
+            for(int cur_point=0; cur_point < myRFSDFile->myRF_SD_Obj_Header.num_vertices; cur_point++) {
 
                 // Read the face coordinates
-                if (myRFSDFile->readSDFaceCoord())
+                if(myRFSDFile->readSDFaceCoord())
                     throw SOP_RF_Import_Exception(canNotReadTheSDFaceCoords, exceptionError);
 
 
@@ -118,7 +118,7 @@ inline int SOP_RF_Import::ReadRFSDCreateRestGeo(UT_Interrupt *boss)
 #endif
 
                 // Check to see if we've been interrupted
-                if (boss->opInterrupt())
+                if(boss->opInterrupt())
                     throw SOP_RF_Import_Exception(theSDPointCreationInterrupt, exceptionError);
 
                 // Set the current point (for local vars)
@@ -143,12 +143,12 @@ inline int SOP_RF_Import::ReadRFSDCreateRestGeo(UT_Interrupt *boss)
 #endif
 
             // For each face, create a polygon, read it's index and assign the points to it's vertices.
-            for (int cur_face=0; cur_face < myRFSDFile->myRF_SD_Obj_Header.num_faces; cur_face++) {
-                if (boss->opInterrupt())
+            for(int cur_face=0; cur_face < myRFSDFile->myRF_SD_Obj_Header.num_faces; cur_face++) {
+                if(boss->opInterrupt())
                     throw SOP_RF_Import_Exception(theSDPolygonCreationInterrupt, exceptionWarning);
 
                 // Read the face vertex index
-                if (myRFSDFile->readSDFaceIndex())
+                if(myRFSDFile->readSDFaceIndex())
                     throw SOP_RF_Import_Exception(canNotReadTheSDFaceVertexIndex, exceptionError);
 
 #ifdef DEBUG
@@ -177,13 +177,13 @@ inline int SOP_RF_Import::ReadRFSDCreateRestGeo(UT_Interrupt *boss)
                 vtx_idx = poly->appendVertex(ppt);
 
                 // Read the UVW values
-                if (myRFSDFile->readSDFaceTexture())
+                if(myRFSDFile->readSDFaceTexture())
                     throw SOP_RF_Import_Exception(canNotReadTheSDFaceTexture, exceptionError);
 
 
 #ifdef DEBUG
-                for (int i = 0; i < 3; i++)
-                    for (int j=0; j < 3; j++)
+                for(int i = 0; i < 3; i++)
+                    for(int j=0; j < 3; j++)
                         std::cout << "vertex texture coords: " << myRFSDFile->myRF_SD_Face_Data.vertex_tex[i][j] << std::endl;
 #endif
 
@@ -207,25 +207,25 @@ inline int SOP_RF_Import::ReadRFSDCreateRestGeo(UT_Interrupt *boss)
 
                 // Read the visibility values
                 // TODO: add visibility primitive attribute
-                if (myRFSDFile->readSDFaceVis())
+                if(myRFSDFile->readSDFaceVis())
                     throw SOP_RF_Import_Exception(canNotReadTheSDFaceVisibility, exceptionError);
 
 
 #ifdef DEBUG
                 std::cout << "vertex visibility flags: ";
-                for (int i = 0; i < 3; i++)
+                for(int i = 0; i < 3; i++)
                     std::cout << myRFSDFile->myRF_SD_Face_Data.visible[i] << " ";
                 std::cout << std::endl;
 #endif
 
                 // Read the material index (not used)
                 // TODO: add material index primitive attribute
-                if (myRFSDFile->readSDFaceMat())
+                if(myRFSDFile->readSDFaceMat())
                     throw SOP_RF_Import_Exception(canNotReadTheSDFaceMaterialIndex, exceptionError);
 
 #ifdef DEBUG
                 std::cout << "face material indices: ";
-                for (int i = 0; i < 3; i++)
+                for(int i = 0; i < 3; i++)
                     std::cout << myRFSDFile->myRF_SD_Face_Data.mat_idx << " ";
                 std::cout << std::endl;
 #endif
@@ -252,15 +252,15 @@ inline int SOP_RF_Import::ReadRFSDCreateRestGeo(UT_Interrupt *boss)
 
 
 
-    } catch (SOP_RF_Import_Exception e) {
+    } catch(SOP_RF_Import_Exception e) {
         e.what();
 
-        if (e.getSeverity() == exceptionWarning)
+        if(e.getSeverity() == exceptionWarning)
             addWarning(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
-        else if (e.getSeverity() == exceptionError)
+        else if(e.getSeverity() == exceptionError)
             addError(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
 
-        if (myRFSDFile->SDifstream.is_open()) {
+        if(myRFSDFile->SDifstream.is_open()) {
             myRFSDFile->closeSDFile(RF_FILE_READ);
         }
 

@@ -31,7 +31,8 @@
 #include <fstream>
 #include <string>
 
-namespace dca {
+namespace dca
+{
 
 #ifndef RF_FILE_READ
 #define RF_FILE_READ 0
@@ -41,7 +42,8 @@ namespace dca {
 #define RF_PART_HDR_SIZE sizeof(part_header)
 #define RF_PART_DATA_SIZE sizeof(part_data)
 
-class RF_Particle_Exception {
+class RF_Particle_Exception
+{
     std::string e_msg;
 
 public:
@@ -55,7 +57,8 @@ public:
 
 const int RF_PART_FLUID_NAME_SZ = 250;
 
-class RealFlow_Particle_File {
+class RealFlow_Particle_File
+{
 public:
     RealFlow_Particle_File();
     ~RealFlow_Particle_File();
@@ -100,7 +103,7 @@ public:
         int         id;                 // particle ID                                    462
     } part_data;
 
-    int open_part_file(char *file_name, int mode);
+    int open_part_file(char * file_name, int mode);
     int read_part_file_header();
     int write_part_file_header();
     int read_part_data();
@@ -109,7 +112,7 @@ public:
     int write_additional_data();
     int close_part_file(int mode);
 
-    char  *myFileName;
+    char * myFileName;
     std::ifstream RFPartifstream;
     std::ofstream RFPartofstream;
 

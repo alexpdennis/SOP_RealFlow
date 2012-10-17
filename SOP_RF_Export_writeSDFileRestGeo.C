@@ -32,7 +32,7 @@
 *  Return Value : int return status
 *
 ***************************************************************************** */
-int SOP_RF_Export::writeSDFileRestGeo(OP_Context & context, UT_Interrupt *boss)
+int SOP_RF_Export::writeSDFileRestGeo(OP_Context & context, UT_Interrupt * boss)
 {
 
     long int numv;
@@ -41,10 +41,10 @@ int SOP_RF_Export::writeSDFileRestGeo(OP_Context & context, UT_Interrupt *boss)
     long int num_prim = 0;
     UT_Vector3 normal, p, uv_vec, clr_vec;
     UT_Vector4 pos;
-    GEO_Primitive *prim;
+    GEO_Primitive * prim;
     GEO_Vertex vtx;
     GEO_AttributeHandle attrHandle;
-    GA_ROAttributeRef uv_off;
+    GA_ROAttributeRef uv_ref;
     UT_String  tex_fname_str;
 
     UT_Vector3 trans, rot, scale, up, shear, pivot;
@@ -62,7 +62,7 @@ int SOP_RF_Export::writeSDFileRestGeo(OP_Context & context, UT_Interrupt *boss)
     try {
 
         // For each object (input)
-        for (current_obj = 0; current_obj < myNumInputs; current_obj++) {
+        for(current_obj = 0; current_obj < myNumInputs; current_obj++) {
 
             // Set the the object's name length and name
             myRFSDFile->myRF_SD_Obj_Header.obj_name_len = objectNames(current_obj).length();
@@ -71,7 +71,7 @@ int SOP_RF_Export::writeSDFileRestGeo(OP_Context & context, UT_Interrupt *boss)
             // If the "sd_obj_color" attribute is in the geometry, assign it to the object header
             UT_Vector3 sd_obj_color_vec;
             attrHandle = gdp->getDetailAttribute("sd_obj_color");
-            if (attrHandle.isAttributeValid()) {
+            if(attrHandle.isAttributeValid()) {
                 sd_obj_color_vec = attrHandle.getV3();
 
                 // Assign object color
@@ -93,13 +93,13 @@ int SOP_RF_Export::writeSDFileRestGeo(OP_Context & context, UT_Interrupt *boss)
                 myRFSDFile->myRF_SD_Obj_Header.obj_color[2] = myObjColor[2];
             }
 
-            if (objectTextureNames.entries() > 0 ) {
+            if(objectTextureNames.entries() > 0) {
                 myRFSDFile->myRF_SD_Obj_Header.obj_tex_len = objectTextureNames(current_obj).length();
                 myRFSDFile->myRF_SD_Obj_Header.obj_tex_name = objectTextureNames(current_obj);
             }
 
             // Lock this input, if it fails, return
-            if (lockInput(current_obj, context) >= UT_ERROR_ABORT)
+            if(lockInput(current_obj, context) >= UT_ERROR_ABORT)
                 throw SOP_RF_Export_Exception(couldNotLockInputInWriteSDFile, exceptionError);
 
             // Duplicate the geometry from this input
@@ -115,49 +115,41 @@ int SOP_RF_Export::writeSDFileRestGeo(OP_Context & context, UT_Interrupt *boss)
 #endif
 
             // Write the SD file object header  for this object
-            if (myRFSDFile->writeSDObjHdr())
+            if(myRFSDFile->writeSDObjHdr())
                 throw SOP_RF_Export_Exception(canNotWriteRealFlowSDObjectHeader, exceptionError);
 
-            if (myEchoData)
+            if(myEchoData)
                 std::cout << std::endl << "Processing vertex coordinates for object #"  <<
                           current_obj << std::endl << std::endl;
-
 
             // Now for all the primitives in this object, retrieve the geometry face data and write to the SD file
             num_prim = 0;
             GA_FOR_ALL_PRIMITIVES(gdp, prim) {
 
-                if (boss->opInterrupt())
+                if(boss->opInterrupt())
                     throw SOP_RF_Export_Exception(cookInterrupted, exceptionWarning);
 
                 // Get the number of vertices
                 numv = prim->getVertexCount();
 
-                if (myEchoData) {
+                if(myEchoData) {
                     std::cout << "Primitive num: " << num_prim;
                     std::cout << "\tNumber of vertices: " << numv << std::endl;
                 }
 
                 // Check for triangular polygons ... if not, triangular, throw exeption, unlock inputs and return error
-                if (numv != 3)
+                if(numv != 3)
                     throw SOP_RF_Export_Exception(notTriangularPolygons, exceptionError);
 
                 // If this primitive is a polygon
-                if (prim->getTypeId().get() == GEO_PRIMPOLY) {
-//prim->getTypeId().get()) { case GEO_PRIMPOLY:
+                if(prim->getTypeId().get() == GEO_PRIMPOLY) {
 
                     // For each vertex, get it's position and write the face coordinates to the SD file
-                    for (int i = 0; i < 3; i++) {
+                    for(int i = 0; i < 3; i++) {
                         vtx = prim->getVertexElement(i);
                         pos = vtx.getPos();
 
-//myCurVtxObject[0] = prim->getVertex(i);
-//myCurVtx[0] = &myCurVtxObject[0];
-//
-//GEO_Vertex 	getVertexElement (unsigned i) const
-
-
-                        if (myRFSDFile->writeSDFaceCoord(pos.x(), pos.y(), pos.z()))
+                        if(myRFSDFile->writeSDFaceCoord(pos.x(), pos.y(), pos.z()))
                             throw SOP_RF_Export_Exception(canNotWriteFaceCoordinates, exceptionError);
                     }
                 }
@@ -168,37 +160,37 @@ int SOP_RF_Export::writeSDFileRestGeo(OP_Context & context, UT_Interrupt *boss)
                 num_prim++;
             }
 
-            if (myEchoData)
+            if(myEchoData)
                 cout << std::endl << "Processing vertex indices" << std::endl << std::endl;
 
 
             // Try to find if there's a uv attribute in the geometry ...
-            uv_off = gdp->findTextureAttribute(GEO_VERTEX_DICT);
+            uv_ref = gdp->findTextureAttribute(GEO_VERTEX_DICT);
 
             num_prim = 0;
             vtx_index_num = 0;
 
             // Now for all the primitives in this object, retrieve the geometry data and write to the SD file
             GA_FOR_ALL_PRIMITIVES(gdp, prim) {
-                if (boss->opInterrupt())
+                if(boss->opInterrupt())
                     throw SOP_RF_Export_Exception(cookInterrupted, exceptionWarning);
 
                 numv = prim->getVertexCount();
 
-                if (myEchoData) {
+                if(myEchoData) {
                     std::cout << "Primitive num: " << num_prim;
                     std::cout << "\tNumber of vertices: " << numv << std::endl;
                 }
 
                 // for each vertex in the polygon, try to get the "uv" primitive attribute, if found assign it in the SD file
-                for (int i = 0; i < 3; i++) {
+                for(int i = 0; i < 3; i++) {
 
                     // Get a vertex
                     vtx = prim->getVertexElement(i);
 
-                    if (uv_off.isValid()) {
+                    if(uv_ref.isValid()) {
                         attrHandle = gdp->getVertexAttribute("uv");
-                        if (attrHandle.isAttributeValid())
+                        if(attrHandle.isAttributeValid())
                             uv_vec = attrHandle.getV3();
 
                         myRFSDFile->myRF_SD_Face_Data.vertex_tex[i][0] = static_cast<float>(uv_vec.x());
@@ -214,7 +206,7 @@ int SOP_RF_Export::writeSDFileRestGeo(OP_Context & context, UT_Interrupt *boss)
 #endif
 
                     // write it's vertex number to the file
-                    if (myRFSDFile->writeSDFaceIndex(vtx_index_num))
+                    if(myRFSDFile->writeSDFaceIndex(vtx_index_num))
                         throw SOP_RF_Export_Exception(canNotWriteFaceIndex, exceptionError);
 
                     // Increment our vertex count
@@ -222,17 +214,17 @@ int SOP_RF_Export::writeSDFileRestGeo(OP_Context & context, UT_Interrupt *boss)
                 }
 
                 // Write the UVW values
-                if (myRFSDFile->writeSDFaceTexture())
+                if(myRFSDFile->writeSDFaceTexture())
                     throw SOP_RF_Export_Exception(canNotWriteFaceTextures, exceptionError);
 
                 // Write the visibility values (always on)
                 int vis = 1;
-                if (myRFSDFile->writeSDFaceVis(vis))
+                if(myRFSDFile->writeSDFaceVis(vis))
                     throw SOP_RF_Export_Exception(canNotWriteFaceVisiblityValues, exceptionError);
 
                 // Write the material index (not used)
                 int mat = 1;
-                if (myRFSDFile->writeSDFaceMat(mat))
+                if(myRFSDFile->writeSDFaceMat(mat))
                     throw SOP_RF_Export_Exception(canNotWriteFaceMaterialIndex, exceptionError);
 
                 num_prim++;
@@ -243,20 +235,20 @@ int SOP_RF_Export::writeSDFileRestGeo(OP_Context & context, UT_Interrupt *boss)
 
     }
 
-    catch (SOP_RF_Export_Exception e) {
+    catch(SOP_RF_Export_Exception e) {
         e.what();
 
-        if (e.getSeverity() == exceptionWarning)
+        if(e.getSeverity() == exceptionWarning)
             addWarning(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
-        else if (e.getSeverity() == exceptionError)
+        else if(e.getSeverity() == exceptionError)
             addError(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
 
         boss->opEnd();
         unlockInputs();
 
-        if (myRFSDFile->SDofstream.is_open()) {
+        if(myRFSDFile->SDofstream.is_open()) {
             // Close the RF SD file
-            if (myRFSDFile->closeSDFile(RF_FILE_WRITE)) {
+            if(myRFSDFile->closeSDFile(RF_FILE_WRITE)) {
                 addError(SOP_MESSAGE, "Can't close Real Flow SD file after SOP_RF_Export_Exception exception was thrown");
                 return 1;
             }

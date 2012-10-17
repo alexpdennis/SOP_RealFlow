@@ -42,7 +42,7 @@ using namespace dca;
 //
 // Main
 //
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
 
 // cout.precision(12);
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 //myRFMeshFile = new RealFlow_Mesh_File();
 
 
-    RealFlow_SD_File *mySDFile = new RealFlow_SD_File();
+    RealFlow_SD_File * mySDFile = new RealFlow_SD_File();
 //RealFlow_Particle_File *myRFParticleFile = new RealFlow_Particle_File();
 
 //read_sd_file(argv[1]);

@@ -26,7 +26,7 @@
 /* ******************************************************************************
 *  Function Name :  writeRWCFile()
 *
-*  Description : Write the Real Flow RWC particle file(s)
+*  Description : Write the Real Flow RWC file(s)
 *
 *  Input Arguments : OP_Context &context
 *
@@ -34,16 +34,16 @@
 *
 ***************************************************************************** */
 
-OP_ERROR SOP_RF_Export::writeRWCFile (OP_Context & context)
+OP_ERROR SOP_RF_Export::writeRWCFile(OP_Context & context)
 {
 
-    GEO_Point *ppt;
-    UT_Interrupt *boss;
+    GEO_Point * ppt;
+    UT_Interrupt * boss;
     GA_ROAttributeRef v_ref;
 
     UT_Vector3 v_vec;
-//	UT_Vector3 *vel;
-//	bool v_found = false;
+// UT_Vector3 *vel;
+// bool v_found = false;
     int cur_frame = 0;
     GEO_AttributeHandle attrHandleVelocity;
     UT_Vector4 pos;
@@ -52,19 +52,19 @@ OP_ERROR SOP_RF_Export::writeRWCFile (OP_Context & context)
     long int grid_num_X, grid_num_Z = 0;
 
     float now = context.getTime();
-    long int save_frame = context.getFrame ();
+    long int save_frame = context.getFrame();
 
     // If this cook was not inititiated by the user pressing the
     // "Write the File" button (the display flag was set), do not write the file.
-    if (!calledFromCallback) {
-        if (lockInputs (context) >= UT_ERROR_ABORT)
+    if(!calledFromCallback) {
+        if(lockInputs(context) >= UT_ERROR_ABORT)
             throw SOP_RF_Export_Exception(canNotLockInputsInWriteRWCFile, exceptionError);
 
         // Duplicate the geometry from the first input
-        duplicateSource (0, context);
-        unlockInputs ();
+        duplicateSource(0, context);
+        unlockInputs();
         // Restore the frame
-        context.setFrame ((long) save_frame);
+        context.setFrame((long) save_frame);
         return error();
     }
 
@@ -81,10 +81,10 @@ OP_ERROR SOP_RF_Export::writeRWCFile (OP_Context & context)
         myEndFrame =   int (myBeginEnd[1]);
 
         // Determine frame range
-        frame_offset = abs (int (myStartFrame));
+        frame_offset = abs(int (myStartFrame));
 
         // If the start frame is less than zero
-        if (int (myStartFrame) < 0) {
+        if(int (myStartFrame) < 0) {
             rf_start_frame = 0;
             rf_end_frame = int (myEndFrame) + frame_offset + 1;
         }
@@ -118,16 +118,16 @@ OP_ERROR SOP_RF_Export::writeRWCFile (OP_Context & context)
         myRFRWCFile->RWC_header.RW_rot_Y = 0.0;
         myRFRWCFile->RWC_header.RW_rot_Z = 0.0;
 
-        boss = UTgetInterrupt ();
-        boss->opStart ("Exporting Geometry To RWC File");
+        boss = UTgetInterrupt();
+        boss->opStart("Exporting Geometry To RWC File");
 
         // Check to see that there hasn't been a critical error in cooking the SOP.
-        if (error () < UT_ERROR_ABORT) {
+        if(error() < UT_ERROR_ABORT) {
 
             // For each frame in our animation ...
-            for (cur_frame = myStartFrame; cur_frame <= myEndFrame; cur_frame++) {
+            for(cur_frame = myStartFrame; cur_frame <= myEndFrame; cur_frame++) {
                 // Set the current frame
-                context.setFrame ((long) cur_frame);
+                context.setFrame((long) cur_frame);
                 // Get current time
                 now = context.getTime();;
 
@@ -138,10 +138,10 @@ OP_ERROR SOP_RF_Export::writeRWCFile (OP_Context & context)
                 std::cout << "Real Flow Export RWC cache file-cur_frame: " << cur_frame << "\tend_frame: " << myEndFrame
                           << "\tFileName: " << (const char *) myFileName <<std::endl;
 
-                if (lockInputs (context) >= UT_ERROR_ABORT)
+                if(lockInputs(context) >= UT_ERROR_ABORT)
                     throw SOP_RF_Export_Exception(canNotLockInputsInWriteRWCFile, exceptionError);
 
-                if (boss->opInterrupt ())
+                if(boss->opInterrupt())
                     throw SOP_RF_Export_Exception(cookInterrupted, exceptionWarning);
 
                 // duplicate the incoming geometry
@@ -170,20 +170,20 @@ OP_ERROR SOP_RF_Export::writeRWCFile (OP_Context & context)
                 myRFRWCFile->RWC_header.num_Z_vtx = grid_num_Z;
 
                 // Open the Real Flow RWC file for writing
-                if (myRFRWCFile->openRWCFile((const char *) myFileName, RF_FILE_WRITE))
+                if(myRFRWCFile->openRWCFile((const char *) myFileName, RF_FILE_WRITE))
                     throw SOP_RF_Export_Exception(canNotOpenRWCFileForWriting, exceptionError);
 
 
                 // Write the header to the file
-                if (myRFRWCFile->writeRWCFileHeader ())
-                    throw SOP_RF_Export_Exception(canNotOpenRWCFileForWriting, exceptionError);
+                if(myRFRWCFile->writeRWCFileHeader())
+                    throw SOP_RF_Export_Exception(canNotWriteHeaderRWCFile, exceptionError);
 
 
 //         long int point_num = 0;
 
                 // For all the points in the geomtery, write out position and velocity
-                GA_FOR_ALL_GPOINTS (gdp, ppt) {
-                    if (boss->opInterrupt())
+                GA_FOR_ALL_GPOINTS(gdp, ppt) {
+                    if(boss->opInterrupt())
                         throw SOP_RF_Export_Exception(cookInterrupted, exceptionWarning);
 
                     // Set the particle data structure
@@ -206,7 +206,7 @@ OP_ERROR SOP_RF_Export::writeRWCFile (OP_Context & context)
                     }
                     */
                     // If velocity attribute is present, get the values and set them in the RWC record
-                    if (v_ref.isValid()) {
+                    if(v_ref.isValid()) {
                         v_vec = ppt->getValue<UT_Vector3>(v_ref, 0);
                         myRFRWCFile->RWC_vel_data.X = static_cast<float>(v_vec.x());
                         myRFRWCFile->RWC_vel_data.Y = static_cast<float>(v_vec.y());
@@ -225,45 +225,45 @@ OP_ERROR SOP_RF_Export::writeRWCFile (OP_Context & context)
                                       myRFRWCFile->part_data.vel[0] = v_vec.x();
                                       myRFRWCFile->part_data.vel[1] = v_vec.y();
                                       myRFRWCFile->part_data.vel[2] = v_vec.z();
-                    		         }
+                                 }
                     */
 
                     // Write particle data to disk
-                    if (myRFRWCFile->writeRWCData ())
+                    if(myRFRWCFile->writeRWCData())
                         throw SOP_RF_Export_Exception(canNotWriteDataToRWCFile, exceptionError);
 
                 }
 
 
                 // We're done, close the file
-                if (myRFRWCFile->closeRWCFile (RF_FILE_WRITE))
+                if(myRFRWCFile->closeRWCFile(RF_FILE_WRITE))
                     throw SOP_RF_Export_Exception(canNotCloseTheRealFlowRWCFile, exceptionError);
 
             }
 
             // We're done with this frame
-            boss->opEnd ();
-            unlockInputs ();
+            boss->opEnd();
+            unlockInputs();
 
         } // for (cur_frame)
 
     }
 
-    catch (SOP_RF_Export_Exception e) {
+    catch(SOP_RF_Export_Exception e) {
         e.what();
 
-        if (e.getSeverity() == exceptionWarning)
+        if(e.getSeverity() == exceptionWarning)
             addWarning(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
-        else if (e.getSeverity() == exceptionError)
+        else if(e.getSeverity() == exceptionError)
             addError(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
 
         boss->opEnd();
         unlockInputs();
-        context.setFrame ((long) save_frame);
+        context.setFrame((long) save_frame);
 
-        if (myRFRWCFile->RWCofstream.is_open()) {
+        if(myRFRWCFile->RWCofstream.is_open()) {
             // Close the RF RWC file
-            if (myRFRWCFile->closeRWCFile(RF_FILE_WRITE)) {
+            if(myRFRWCFile->closeRWCFile(RF_FILE_WRITE)) {
                 addError(SOP_MESSAGE, "Can't close Real Flow RWC file after SOP_RF_Export_Exception exception was thrown");
                 return error();
             }
@@ -273,7 +273,7 @@ OP_ERROR SOP_RF_Export::writeRWCFile (OP_Context & context)
 
 
 // Restore the frame
-    context.setFrame ((long) save_frame);
+    context.setFrame((long) save_frame);
 
     return error();
 }

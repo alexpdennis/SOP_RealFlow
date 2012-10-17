@@ -102,14 +102,14 @@ SOP_RF_Import_Exception::SOP_RF_Import_Exception(enumErrorList code, enumExcepti
 *
 ***************************************************************************** */
 OP_RF_Import_Operator::OP_RF_Import_Operator()
-        : OP_Operator("rf_import",
-                      "Real Flow Import",
-                      SOP_RF_Import::myConstructor,
-                      SOP_RF_Import::myTemplateList,
-                      0,
-                      0,
-                      SOP_RF_Import::myVariables,
-                      OP_FLAG_GENERATOR)
+    : OP_Operator("rf_import",
+                  "Real Flow Import",
+                  SOP_RF_Import::myConstructor,
+                  SOP_RF_Import::myTemplateList,
+                  0,
+                  0,
+                  SOP_RF_Import::myVariables,
+                  OP_FLAG_GENERATOR)
 {
 }
 
@@ -140,7 +140,7 @@ OP_RF_Import_Operator::~OP_RF_Import_Operator()
 *  Return Value :
 *
 ***************************************************************************** */
-void newSopOperator(OP_OperatorTable *table)
+void newSopOperator(OP_OperatorTable * table)
 {
     table->addOperator(new OP_RF_Import_Operator());
 }
@@ -179,26 +179,26 @@ static PRM_Name     names[] = {
     PRM_Name("vel",              "Velocity"),
     PRM_Name("force",            "Force"),
     PRM_Name("vorticity",        "Vorticity"),
-    PRM_Name("normal",      	   "Normal"),
+    PRM_Name("normal",           "Normal"),
     PRM_Name("num_neighbors",    "Number of Neighbors"),
     PRM_Name("texture_vector",   "Texture Vector"),
     PRM_Name("info_bits",        "Information Bits"),
-    PRM_Name("age",      		   "Age"),
+    PRM_Name("age",              "Age"),
     PRM_Name("isolation_time",   "Isolation Time"),
-    PRM_Name("viscosity",      	"Viscosity"),
-    PRM_Name("density",      	   "Density"),
-    PRM_Name("pressure",      	"Pressure"),
-    PRM_Name("mass",      		   "Mass"),
-    PRM_Name("temperature",    	"Temperature"),
-    PRM_Name("id",      		   "Particle ID"),
+    PRM_Name("viscosity",        "Viscosity"),
+    PRM_Name("density",          "Density"),
+    PRM_Name("pressure",         "Pressure"),
+    PRM_Name("mass",             "Mass"),
+    PRM_Name("temperature",      "Temperature"),
+    PRM_Name("id",               "Particle ID"),
 
     // Mesh attributes page
-    PRM_Name("m_tex",      		"Texture"),
-    PRM_Name("m_vel",      		"Velocity"),
+    PRM_Name("m_tex",            "Texture"),
+    PRM_Name("m_vel",            "Velocity"),
 
     // SD attributes page
-    PRM_Name("sd_tex",      	   "Texture (U, V, W)"),
-    PRM_Name("sd_CG",  			   "CG (Position, Velocity, Angular Rotation)"),
+    PRM_Name("sd_tex",           "Texture (U, V, W)"),
+    PRM_Name("sd_CG",            "CG (Position, Velocity, Angular Rotation)"),
     PRM_Name("sd_obj_xform",     "Apply Object Transformations"),
     PRM_Name("sd_CG_xform",      "Apply CG Transformations"),
 
@@ -305,9 +305,9 @@ SOP_RF_Import::myVariables[] = {
 ***************************************************************************** */
 float SOP_RF_Import::getVariableValue(int index, int)
 {
-    if (myCurrPoint < 0) return 0;
+    if(myCurrPoint < 0) return 0;
 
-    switch (index) {
+    switch(index) {
     case VAR_PT:
         return myCurrPoint;
     case VAR_NPT:
@@ -330,7 +330,7 @@ float SOP_RF_Import::getVariableValue(int index, int)
 *
 ***************************************************************************** */
 
-OP_Node * SOP_RF_Import::myConstructor(OP_Network *net, const char *name, OP_Operator *op)
+OP_Node * SOP_RF_Import::myConstructor(OP_Network * net, const char * name, OP_Operator * op)
 {
     return new SOP_RF_Import(net, name, op);
 }
@@ -347,14 +347,14 @@ OP_Node * SOP_RF_Import::myConstructor(OP_Network *net, const char *name, OP_Ope
 *  Return Value :
 *
 ***************************************************************************** */
-SOP_RF_Import::SOP_RF_Import(OP_Network *net, const char *name, OP_Operator *op)
-        : SOP_Node(net, name, op)
+SOP_RF_Import::SOP_RF_Import(OP_Network * net, const char * name, OP_Operator * op)
+    : SOP_Node(net, name, op)
 {
     OP_Node::flags().timeDep = 1;
 
-    myCurrPoint = -1;			// To prevent garbage values from being returned
+    myCurrPoint = -1;         // To prevent garbage values from being returned
     myTotalPoints = 0;      // Set the NPT local variable value
-    myParmBase = getParmList()->getParmIndex( names[0].getToken() );
+    myParmBase = getParmList()->getParmIndex(names[0].getToken());
 
     myRFParticleFile =   new RealFlow_Particle_File();
     myRFMeshFile =       new RealFlow_Mesh_File();
@@ -491,11 +491,11 @@ SOP_RF_Import::~SOP_RF_Import()
 *  Return Value : int (success?)
 *
 ***************************************************************************** */
-int SOP_RF_Import::updateTheMenu(void *data, int index,
-                                 float time, const PRM_Template *tplate )
+int SOP_RF_Import::updateTheMenu(void * data, int index,
+                                 float time, const PRM_Template * tplate)
 {
 
-    SOP_RF_Import *me = (SOP_RF_Import *) data;
+    SOP_RF_Import * me = (SOP_RF_Import *) data;
 
     me->myFileType = me->FTYPE(time);
     me->disableParms();
@@ -525,21 +525,21 @@ unsigned SOP_RF_Import::disableParms()
 
 
     // First turn them all off
-    for (int i=0; i <= NUM_GUI_PARMS; i++)
+    for(int i=0; i <= NUM_GUI_PARMS; i++)
         enableParm(i, 0);
 
 #ifdef DEBUG
     std::cout << "SOP_RF_Import::disableParms() myFileType: " << myFileType << endl;
 #endif
 
-    switch (myFileType) {
+    switch(myFileType) {
 
     case 0:
         // Real Flow particle file
         changed  += enableParm("vel", 1);
         changed  += enableParm("force", 1);
 
-        if (myParticleVersion >= 9) {
+        if(myParticleVersion >= 9) {
             changed  += enableParm("vorticity", 1);
         }
 
@@ -609,7 +609,7 @@ unsigned SOP_RF_Import::disableParms()
 *  Return Value : OP_ERROR
 *
 ***************************************************************************** */
-OP_ERROR SOP_RF_Import::cookMySop(OP_Context &context)
+OP_ERROR SOP_RF_Import::cookMySop(OP_Context & context)
 {
     char GUI_str[128];
     OP_ERROR myError;
@@ -617,8 +617,8 @@ OP_ERROR SOP_RF_Import::cookMySop(OP_Context &context)
     float now = context.getTime();
     OP_Node::flags().timeDep = 1;
 
-    myTotalPoints = 0;			// Set the NPT local variable value
-    myCurrPoint   = 0;			// Initialize the PT local variable
+    myTotalPoints = 0;        // Set the NPT local variable value
+    myCurrPoint   = 0;        // Initialize the PT local variable
 
     FNAME(myFileName, now);
     myFileType = FTYPE(now);
@@ -636,7 +636,7 @@ OP_ERROR SOP_RF_Import::cookMySop(OP_Context &context)
     std::cout << "cookMySop() - myFileType = " << myFileType << endl;
 #endif
 
-    switch (myFileType) {
+    switch(myFileType) {
     case 0:
         myError = ReadRFParticleFile(context);
         break;

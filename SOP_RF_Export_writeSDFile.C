@@ -36,7 +36,7 @@
 *  Return Value : enumErrorList error_num
 *
 ***************************************************************************** */
-OP_ERROR SOP_RF_Export::writeSDFile(OP_Context& context)
+OP_ERROR SOP_RF_Export::writeSDFile(OP_Context & context)
 {
 
     float now = context.getTime();
@@ -44,18 +44,18 @@ OP_ERROR SOP_RF_Export::writeSDFile(OP_Context& context)
     long int rf_start_frame, rf_end_frame;
     GEO_AttributeHandle attrHandle;
     UT_String current_input_path;
-    UT_Interrupt *boss;
+    UT_Interrupt * boss;
     UT_String my_cwd, my_full_path, my_parent_full_path, my_name;
-    GU_Detail *src;
+    GU_Detail * src;
     GU_Detail blank_gdp;
     UT_Matrix4 work_matrix;
 
 
     long int save_frame = context.getFrame();
 
-    const char *date_format = "DCA v1.1.0  %y%m%d-%H:%M:%S";
+    const char * date_format = "DCA v1.1.0  %y%m%d-%H:%M:%S";
     time_t datetime;
-    const tm *my_tm;
+    const tm * my_tm;
 
     datetime = time(NULL);
     my_tm = localtime(&datetime);
@@ -94,7 +94,7 @@ OP_ERROR SOP_RF_Export::writeSDFile(OP_Context& context)
 // ********
 
 // Check to see that there hasn't been a critical error in cooking the SOP.
-    if (error() < UT_ERROR_ABORT) {
+    if(error() < UT_ERROR_ABORT) {
 
         boss = UTgetInterrupt();
         // Start the interrupt server
@@ -102,24 +102,24 @@ OP_ERROR SOP_RF_Export::writeSDFile(OP_Context& context)
 
         // If this cook was not inititiated by the user pressing the
         // "Write the File" button (such as turning on the display flag), do not write the file.
-        if (!calledFromCallback) {
+        if(!calledFromCallback) {
             int input_cnt = 0;
             // For each object (input)
-            for (int current_obj = 0; current_obj < myNumInputs; current_obj++) {
+            for(int current_obj = 0; current_obj < myNumInputs; current_obj++) {
 
-                if (!getInput(current_obj))
+                if(!getInput(current_obj))
                     continue;
 
                 // lock the input
-                if (lockInput(current_obj, context) < UT_ERROR_ABORT) {
+                if(lockInput(current_obj, context) < UT_ERROR_ABORT) {
 
                     // Get the geometry from the current input
-                    if (src = (GU_Detail *) inputGeo(current_obj, context)) {
+                    if(src = (GU_Detail *) inputGeo(current_obj, context)) {
                         // Increment our input geo counter
                         input_cnt++;
                         // If first "piece" of geo, start the copying,
                         // else add the geo to the gdp
-                        if (input_cnt == 1)
+                        if(input_cnt == 1)
                             gdp->copy(*src, GEO_COPY_START);
                         else
                             gdp->copy(*src, GEO_COPY_ADD);
@@ -129,7 +129,7 @@ OP_ERROR SOP_RF_Export::writeSDFile(OP_Context& context)
                 } else
                     break;
             }
-            if (error() >= UT_ERROR_ABORT || !input_cnt) {
+            if(error() >= UT_ERROR_ABORT || !input_cnt) {
                 gdp->stashAll();
                 throw SOP_RF_Export_Exception(couldNotCopyGeo, exceptionError);
             } else {
@@ -144,7 +144,7 @@ OP_ERROR SOP_RF_Export::writeSDFile(OP_Context& context)
         try {
 
             // Check to see if the beginning and end frame range is legal
-            if (myBeginEnd[1] < myBeginEnd[0])
+            if(myBeginEnd[1] < myBeginEnd[0])
                 throw SOP_RF_Export_Exception(endFrameMustBeGreaterThanBeginningFrame, exceptionError);
 
 #ifdef DEBUG
@@ -198,20 +198,20 @@ OP_ERROR SOP_RF_Export::writeSDFile(OP_Context& context)
             myEndFrame =   int (myBeginEnd[1]);
 
             /*
-            	// If the start frame is less than zero
-            	if (int (myBeginEnd[0]) < 0) {
-            	    rf_start_frame = int (myBeginEnd[0]) + frame_offset;
-            	    rf_end_frame = int (myBeginEnd[1]) + frame_offset;
-            	}
-            	// If the start frame is greater than zero
-            	else {
-            	    rf_start_frame = int (myBeginEnd[0] - frame_offset);
-            	    rf_end_frame = int (myBeginEnd[1] - frame_offset);
-            	}
+               // If the start frame is less than zero
+               if (int (myBeginEnd[0]) < 0) {
+                   rf_start_frame = int (myBeginEnd[0]) + frame_offset;
+                   rf_end_frame = int (myBeginEnd[1]) + frame_offset;
+               }
+               // If the start frame is greater than zero
+               else {
+                   rf_start_frame = int (myBeginEnd[0] - frame_offset);
+                   rf_end_frame = int (myBeginEnd[1] - frame_offset);
+               }
             */
 
             // If the start frame is less than zero
-            if (int (myStartFrame) < 0) {
+            if(int (myStartFrame) < 0) {
                 rf_start_frame = 0;
                 rf_end_frame = int (myEndFrame) + frame_offset + 1;
             }
@@ -226,7 +226,7 @@ OP_ERROR SOP_RF_Export::writeSDFile(OP_Context& context)
 
 
             // If this "animated", set the frame range
-            if (myStaticAnim && !(myStartFrame == myEndFrame)) {
+            if(myStaticAnim && !(myStartFrame == myEndFrame)) {
                 myRFSDFile->myRF_SD_Header.beg_frame = rf_start_frame;
                 myRFSDFile->myRF_SD_Header.end_frame = rf_end_frame;
 
@@ -248,30 +248,30 @@ OP_ERROR SOP_RF_Export::writeSDFile(OP_Context& context)
 
 
             // Calcuate the sizes of the header and frame chunks
-            if (calculateChunkSizes(context))
+            if(calculateChunkSizes(context))
                 throw SOP_RF_Export_Exception(canNotCalculateChunkSizes, exceptionError);
 
 #ifdef DEBUG
             std::cout << "objectNames.length() : " << objectNames.entries() << std::endl;
             std::cout << "objectTextureNames.length(): " << objectTextureNames.entries() << std::endl;
-            for (int i = 0; i < objectNames.entries(); i++) {
+            for(int i = 0; i < objectNames.entries(); i++) {
                 std::cout << objectNames(i) << std::endl;
             }
-            for (int i = 0; i < objectTextureNames.entries(); i++) {
+            for(int i = 0; i < objectTextureNames.entries(); i++) {
                 std::cout << objectTextureNames(i) << std::endl;
             }
 #endif
 
             // Open the .sd file
-            if (myRFSDFile->openSDFile(RF_FILE_WRITE))
+            if(myRFSDFile->openSDFile(RF_FILE_WRITE))
                 throw SOP_RF_Export_Exception(canNotOpenRealFlowSDFileForWriting, exceptionError);
 
             // Write the SD file header
-            if (myRFSDFile->writeSDHeader())
+            if(myRFSDFile->writeSDHeader())
                 throw SOP_RF_Export_Exception(canNotWriteTheSDFileHeader, exceptionError);
 
             // Write the rest geometry
-            if (SOP_RF_Export::writeSDFileRestGeo(context, boss))
+            if(SOP_RF_Export::writeSDFileRestGeo(context, boss))
                 throw SOP_RF_Export_Exception(canNotWriteRestGeo, exceptionError);
 
 
@@ -285,30 +285,30 @@ OP_ERROR SOP_RF_Export::writeSDFile(OP_Context& context)
              */
 
             // Write the animated geometry
-            if (SOP_RF_Export::writeSDFileAnimGeo(context, boss))
+            if(SOP_RF_Export::writeSDFileAnimGeo(context, boss))
                 throw SOP_RF_Export_Exception(canNotWriteAnimGeo, exceptionError);
 
             // We're done, close the file
-            if (myRFSDFile->closeSDFile(RF_FILE_WRITE)) {
+            if(myRFSDFile->closeSDFile(RF_FILE_WRITE)) {
                 throw SOP_RF_Export_Exception(canNotCloseTheRealFlowSDFile, exceptionError);
             }
 
         }
 
-        catch (SOP_RF_Export_Exception e) {
+        catch(SOP_RF_Export_Exception e) {
             e.what();
 
-            if (e.getSeverity() == exceptionWarning)
+            if(e.getSeverity() == exceptionWarning)
                 addWarning(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
-            else if (e.getSeverity() == exceptionError)
+            else if(e.getSeverity() == exceptionError)
                 addError(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
 
             boss->opEnd();
             unlockInputs();
 
-            if (myRFSDFile->SDofstream.is_open()) {
+            if(myRFSDFile->SDofstream.is_open()) {
                 // Close the RF SD file
-                if (myRFSDFile->closeSDFile(RF_FILE_WRITE)) {
+                if(myRFSDFile->closeSDFile(RF_FILE_WRITE)) {
                     addError(SOP_MESSAGE, "EXCEPTION: Can't close Real Flow SD file after SOP_RF_Export_Exception exception was thrown");
                     return error();
                 }
@@ -341,9 +341,9 @@ OP_ERROR SOP_RF_Export::writeSDFile(OP_Context& context)
 *  Return Value :
 *
 ***************************************************************************** */
-int SOP_RF_Export::calculateChunkSizes(OP_Context& context)
+int SOP_RF_Export::calculateChunkSizes(OP_Context & context)
 {
-    OP_Node *current_input_node;
+    OP_Node * current_input_node;
     UT_String current_input_path;
     GEO_AttributeHandle attrHandle;
     UT_String  tex_fname_str;
@@ -364,8 +364,8 @@ int SOP_RF_Export::calculateChunkSizes(OP_Context& context)
     long int num_vertices = 0;
 
     // For each input, lock the inputs, get the number of faces (and vertices), unlock inputs
-    for (int current_obj = 0; current_obj < myNumInputs; current_obj++) {
-        if (lockInput(current_obj, context) >= UT_ERROR_ABORT) {
+    for(int current_obj = 0; current_obj < myNumInputs; current_obj++) {
+        if(lockInput(current_obj, context) >= UT_ERROR_ABORT) {
             std::cerr << "Could not lock input in writeSDFile() when trying to calculate the number of faces/vertices" << std::endl;
             throw SOP_RF_Export_Exception(couldNotLockInputInWriteSDFile, exceptionError);
         }
@@ -382,8 +382,8 @@ int SOP_RF_Export::calculateChunkSizes(OP_Context& context)
 
         // If the "sd_obj_tex_fname" detail attribute is in the geometry, store for later use.
         attrHandle = gdp->getDetailAttribute("sd_obj_tex_fname");
-        if (attrHandle.isAttributeValid())
-            if (attrHandle.getString(tex_fname_str))
+        if(attrHandle.isAttributeValid())
+            if(attrHandle.getString(tex_fname_str))
                 objectTextureNames.append(tex_fname_str);
 
 #ifdef DEBUG
@@ -403,16 +403,16 @@ int SOP_RF_Export::calculateChunkSizes(OP_Context& context)
 
     // Calculate the length of the name strings
     long int sd_Object_Name_Size = 0;
-    for (int i = 0; i < objectNames.entries(); i++)
+    for(int i = 0; i < objectNames.entries(); i++)
         sd_Object_Name_Size += objectNames(i).length();
 
     // Calculate the length of the texture file name strings
     long int sd_Object_Texture_Filename_Size = 0;
-    for (int i = 0; i < objectTextureNames.entries(); i++)
+    for(int i = 0; i < objectTextureNames.entries(); i++)
         sd_Object_Texture_Filename_Size += objectTextureNames(i).length();
 
     // SD header chunk size = rf_sd_header + (total_number_of_vertices * 3 * sizeof(float)) + ((rf_sd_obj_header + rf_sd_face_data) * num_objects)
-    myRFSDFile->myRF_SD_Header.header_chk_size = (long int) (sdHeaderSize +
+    myRFSDFile->myRF_SD_Header.header_chk_size = (long int)(sdHeaderSize +
             (sd_Object_Name_Size + sd_Object_Texture_Filename_Size) +
             (num_vertices * (sizeof(float) * 3)) +
             ((sdObjectHeaderSize + sdFaceDataSize) * myNumInputs));
@@ -420,11 +420,11 @@ int SOP_RF_Export::calculateChunkSizes(OP_Context& context)
 
     // TODO: Calculate frame chunk size to accomodate mixed object modes (vertex & matrix)
     // If "matrix" mode (non-deforming geometry)
-    if (!myMode)
+    if(!myMode)
         myRFSDFile->myRF_SD_Header.frame_chk_size = (long int) sdObjectFrameHeaderSize + sd_Object_Name_Size;
     else
         // If "vertex" mode (deforming geometry)
-        myRFSDFile->myRF_SD_Header.frame_chk_size = (long int) (sdObjectFrameHeaderSize + sd_Object_Name_Size +
+        myRFSDFile->myRF_SD_Header.frame_chk_size = (long int)(sdObjectFrameHeaderSize + sd_Object_Name_Size +
                 ((sizeof(float) * 3) * num_vertices));
 
 #ifdef DEBUG

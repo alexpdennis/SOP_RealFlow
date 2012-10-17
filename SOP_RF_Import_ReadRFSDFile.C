@@ -34,10 +34,10 @@
 *  Return Value : OP_ERROR
 *
 ***************************************************************************** */
-OP_ERROR SOP_RF_Import::ReadRFSDFile(OP_Context &context)
+OP_ERROR SOP_RF_Import::ReadRFSDFile(OP_Context & context)
 {
 
-    UT_Interrupt   *boss;
+    UT_Interrupt *  boss;
     int current_frame;
     int SDFileCurrentFrame;
     float now = context.getTime();
@@ -57,7 +57,7 @@ OP_ERROR SOP_RF_Import::ReadRFSDFile(OP_Context &context)
     try {
 
         // Check to see that there hasn't been a critical error in cooking the SOP.
-        if (error() < UT_ERROR_ABORT) {
+        if(error() < UT_ERROR_ABORT) {
 
             boss = UTgetInterrupt();
 
@@ -69,11 +69,11 @@ OP_ERROR SOP_RF_Import::ReadRFSDFile(OP_Context &context)
             // Open the RF SD File
             myRFSDFile->myFileName = myFileName;
 
-            if (myRFSDFile->openSDFile(RF_FILE_READ))
+            if(myRFSDFile->openSDFile(RF_FILE_READ))
                 throw SOP_RF_Import_Exception(canNotOpenRealFlowSDFileForReading, exceptionError);
 
             // Read the SD file header
-            if (ReadRFSDReadHeader(now))
+            if(ReadRFSDReadHeader(now))
                 throw SOP_RF_Import_Exception(canNotReadTheSDFileHeader, exceptionError);
 
 
@@ -95,43 +95,43 @@ OP_ERROR SOP_RF_Import::ReadRFSDFile(OP_Context &context)
 #endif
 
             // if the current frame is past last frame, throw exception
-            if ((current_frame > myRFSDFile->myRF_SD_Header.end_frame))
+            if((current_frame > myRFSDFile->myRF_SD_Header.end_frame))
                 throw SOP_RF_Import_Exception(currentFrameGreaterThanEndFrame, exceptionWarning);
 
             // if the current frame is less than 1 (invalid), throw exception
-            if (current_frame < 1)
+            if(current_frame < 1)
                 throw SOP_RF_Import_Exception(currentFrameLessThenOne, exceptionWarning);
 
             // Add point attributes for texture cooridinates
-            if (myGUIState.t_sd_tex) {
+            if(myGUIState.t_sd_tex) {
                 myAttributeRefs.sd_texture_0 = gdp->addFloatTuple(GA_ATTRIB_POINT, "sd_texture_0", 3);
                 myAttributeRefs.sd_texture_1 = gdp->addFloatTuple(GA_ATTRIB_POINT, "sd_texture_1", 3);
                 myAttributeRefs.sd_texture_2 = gdp->addFloatTuple(GA_ATTRIB_POINT, "sd_texture_2", 3);
             }
 
             // Add detail attributes for Center of Gravity position, velocity & rotation
-            if (myGUIState.t_sd_cg) {
+            if(myGUIState.t_sd_cg) {
                 myAttributeRefs.sd_CG_pos = gdp->addFloatTuple(GA_ATTRIB_POINT, "sd_CG_pos", 3);
                 myAttributeRefs.sd_CG_pos = gdp->addFloatTuple(GA_ATTRIB_POINT, "sd_CG_vel", 3);
                 myAttributeRefs.sd_CG_pos = gdp->addFloatTuple(GA_ATTRIB_POINT, "sd_CG_rot", 3);
             }
 
             // Check for the maximum number of objects
-            if (myRFSDFile->myRF_SD_Header.num_objects > maxNumObjects)
+            if(myRFSDFile->myRF_SD_Header.num_objects > maxNumObjects)
                 throw SOP_RF_Import_Exception(tooManyObjectsInSDFile, exceptionError);
 
             // Build the SD rest geometry
-            if (ReadRFSDCreateRestGeo(boss))
+            if(ReadRFSDCreateRestGeo(boss))
                 throw SOP_RF_Import_Exception(canNotCreateSDRestGeometry, exceptionError);
 
             // if camera data is present, read it and set the camera
-            if (myRFSDFile->myRF_SD_Header.cam_data) {
+            if(myRFSDFile->myRF_SD_Header.cam_data) {
 
 #ifdef DEBUG
                 std::cout << std::endl << "Reading camera header" << std::endl << std::endl;
 #endif
 
-                if (myRFSDFile->readSDCamData())
+                if(myRFSDFile->readSDCamData())
                     throw SOP_RF_Import_Exception(canNotReadSDCameraData, exceptionError);
 
 #ifdef DEBUG
@@ -143,7 +143,7 @@ OP_ERROR SOP_RF_Import::ReadRFSDFile(OP_Context &context)
             }
 
             // rewind to the beginning of the file
-            myRFSDFile->SDifstream.seekg (0, ios::beg);
+            myRFSDFile->SDifstream.seekg(0, ios::beg);
 
 #ifdef DEBUG
             long int current_file_pos = myRFSDFile->SDifstream.tellg();
@@ -171,7 +171,7 @@ OP_ERROR SOP_RF_Import::ReadRFSDFile(OP_Context &context)
 //#ifdef DEBUG
 // INVARIANT:  file position at frame 1 must be equal to rf_sd_header.header_chk_size
             {
-                if (current_frame == 1) {
+                if(current_frame == 1) {
                     long int current_file_pos = myRFSDFile->SDifstream.tellg();
                     UT_ASSERT(current_file_pos == (myRFSDFile->myRF_SD_Header.header_chk_size));
                 }
@@ -179,7 +179,7 @@ OP_ERROR SOP_RF_Import::ReadRFSDFile(OP_Context &context)
 //#endif
 
             // read the current frame number from the SD file
-            if (myRFSDFile->readSDCurrFrame(SDFileCurrentFrame))
+            if(myRFSDFile->readSDCurrFrame(SDFileCurrentFrame))
                 throw SOP_RF_Import_Exception(canNotReadSDCurrentFrame, exceptionError);
 
 #ifdef DEBUG
@@ -195,7 +195,7 @@ OP_ERROR SOP_RF_Import::ReadRFSDFile(OP_Context &context)
             }
 
             // read the current frame number from the SD file
-            if (current_frame != (SDFileCurrentFrame + 1))
+            if(current_frame != (SDFileCurrentFrame + 1))
                 throw SOP_RF_Import_Exception(incorrectSDCurrentFrame, exceptionError);
 
 
@@ -204,34 +204,34 @@ OP_ERROR SOP_RF_Import::ReadRFSDFile(OP_Context &context)
 #endif
 
             // Read the camera data
-            if (myRFSDFile->myRF_SD_Header.cam_data) {
+            if(myRFSDFile->myRF_SD_Header.cam_data) {
                 // Read the camera frame data
-                if ( myRFSDFile->readSDCamFrameData())
+                if(myRFSDFile->readSDCamFrameData())
                     throw SOP_RF_Import_Exception(canNotReadSDCameraFrameData, exceptionError);
 
 #ifdef DEBUG
                 std::cout << "Camera Transform: " << std::endl;
-                for (int i= 0; i < 16; i++) std::cout << myRFSDFile->myRF_SD_Cam_Frame_Data.cam_world_xform[i] << "\t";
+                for(int i= 0; i < 16; i++) std::cout << myRFSDFile->myRF_SD_Cam_Frame_Data.cam_world_xform[i] << "\t";
                 std::cout << std::endl;
                 std::cout << "Camera World Position: " << std::endl;
-                for (int i= 0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Cam_Frame_Data.cam_world_pos[i] << "\t";
+                for(int i= 0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Cam_Frame_Data.cam_world_pos[i] << "\t";
                 std::cout << std::endl;
                 std::cout << "Camera Look At Position: " << std::endl;
-                for (int i= 0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Cam_Frame_Data.cam_look_at_pos[i] << "\t";
+                for(int i= 0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Cam_Frame_Data.cam_look_at_pos[i] << "\t";
                 std::cout << std::endl;
                 std::cout << "Camera Up Vector: " << std::endl;
-                for (int i= 0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Cam_Frame_Data.cam_up_vector[i] << "\t";
+                for(int i= 0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Cam_Frame_Data.cam_up_vector[i] << "\t";
                 std::cout << std::endl;
 #endif
 
             }//
 
             // Build the SD "animated" geometry
-            if (ReadRFSDCreateAnimGeo(boss))
+            if(ReadRFSDCreateAnimGeo(boss))
                 throw SOP_RF_Import_Exception(canNotCreateSDAnimatedGeometry, exceptionError);
 
             // Close the RF SD file
-            if (myRFSDFile->closeSDFile(RF_FILE_READ))
+            if(myRFSDFile->closeSDFile(RF_FILE_READ))
                 throw SOP_RF_Import_Exception(canNotCloseRealFlowSDFile, exceptionError);
 
             // We're done
@@ -241,17 +241,17 @@ OP_ERROR SOP_RF_Import::ReadRFSDFile(OP_Context &context)
     }
 
 // Catch exceptions ...
-    catch (SOP_RF_Import_Exception e) {
+    catch(SOP_RF_Import_Exception e) {
         e.what();
 
-        if (e.getSeverity() == exceptionWarning)
+        if(e.getSeverity() == exceptionWarning)
             addWarning(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
-        else if (e.getSeverity() == exceptionError)
+        else if(e.getSeverity() == exceptionError)
             addError(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
 
-        if (myRFSDFile->SDifstream.is_open()) {
+        if(myRFSDFile->SDifstream.is_open()) {
             // Close the RF SD file
-            if (myRFSDFile->closeSDFile(RF_FILE_READ)) {
+            if(myRFSDFile->closeSDFile(RF_FILE_READ)) {
                 addError(SOP_MESSAGE, "Can't close Real Flow SD file after SOP_RF_Import_Exception exception was thrown");
                 std::cerr << "Can't close Real Flow SD file after SOP_RF_Import_Exception exception was thrown" << std::endl;
             }
@@ -285,13 +285,13 @@ int SOP_RF_Import::ReadRFSDReadHeader(float now)
     try {
 
         // Read the SD file header
-        if (myRFSDFile->readSDHeader())
+        if(myRFSDFile->readSDHeader())
             throw SOP_RF_Import_Exception(canNotReadTheSDFileHeader, exceptionError);
 
 
 #ifdef DEBUG
         std::cout << "file id: ";
-        for (int i=0; i < 30; i++)
+        for(int i=0; i < 30; i++)
             std::cout << myRFSDFile->myRF_SD_Header.file_id[i];
         std::cout << std::endl;
         std::cout << "version: "  << myRFSDFile->myRF_SD_Header.version << std::endl;
@@ -312,7 +312,7 @@ int SOP_RF_Import::ReadRFSDReadHeader(float now)
 
 
         // Check for the correct version, only version 6 (RF4) or later is supported
-        if (myRFSDFile->myRF_SD_Header.version < 6)
+        if(myRFSDFile->myRF_SD_Header.version < 6)
             throw SOP_RF_Import_Exception(canNotReadTheSDFileHeader, exceptionError);
 
         sprintf(GUI_str, "%s%1.0f", "SD File Version #", myRFSDFile->myRF_SD_Header.version);
@@ -328,7 +328,7 @@ int SOP_RF_Import::ReadRFSDReadHeader(float now)
         std::string server_str("Undefined");
 
         // Server (1=LW, 2=MAX, 3=XSI, 4, 5=MAYA 6=CINEMA4D, 7=HOUDINI)
-        switch (myRFSDFile->myRF_SD_Header.server) {
+        switch(myRFSDFile->myRF_SD_Header.server) {
 
         case 1:
             server_str = "Lightwave";
@@ -357,16 +357,16 @@ int SOP_RF_Import::ReadRFSDReadHeader(float now)
 
     }
 
-    catch (SOP_RF_Import_Exception e) {
+    catch(SOP_RF_Import_Exception e) {
         e.what();
 
-        if (e.getSeverity() == exceptionWarning)
+        if(e.getSeverity() == exceptionWarning)
             addWarning(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
-        else if (e.getSeverity() == exceptionError)
+        else if(e.getSeverity() == exceptionError)
             addError(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
 
 
-        if (myRFSDFile->SDifstream.is_open()) {
+        if(myRFSDFile->SDifstream.is_open()) {
             myRFSDFile->closeSDFile(RF_FILE_READ);
         }
 

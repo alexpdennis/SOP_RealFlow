@@ -24,7 +24,7 @@
 #ifndef __SOP_RF_Export_h__
 #define __SOP_RF_Export_h__
 
-//#define DEBUG
+#define DEBUG
 
 #include "real_flow_sd.h"
 #include "real_flow_sd.C"
@@ -32,10 +32,12 @@
 #include "real_flow_part.C"
 #include "real_flow_RWC.h"
 #include "real_flow_RWC.C"
+#include "real_flow_mesh.h"
+#include "real_flow_mesh.C"
 
 using namespace dca;
 
-const std::string SOP_Version = "2.0.0";
+const std::string SOP_Version = "2.0.1";
 
 #ifdef SOP_VER
 //const std::string SOP_Version = SOP_VER;
@@ -48,16 +50,16 @@ const std::string SOP_Version = "2.0.0";
 #define SD_FILE 0
 #define BIN_FILE 1
 #define RWC_FILE 2
+#define MESH_FILE 3
 
-
-#define NUM_GUI_PARMS 31
+#define NUM_GUI_PARMS 33
 
 #define ARG_RF_EXPORT_FNAME         (myParmBase + 0)
 
-#define ARG_RF_EXPORT_SD_BIN		   (myParmBase + 1)
-#define ARG_RF_EXPORT_ANIM			   (myParmBase + 2)
-#define ARG_RF_EXPORT_BEGIN_END   	(myParmBase + 3)
-#define ARG_RF_EXPORT_ECHO_CONSOLE	(myParmBase + 4)
+#define ARG_RF_EXPORT_SD_BIN        (myParmBase + 1)
+#define ARG_RF_EXPORT_ANIM          (myParmBase + 2)
+#define ARG_RF_EXPORT_BEGIN_END     (myParmBase + 3)
+#define ARG_RF_EXPORT_ECHO_CONSOLE  (myParmBase + 4)
 
 // leave open for "Write RF File" button -------->5
 
@@ -66,32 +68,34 @@ const std::string SOP_Version = "2.0.0";
 #define ARG_RF_EXPORT_INFO3         (myParmBase + 8)
 
 // GUI Params for SD files
-#define ARG_RF_EXPORT_OBJ_COLOR		(myParmBase + 9)
-#define ARG_RF_EXPORT_OBJ_XFORM		(myParmBase + 10)
-#define ARG_RF_EXPORT_MODE		      (myParmBase + 11)
+#define ARG_RF_EXPORT_OBJ_COLOR     (myParmBase + 9)
+#define ARG_RF_EXPORT_OBJ_XFORM     (myParmBase + 10)
+#define ARG_RF_EXPORT_MODE          (myParmBase + 11)
 
 // GUI parms for BIN particle files
-#define ARG_RF_EXPORT_FLUID_NAME	   (myParmBase + 12)
-#define ARG_RF_EXPORT_FLUID_TYPE	   (myParmBase + 13)
-#define ARG_RF_EXPORT_FPS		      (myParmBase + 14)
-#define ARG_RF_EXPORT_SCENE_SCALE	(myParmBase + 15)
-#define ARG_RF_EXPORT_RADIUS		   (myParmBase + 16)
-#define ARG_RF_EXPORT_PRESSURE_MIN	(myParmBase + 17)
-#define ARG_RF_EXPORT_PRESSURE_MAX	(myParmBase + 18)
-#define ARG_RF_EXPORT_PRESSURE_AVG	(myParmBase + 19)
-#define ARG_RF_EXPORT_SPEED_MIN		(myParmBase + 20)
-#define ARG_RF_EXPORT_SPEED_MAX		(myParmBase + 21)
-#define ARG_RF_EXPORT_SPEED_AVG		(myParmBase + 22)
-#define ARG_RF_EXPORT_TEMP_MIN		(myParmBase + 23)
-#define ARG_RF_EXPORT_TEMP_MAX		(myParmBase + 24)
-#define ARG_RF_EXPORT_TEMP_AVG		(myParmBase + 25)
-#define ARG_RF_EXPORT_EMITTER_POS	(myParmBase + 26)
-#define ARG_RF_EXPORT_EMITTER_ROT	(myParmBase + 27)
-#define ARG_RF_EXPORT_EMITTER_SCALE	(myParmBase + 28)
+#define ARG_RF_EXPORT_FLUID_NAME    (myParmBase + 12)
+#define ARG_RF_EXPORT_FLUID_TYPE    (myParmBase + 13)
+#define ARG_RF_EXPORT_FPS           (myParmBase + 14)
+#define ARG_RF_EXPORT_SCENE_SCALE   (myParmBase + 15)
+#define ARG_RF_EXPORT_RADIUS        (myParmBase + 16)
+#define ARG_RF_EXPORT_PRESSURE_MIN  (myParmBase + 17)
+#define ARG_RF_EXPORT_PRESSURE_MAX  (myParmBase + 18)
+#define ARG_RF_EXPORT_PRESSURE_AVG  (myParmBase + 19)
+#define ARG_RF_EXPORT_SPEED_MIN     (myParmBase + 20)
+#define ARG_RF_EXPORT_SPEED_MAX     (myParmBase + 21)
+#define ARG_RF_EXPORT_SPEED_AVG     (myParmBase + 22)
+#define ARG_RF_EXPORT_TEMP_MIN      (myParmBase + 23)
+#define ARG_RF_EXPORT_TEMP_MAX      (myParmBase + 24)
+#define ARG_RF_EXPORT_TEMP_AVG      (myParmBase + 25)
+#define ARG_RF_EXPORT_EMITTER_POS   (myParmBase + 26)
+#define ARG_RF_EXPORT_EMITTER_ROT   (myParmBase + 27)
+#define ARG_RF_EXPORT_EMITTER_SCALE (myParmBase + 28)
 
-#define ARG_RF_EXPORT_RWC_NUM_X	(myParmBase + 29)
-#define ARG_RF_EXPORT_RWC_NUM_Y	(myParmBase + 30)
+#define ARG_RF_EXPORT_RWC_NUM_X  (myParmBase + 29)
+#define ARG_RF_EXPORT_RWC_NUM_Y  (myParmBase + 30)
 
+#define ARG_RF_EXPORT_MESH_VEL  (myParmBase + 31)
+#define ARG_RF_EXPORT_MESH_TEX  (myParmBase + 32)
 
 enum enumExceptionSeverity {
     exceptionNone = 0,
@@ -151,6 +155,16 @@ enum enumErrorList {
     canNotWriteDataToRWCFile,
     canNotCloseTheRealFlowRWCFile,
 
+    // Mesh file errror messages
+    canNotLockInputsInWriteMeshFile,
+    couldNotLockInputInWriteMeshFile,
+    canNotWriteHeaderMeshFile,
+    canNotOpenMeshFileForWriting,
+    canNotWriteDataToMeshFile,
+    canNotCloseTheRealFlowMeshFile,
+    canNotWriteEOFToMeshFile,
+    canNotWriteNumFacesToMeshFile,
+
     invalidAttrHandleVel,
     invalidAttrHandleForce,
     invalidAttrHandleNormal,
@@ -188,7 +202,8 @@ static UT_String errorMsgs[numRFExportErrors];
 *
 ***************************************************************************** */
 
-class OP_RF_Export_Operator : public OP_Operator {
+class OP_RF_Export_Operator : public OP_Operator
+{
 public:
     OP_RF_Export_Operator();
     virtual ~OP_RF_Export_Operator();
@@ -210,7 +225,8 @@ public:
 *
 ***************************************************************************** */
 
-class SOP_RF_Export_Exception {
+class SOP_RF_Export_Exception
+{
     std::string e_msg;
     enumErrorList e_code;
     enumExceptionSeverity severity;
@@ -244,25 +260,26 @@ public:
 *
 ***************************************************************************** */
 
-class SOP_RF_Export : public SOP_Node {
+class SOP_RF_Export : public SOP_Node
+{
 public:
-    SOP_RF_Export(OP_Network *net, const char *name, OP_Operator *op);
+    SOP_RF_Export(OP_Network * net, const char * name, OP_Operator * op);
 
     virtual ~SOP_RF_Export();
 
-    static PRM_Template	 	myTemplateList[];
-    static OP_Node			*myConstructor(OP_Network*, const char *, OP_Operator *);
+    static PRM_Template    myTemplateList[];
+    static OP_Node    *     myConstructor(OP_Network*, const char *, OP_Operator *);
 
 protected:
     virtual unsigned      disableParms();
-    virtual const char    *inputLabel(unsigned idx) const;
+    virtual const char  *  inputLabel(unsigned idx) const;
 
-    virtual OP_ERROR cookMySop(OP_Context &context);
+    virtual OP_ERROR cookMySop(OP_Context & context);
 
 private:
 
     // Functions for GUI widgets (Setup page)
-    void    FNAME(UT_String &label, float t) {
+    void    FNAME(UT_String & label, float t) {
         evalString(label, ARG_RF_EXPORT_FNAME, 0, t);
     }
     int     FILE_FORMAT(float t) {
@@ -271,7 +288,7 @@ private:
     int     ANIM(float t) {
         return evalInt(ARG_RF_EXPORT_ANIM, 0, t);
     }
-    void    BEGIN_END (float *val, float t) {
+    void    BEGIN_END(float * val, float t) {
         evalFloats(ARG_RF_EXPORT_BEGIN_END, val, t);
     }
     int     ECHO_CONSOLE(float t) {
@@ -279,10 +296,10 @@ private:
     }
 
     // SD file parms
-    int	   FPS(float t) {
+    int     FPS(float t) {
         return evalInt(ARG_RF_EXPORT_FPS, 0, t);
     }
-    void    OBJ_COLOR(float *val, float t) {
+    void    OBJ_COLOR(float * val, float t) {
         evalFloats(ARG_RF_EXPORT_OBJ_COLOR, val, t);
     }
     int     OBJ_XFORM(float t) {
@@ -294,7 +311,7 @@ private:
 
 
     // Particle BIN2 file parms
-    void    FLUID_NAME(UT_String &label, float t) {
+    void    FLUID_NAME(UT_String & label, float t) {
         evalString(label, ARG_RF_EXPORT_FLUID_NAME, 0, t);
     }
     int     FLUID_TYPE(float t) {
@@ -333,13 +350,13 @@ private:
     float  TEMP_AVG(float t) {
         return evalFloat(ARG_RF_EXPORT_TEMP_AVG, 0, t);
     }
-    void   EMITTER_POS(float *val, float t) {
+    void   EMITTER_POS(float * val, float t) {
         evalFloats(ARG_RF_EXPORT_EMITTER_POS, val, t);
     }
-    void   EMITTER_ROT(float *val, float t) {
+    void   EMITTER_ROT(float * val, float t) {
         evalFloats(ARG_RF_EXPORT_EMITTER_ROT, val, t);
     }
-    void   EMITTER_SCALE(float *val, float t) {
+    void   EMITTER_SCALE(float * val, float t) {
         evalFloats(ARG_RF_EXPORT_EMITTER_SCALE, val, t);
     }
 
@@ -351,14 +368,22 @@ private:
         return evalInt(ARG_RF_EXPORT_RWC_NUM_Y, 0, t);
     }
 
+    // Mesh file parms
+    void     MESH_VEL(float * val, float t) {
+        evalFloats(ARG_RF_EXPORT_MESH_VEL, val, t);
+    }
+    void     MESH_TEX(float * val, float t) {
+        evalFloats(ARG_RF_EXPORT_MESH_TEX, val, t);
+    }
+
 
     // Callbacks for various GUI widgets
-    static int updateAnim(void *data, int index, float time, const PRM_Template *tplate );
-    static int updateVersion(void *data, int index, float time, const PRM_Template *tplate );
-    static int updateMode(void *data, int index, float time, const PRM_Template *tplate );
-    static int updateFileFormat(void *data, int index, float time, const PRM_Template *tplate );
-    static int updateFluidType(void *data, int index, float time, const PRM_Template *tplate );
-    static int updateFPS(void *data, int index, float time, const PRM_Template *tplate );
+    static int updateAnim(void * data, int index, float time, const PRM_Template * tplate);
+    static int updateVersion(void * data, int index, float time, const PRM_Template * tplate);
+    static int updateMode(void * data, int index, float time, const PRM_Template * tplate);
+    static int updateFileFormat(void * data, int index, float time, const PRM_Template * tplate);
+    static int updateFluidType(void * data, int index, float time, const PRM_Template * tplate);
+    static int updateFPS(void * data, int index, float time, const PRM_Template * tplate);
 
     unsigned myupdateMenuStatus;
     unsigned myupdateVersionStatus;
@@ -367,17 +392,18 @@ private:
     unsigned myupdateFluidTypeStatus;
     unsigned myupdateFPSStatus;
 
-    static int 	writeTheFile(void *data, int index, float time, const PRM_Template *tplate );
+    static int writeTheFile(void * data, int index, float time, const PRM_Template * tplate);
 
-    OP_ERROR writeSDFile(OP_Context& context);
-    int calculateChunkSizes(OP_Context& context);
-    int writeSDFileRestGeo(OP_Context& context, UT_Interrupt *boss);
-    int writeSDFileAnimGeo(OP_Context& context, UT_Interrupt *boss);
+    OP_ERROR writeSDFile(OP_Context & context);
+    int calculateChunkSizes(OP_Context & context);
+    int writeSDFileRestGeo(OP_Context & context, UT_Interrupt * boss);
+    int writeSDFileAnimGeo(OP_Context & context, UT_Interrupt * boss);
 
-    OP_ERROR writeBINFile(OP_Context& context);
-    OP_ERROR writeRWCFile(OP_Context& context);
+    OP_ERROR writeBINFile(OP_Context & context);
+    OP_ERROR writeRWCFile(OP_Context & context);
+    OP_ERROR writeMeshFile(OP_Context & context);
 
-    void doObjectXForm(UT_DMatrix4& xform);
+    void doObjectXForm(UT_DMatrix4 & xform);
 
     bool calledFromCallback;
     OP_ERROR myCallBackError;
@@ -389,15 +415,15 @@ private:
     int myStartFrame;
     int myEndFrame;
 
-    UT_String	myFileName;
+    UT_String  myFileName;
     int         myFileFormat;
     bool        myStaticAnim;
     bool        myObjXform;
     bool        myMode;
-    float 		myBeginEnd[2];
-    float 		myObjColor[3];
+    float      myBeginEnd[2];
+    float      myObjColor[3];
 
-    UT_String 	myFluidName;
+    UT_String  myFluidName;
     int         myFluidType;
     int         myFPS;
     float       myRadius;
@@ -411,18 +437,19 @@ private:
     float       myTempMin;
     float       myTempMax;
     float       myTempAvg;
-    UT_Vector3	myEmitterPos;
-    UT_Vector3	myEmitterRot;
-    UT_Vector3	myEmitterScale;
+    UT_Vector3 myEmitterPos;
+    UT_Vector3 myEmitterRot;
+    UT_Vector3 myEmitterScale;
 
     UT_StringArray objectNames;
     UT_StringArray objectTextureNames;
 
-    bool		myEchoData;
+    bool    myEchoData;
 
-    RealFlow_SD_File        *myRFSDFile;
-    RealFlow_Particle_File	*myRFBINFile;
-    RealFlow_RWC_File       *myRFRWCFile;
+    RealFlow_SD_File * myRFSDFile;
+    RealFlow_Particle_File * myRFBINFile;
+    RealFlow_RWC_File * myRFRWCFile;
+    RealFlow_Mesh_File * myRFMeshFile;
 
     short myParmBase;
 };

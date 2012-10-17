@@ -41,7 +41,7 @@ using namespace dca;
 
 
 
-void print_RWC_data(RealFlow_RWC_File *myRWCFile)
+void print_RWC_data(RealFlow_RWC_File * myRWCFile)
 {
 
     std::cout << "RWC_vertex_data = " <<
@@ -54,7 +54,7 @@ void print_RWC_data(RealFlow_RWC_File *myRWCFile)
 
 
 // Dump the RWC file header
-void dump_header(RealFlow_RWC_File *myRWCFile)
+void dump_header(RealFlow_RWC_File * myRWCFile)
 {
     myRWCFile->readRWCFileHeader();
 
@@ -81,22 +81,22 @@ void dump_header(RealFlow_RWC_File *myRWCFile)
 
 
 // Dump the RWC  data
-void dump_data (RealFlow_RWC_File *myRWCFile)
+void dump_data(RealFlow_RWC_File * myRWCFile)
 {
 
     long int row_count = 0;
 
-    for (long int i = 0; i < myRWCFile->RWC_header.num_X_vtx; i++) {
+    for(long int i = 0; i < myRWCFile->RWC_header.num_X_vtx; i++) {
 //   cout << "i: " << i << endl;
         std::cout << "RWC row num: " << row_count << std::endl;
 
-        if (!(i%2))
-            for (long int j = 0; j < myRWCFile->RWC_header.num_Z_vtx; j++) {
+        if(!(i%2))
+            for(long int j = 0; j < myRWCFile->RWC_header.num_Z_vtx; j++) {
                 myRWCFile->readRWCData();
                 print_RWC_data(myRWCFile);
             }
         else
-            for (long int k = 0; k < myRWCFile->RWC_header.num_Z_vtx + 1; k++) {
+            for(long int k = 0; k < myRWCFile->RWC_header.num_Z_vtx + 1; k++) {
                 myRWCFile->readRWCData();
                 print_RWC_data(myRWCFile);
             }
@@ -112,13 +112,13 @@ void dump_data (RealFlow_RWC_File *myRWCFile)
 
 
 // Read the RWC file
-int read_RWC_file(char *file_name)
+int read_RWC_file(char * file_name)
 {
     int i;
 
-    RealFlow_RWC_File *myRWCFile = new RealFlow_RWC_File();
+    RealFlow_RWC_File * myRWCFile = new RealFlow_RWC_File();
 
-    if (myRWCFile->openRWCFile(file_name, 0)) {
+    if(myRWCFile->openRWCFile(file_name, 0)) {
         cout << "Can't open Real Flow RWC file for reading: " << file_name << endl;
         return 1;
     }
@@ -143,13 +143,13 @@ int read_RWC_file(char *file_name)
 //
 // Dump the contents of the RWC file
 //
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
 
     cout << "dump_rf_rwc -  ver. 0.05 -  Digital Cinema Arts (C) 2008" << endl;
     cout << "Dumping Real Flow Real Wave Cache File" << endl << endl;
 
-    if (read_RWC_file(argv[1]))
+    if(read_RWC_file(argv[1]))
         exit(1);
 
     exit(0);

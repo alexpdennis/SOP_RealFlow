@@ -30,7 +30,8 @@
 #include <fstream>
 #include <string>
 
-namespace dca {
+namespace dca
+{
 
 #ifndef RF_FILE_READ
 #define RF_FILE_READ 0
@@ -39,7 +40,8 @@ namespace dca {
 
 #define MAX_NUM_FLUIDS 64
 
-class RF_Mesh_Exception {
+class RF_Mesh_Exception
+{
     std::string e_msg;
 
 public:
@@ -51,7 +53,8 @@ public:
 };
 
 
-class RealFlow_Mesh_File {
+class RealFlow_Mesh_File
+{
 public:
     RealFlow_Mesh_File();
     ~RealFlow_Mesh_File();
@@ -90,8 +93,8 @@ public:
         float   Z;
     } mesh_vel_data;
 
-    int     openMeshFile(char *file_name);
-    int     readMeshFileHeader(int *hdr_status);
+    int     openMeshFile(const char * file_name, int mode);
+    int     readMeshFileHeader(int * hdr_status);
     int     readMeshVertexData();
     int     readMeshNumFaces();
     int     readMeshFaceData();
@@ -101,8 +104,19 @@ public:
     int     readMeshTextureData();
     int     readMeshVelocityData();
     int     readMeshFileEOF();
-    int     closeMeshFile();
+    int     writeMeshFileHeader();
+    int     writeMeshVertexData();
+    int     writeMeshNumFaces();
+    int     writeMeshFaceData();
+    int     writeMeshTextureChunkCode();
+    int     writeMeshVelocityChunkCode();
+    int     writeMeshNumFluids();
+    int     writeMeshTextureData();
+    int     writeMeshVelocityData();
+    int     writeMeshFileEOF();
+    int     closeMeshFile(int mode);
     std::ifstream RFMeshifstream;
+    std::ofstream RFMeshofstream;
 };
 
 #endif

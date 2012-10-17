@@ -32,7 +32,7 @@
 *  Return Value : int return status
 *
 ***************************************************************************** */
-int SOP_RF_Export::writeSDFileAnimGeo(OP_Context & context, UT_Interrupt *boss)
+int SOP_RF_Export::writeSDFileAnimGeo(OP_Context & context, UT_Interrupt * boss)
 {
 
 #ifdef DEBUG
@@ -42,7 +42,7 @@ int SOP_RF_Export::writeSDFileAnimGeo(OP_Context & context, UT_Interrupt *boss)
     long int num_prim, numv;
     UT_Vector3 normal, p, uv_vec, clr_vec;
     UT_Vector4 pos;
-    GEO_Primitive *prim;
+    GEO_Primitive * prim;
     GEO_Vertex vtx;
     GEO_AttributeHandle attrHandle;
     UT_String  tex_fname_str;
@@ -57,7 +57,7 @@ int SOP_RF_Export::writeSDFileAnimGeo(OP_Context & context, UT_Interrupt *boss)
     GA_ROAttributeRef sd_CG_pos, sd_CG_vel, sd_CG_rot;
 
     UT_String current_input_path;
-    OP_Node *current_input_node;
+    OP_Node * current_input_node;
     UT_String my_cwd, my_full_path, my_parent_full_path, my_name;
     GU_Detail blank_gdp;
     UT_Matrix4 work_matrix;
@@ -69,9 +69,9 @@ int SOP_RF_Export::writeSDFileAnimGeo(OP_Context & context, UT_Interrupt *boss)
 
 
         // For each frame in our animation ...
-        for (int cur_frame = myStartFrame; cur_frame <= myEndFrame; cur_frame++) {
+        for(int cur_frame = myStartFrame; cur_frame <= myEndFrame; cur_frame++) {
 
-            if (myStaticAnim && !(myStartFrame == myEndFrame)) {
+            if(myStaticAnim && !(myStartFrame == myEndFrame)) {
                 // Set the current frame
                 context.setFrame((long) cur_frame);
                 now = context.getTime();
@@ -92,11 +92,11 @@ int SOP_RF_Export::writeSDFileAnimGeo(OP_Context & context, UT_Interrupt *boss)
 #endif
 
             // Write the frame number
-            if (myRFSDFile->writeSDCurrFrame(cur_frame))
+            if(myRFSDFile->writeSDCurrFrame(cur_frame))
                 throw SOP_RF_Export_Exception(canNotWriteFrameNumber, exceptionError);
 
             // For each object (input)
-            for (int current_obj = 0; current_obj < myNumInputs; current_obj++) {
+            for(int current_obj = 0; current_obj < myNumInputs; current_obj++) {
 
                 // Get the object's node
                 current_input_node = getInput(current_obj);
@@ -107,7 +107,7 @@ int SOP_RF_Export::writeSDFileAnimGeo(OP_Context & context, UT_Interrupt *boss)
 #endif
 
                 // Lock this input while we're working with it.
-                if (lockInput(current_obj, context) >= UT_ERROR_ABORT)
+                if(lockInput(current_obj, context) >= UT_ERROR_ABORT)
                     throw SOP_RF_Export_Exception(couldNotLockInputInWriteSDFile, exceptionError);
 
                 // Duplicate the geometry from this input
@@ -124,13 +124,13 @@ int SOP_RF_Export::writeSDFileAnimGeo(OP_Context & context, UT_Interrupt *boss)
 
                 // Get object's transform and assign to the world transform matrix
                 UT_DMatrix4 current_input_xform;
-                if (!current_input_node->getWorldTransform(current_input_xform, context))
+                if(!current_input_node->getWorldTransform(current_input_xform, context))
                     addTransformError(*current_input_node, "current_input_node");
 
                 current_input_xform.explode(xformOrder, rot, scale, trans, pivot);
 
                 // If the user wants to apply the "object" (/obj) level transform
-                if (myObjXform) {
+                if(myObjXform) {
                     doObjectXForm(current_input_xform);
 
                     myRFSDFile->myRF_SD_Obj_Frame_Header.obj_trans_vec[0] = trans.x();
@@ -164,7 +164,7 @@ int SOP_RF_Export::writeSDFileAnimGeo(OP_Context & context, UT_Interrupt *boss)
                     // Transform the geometry
 //            gdp->transformPoints(current_input_xform);
                 } else {
-                    for (int i = 0; i < 3; i++) {
+                    for(int i = 0; i < 3; i++) {
                         myRFSDFile->myRF_SD_Obj_Frame_Header.obj_trans_vec[i] = 0;
                         myRFSDFile->myRF_SD_Obj_Frame_Header.obj_rot_vec[i]   = 0;
                         myRFSDFile->myRF_SD_Obj_Frame_Header.obj_scale_vec[i] = 1;
@@ -180,70 +180,70 @@ int SOP_RF_Export::writeSDFileAnimGeo(OP_Context & context, UT_Interrupt *boss)
                 sd_CG_rot = gdp->findIndexAttribute("sd_CG_rot", GA_ATTRIB_DETAIL);
 
                 attrHandle = gdp->getDetailAttribute("sd_CG_pos");
-                if (attrHandle.isAttributeValid()) {
+                if(attrHandle.isAttributeValid()) {
                     CG_pos = attrHandle.getV3();
                     myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_pos[0] = static_cast<float>(CG_pos.x());
                     myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_pos[1] = static_cast<float>(CG_pos.y());
                     myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_pos[2] = static_cast<float>(CG_pos.z());
                 } else {
-                    for (int i = 0; i < 3; i++)
+                    for(int i = 0; i < 3; i++)
                         myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_pos[i] = 0;
                 }
 
                 attrHandle = gdp->getDetailAttribute("sd_CG_vel");
-                if (attrHandle.isAttributeValid()) {
+                if(attrHandle.isAttributeValid()) {
                     CG_vel = attrHandle.getV3();
                     myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_vel[0] = static_cast<float>(CG_vel.x());
                     myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_vel[1] = static_cast<float>(CG_vel.y());
                     myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_vel[2] = static_cast<float>(CG_vel.z());
                 } else {
-                    for (int i = 0; i < 3; i++)
+                    for(int i = 0; i < 3; i++)
                         myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_vel[i] = 0;
                 }
 
                 attrHandle = gdp->getDetailAttribute("sd_CG_rot");
-                if (attrHandle.isAttributeValid()) {
+                if(attrHandle.isAttributeValid()) {
                     CG_rot = attrHandle.getV3();
                     myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_rot[0] = static_cast<float>(CG_rot.x());
                     myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_rot[1] = static_cast<float>(CG_rot.y());
                     myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_rot[2] = static_cast<float>(CG_rot.z());
                 } else {
-                    for (int i = 0; i < 3; i++)
+                    for(int i = 0; i < 3; i++)
                         myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_vel[i] = 0;
                 }
 
 
-                if (myEchoData)
+                if(myEchoData)
                     std::cout << std::endl << "Processing frame vertices:" << std::endl << "Time = " << now << std::endl
                               << "Frame num: " << cur_frame << " Current Object: " << current_obj << std::endl << std::endl;
 
                 // Write the SD file's object frame header
-                if (myRFSDFile->writeSDObjFrameHdr()) {
+                if(myRFSDFile->writeSDObjFrameHdr()) {
                     throw SOP_RF_Export_Exception(canNotWriteObjectFrameHeader, exceptionError);
                 }
 
 
                 // If vertex mode, go through geometry and write to disk
-                if (myMode) {
+                if(myMode) {
 
-                    if (myEchoData)
+                    if(myEchoData)
                         std::cout << std::endl <<  "Processing animated vertex coordinates" << std::endl << std::endl;
 
                     num_prim = 0;
                     GA_FOR_ALL_PRIMITIVES(gdp, prim) {
 
-                        if (boss->opInterrupt())
+                        if(boss->opInterrupt())
                             throw SOP_RF_Export_Exception(cookInterrupted, exceptionWarning);
 
                         numv = prim->getVertexCount();
 
                         // For each vertex of this polygon
-                        for (int i = 0; i < 3; i++) {
+                        for(int i = 0; i < 3; i++) {
                             vtx = prim->getVertexElement(i);
                             pos = vtx.getPos();
 
                             // Write the face
-                            if (myRFSDFile->writeSDFaceCoord(pos.x(), pos.y(), pos.z())) {
+                            if(myRFSDFile->writeSDFaceCoord(pos.x(), pos.y(), pos.z())) {
                                 throw SOP_RF_Export_Exception(canNotWriteFaceCoordinates, exceptionError);
                             }
                         }
@@ -254,7 +254,7 @@ int SOP_RF_Export::writeSDFileAnimGeo(OP_Context & context, UT_Interrupt *boss)
 
                 unlockInput(current_obj);
 
-            }			// End-For each object (input)
+            }        // End-For each object (input)
 
             /*
              * Camera data isn't available at the SOP level
@@ -267,20 +267,20 @@ int SOP_RF_Export::writeSDFileAnimGeo(OP_Context & context, UT_Interrupt *boss)
 
     }
 
-    catch (SOP_RF_Export_Exception e) {
+    catch(SOP_RF_Export_Exception e) {
         e.what();
 
-        if (e.getSeverity() == exceptionWarning)
+        if(e.getSeverity() == exceptionWarning)
             addWarning(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
-        else if (e.getSeverity() == exceptionError)
+        else if(e.getSeverity() == exceptionError)
             addError(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
 
         boss->opEnd();
         unlockInputs();
 
-        if (myRFSDFile->SDofstream.is_open()) {
+        if(myRFSDFile->SDofstream.is_open()) {
             // Close the RF SD file
-            if (myRFSDFile->closeSDFile(RF_FILE_WRITE)) {
+            if(myRFSDFile->closeSDFile(RF_FILE_WRITE)) {
                 addError(SOP_MESSAGE, "Can't close Real Flow SD file after SOP_RF_Export_Exception exception was thrown");
                 return 1;
             }

@@ -175,7 +175,8 @@ static UT_String errorMsgs[numRFImportErrors];
 *
 ***************************************************************************** */
 
-class OP_RF_Import_Operator : public OP_Operator {
+class OP_RF_Import_Operator : public OP_Operator
+{
 public:
     OP_RF_Import_Operator();
     virtual ~OP_RF_Import_Operator();
@@ -195,7 +196,8 @@ public:
 *
 ***************************************************************************** */
 
-class SOP_RF_Import_Exception {
+class SOP_RF_Import_Exception
+{
     std::string e_msg;
     enumErrorList e_code;
     enumExceptionSeverity severity;
@@ -229,25 +231,26 @@ public:
 *
 ***************************************************************************** */
 
-class SOP_RF_Import : public SOP_Node {
+class SOP_RF_Import : public SOP_Node
+{
 public:
-    static OP_Node      *myConstructor(OP_Network*, const char *, OP_Operator *);
+    static OP_Node   *   myConstructor(OP_Network*, const char *, OP_Operator *);
 
     static PRM_Template      myTemplateList[];
     static CH_LocalVariable  myVariables[];
 
 protected:
-    SOP_RF_Import(OP_Network *net, const char *name, OP_Operator *op);
+    SOP_RF_Import(OP_Network * net, const char * name, OP_Operator * op);
     virtual ~SOP_RF_Import();
 
     virtual unsigned    disableParms();
-    virtual OP_ERROR    cookMySop(OP_Context &context);
+    virtual OP_ERROR    cookMySop(OP_Context & context);
     virtual float       getVariableValue(int index, int thread);
 
 private:
 
 // Real Flow file name and type (particles, mesh or SD)
-    void    FNAME(UT_String &label, float t) {
+    void    FNAME(UT_String & label, float t) {
         evalString(label, ARG_RF_IMPORT_FNAME, 0, t);
     }
     int     FTYPE(float t) {
@@ -328,7 +331,7 @@ private:
         return evalInt(ARG_RF_IMPORT_RWC_VELOCITY, 0, t);
     }
 
-    static int  updateTheMenu(void *data, int index, float time, const PRM_Template *tplate );
+    static int  updateTheMenu(void * data, int index, float time, const PRM_Template * tplate);
 //   static int  updateVersion(void *data, int index, float time, const PRM_Template *tplate );
 
     struct GUI_state {
@@ -397,29 +400,29 @@ private:
 
     } myAttributeRefs;
 
-    GA_PointGroup        *objPointGrpList[maxNumObjects];
-    GA_PrimitiveGroup    *objPrimitiveGrpList[maxNumObjects];
+    GA_PointGroup    *    objPointGrpList[maxNumObjects];
+    GA_PrimitiveGroup  *  objPrimitiveGrpList[maxNumObjects];
 
-    OP_ERROR ReadRFParticleFile(OP_Context &context);
+    OP_ERROR ReadRFParticleFile(OP_Context & context);
     int ReadRFParticleFileCreateAttrs();
     int ReadRFParticleFileSetAttrs(long int pt_num);
 
-    OP_ERROR ReadRFMeshFile(OP_Context &context);
+    OP_ERROR ReadRFMeshFile(OP_Context & context);
 
-    OP_ERROR ReadRFSDFile(OP_Context &context);
+    OP_ERROR ReadRFSDFile(OP_Context & context);
     int ReadRFSDReadHeader(float now);
-    int ReadRFSDCreateRestGeo(UT_Interrupt *boss);
-    int ReadRFSDCreateAnimGeo(UT_Interrupt *boss);
+    int ReadRFSDCreateRestGeo(UT_Interrupt * boss);
+    int ReadRFSDCreateAnimGeo(UT_Interrupt * boss);
 
-    OP_ERROR ReadRFRWCFile(OP_Context &context);
-    void ReadRFRWCFileAddPoint(GEO_Point *ppt, int t_velocity, GA_RWAttributeRef p_velocity_v, int pt_num);
+    OP_ERROR ReadRFRWCFile(OP_Context & context);
+    void ReadRFRWCFileAddPoint(GEO_Point * ppt, int t_velocity, GA_RWAttributeRef p_velocity_v, int pt_num);
 
     short   myParmBase; // parameter offsets
 
-    RealFlow_Particle_File *myRFParticleFile;
-    RealFlow_Mesh_File     *myRFMeshFile;
-    RealFlow_SD_File       *myRFSDFile;
-    RealFlow_RWC_File      *myRFRWCFile;
+    RealFlow_Particle_File * myRFParticleFile;
+    RealFlow_Mesh_File  *   myRFMeshFile;
+    RealFlow_SD_File   *    myRFSDFile;
+    RealFlow_RWC_File   *   myRFRWCFile;
 
     UT_String  myFileName;
 

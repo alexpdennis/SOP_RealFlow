@@ -141,28 +141,28 @@ void dump_data(RealFlow_Particle_File * myRFParticleFile, int i)
 
 
 // Read the particle file
-int read_part_file(char *file_name)
+int read_part_file(char * file_name)
 {
     int i;
 
-    RealFlow_Particle_File *myRFParticleFile = new RealFlow_Particle_File();
+    RealFlow_Particle_File * myRFParticleFile = new RealFlow_Particle_File();
 
-    if (myRFParticleFile->open_part_file(file_name, RF_FILE_READ)) {
+    if(myRFParticleFile->open_part_file(file_name, RF_FILE_READ)) {
         std::cerr << "Can't open Real Flow particle file for reading" << std::endl;
         return 1;
     }
     std::cout << "Opened Real Flow particle file: " << file_name << std::endl << std::endl;
 
-    if (myRFParticleFile->read_part_file_header()) {
+    if(myRFParticleFile->read_part_file_header()) {
         std::cerr << "Can't read Real Flow particle file header" << std::endl;
         return 1;
     }
 
     dump_header(myRFParticleFile);
 
-    for (i = 0; i < myRFParticleFile->part_header.num_particles; i++) {
+    for(i = 0; i < myRFParticleFile->part_header.num_particles; i++) {
         //  printf("\nreading particle data record\n");
-        if (myRFParticleFile->read_part_data()) {
+        if(myRFParticleFile->read_part_data()) {
             std::cerr << "Can't read Real Flow particle data" << std::endl;;
             return 1;
         }
@@ -183,7 +183,7 @@ int read_part_file(char *file_name)
 }
 
 
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
 
     try {
@@ -191,10 +191,10 @@ int main(int argc, char *argv[])
         std::cout << "dump_rf_part -  ver. 0.05 -  Digital Cinema Arts (C) 2008" << std::endl;
         std::cout << "Dumping Real Flow Particle File" << endl << endl;
 
-        if (read_part_file(argv[1]))
+        if(read_part_file(argv[1]))
             exit(1);
 
-    } catch (...) {
+    } catch(...) {
 
         std::cerr << "Unknown error ocurred, exiting program ..." << std::endl;
         exit(1);

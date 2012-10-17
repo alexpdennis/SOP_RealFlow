@@ -37,12 +37,12 @@
 using namespace dca;
 
 
-FILE *RFMeshFile;
-RealFlow_Mesh_File *myRFMeshFile;
+FILE * RFMeshFile;
+RealFlow_Mesh_File * myRFMeshFile;
 int myCurrPoint = 0;
 
 
-void handleError(char *msg)
+void handleError(char * msg)
 {
     std::cout << msg << std::endl << std::endl;
     exit(1);
@@ -50,7 +50,7 @@ void handleError(char *msg)
 
 
 // Read the mesh file
-void read_mesh_file(char *myFileName)
+void read_mesh_file(char * myFileName)
 {
 
     int i, hdr_status;
@@ -58,58 +58,58 @@ void read_mesh_file(char *myFileName)
 
 
 // Open the Real Flow mesh file
-    if (myRFMeshFile->openMeshFile((char *)myFileName))
+    if(myRFMeshFile->openMeshFile((char *)myFileName))
         handleError("Can't open Real Flow Mesh file for reading");
 
 // Read the header
-    if (myRFMeshFile->readMeshFileHeader(&hdr_status))
-        if (hdr_status == -1)
+    if(myRFMeshFile->readMeshFileHeader(&hdr_status))
+        if(hdr_status == -1)
             handleError("Not A Real Flow Mesh File!");
 
 
 // Get the vertice point data
-    for (i = 0; i < myRFMeshFile->mesh_vertex_data.num_vertices; i++) {
+    for(i = 0; i < myRFMeshFile->mesh_vertex_data.num_vertices; i++) {
 
         myCurrPoint = i;
 
         // Read the mesh data from the file
-        if (myRFMeshFile->readMeshVertexData())
+        if(myRFMeshFile->readMeshVertexData())
             handleError("Can't read from Real Flow Mesh file: vertex data");
     }
 
 
 // Read the the number of faces
-    if (myRFMeshFile->readMeshNumFaces())
+    if(myRFMeshFile->readMeshNumFaces())
         handleError("Can't read Real Flow mesh file: num_faces");
 
 
 // For each face, read the face data
-    for (i = 0; i < myRFMeshFile->mesh_face_data.num_faces; i++) {
+    for(i = 0; i < myRFMeshFile->mesh_face_data.num_faces; i++) {
 
         myCurrPoint = i;
 
         // Read the mesh data from the file
-        if (myRFMeshFile->readMeshFaceData())
+        if(myRFMeshFile->readMeshFaceData())
             handleError("Can't read from Real Flow Mesh file: face data");
 
     } // for number of faces
 
 
 // Read the next chunk code to see if texture data is present
-    if (myRFMeshFile->readMeshTextureChunkCode())
+    if(myRFMeshFile->readMeshTextureChunkCode())
         handleError("Can't read texture chunk data");
 
 // if texture chunk present, read the data
-    if ((myRFMeshFile->mesh_tex_data.code == 0xCCCCCC00)) {
+    if((myRFMeshFile->mesh_tex_data.code == 0xCCCCCC00)) {
 
         // Read the number of fluids contributing to this mesh
-        if (myRFMeshFile->readMeshNumFluids())
+        if(myRFMeshFile->readMeshNumFluids())
             handleError("Can't read Real Flow mesh file: num_fluids");
 
         // For all the vertices in the geometry, get the texture data
-        for (i = 0; i < myRFMeshFile->mesh_vertex_data.num_vertices; i++) {
+        for(i = 0; i < myRFMeshFile->mesh_vertex_data.num_vertices; i++) {
 
-            if (myRFMeshFile->readMeshTextureData())
+            if(myRFMeshFile->readMeshTextureData())
                 handleError("Can't read Real Flow mesh file: texture data");
 
         } // for each vertex
@@ -119,20 +119,20 @@ void read_mesh_file(char *myFileName)
 
 
 // Read the next chunk code to see if velocity data is present
-    if (myRFMeshFile->readMeshVelocityChunkCode())
+    if(myRFMeshFile->readMeshVelocityChunkCode())
         handleError("Can't read velocity chunk data");
 
 
 // If the velocity chunk is present, read the velocity data
-    if (myRFMeshFile->mesh_vel_data.code == 0xCCCCCC11) {
+    if(myRFMeshFile->mesh_vel_data.code == 0xCCCCCC11) {
 
         // For all the vertices in the geometry, get the velocity data
-        for (i = 0; i < myRFMeshFile->mesh_vertex_data.num_vertices; i++) {
+        for(i = 0; i < myRFMeshFile->mesh_vertex_data.num_vertices; i++) {
 
             myCurrPoint = i;
 
             // Read the velocity data
-            if (myRFMeshFile->readMeshVelocityData())
+            if(myRFMeshFile->readMeshVelocityData())
                 handleError("Can't read Real Flow mesh file: velocity data");
 
         } // for each vertex
@@ -140,11 +140,11 @@ void read_mesh_file(char *myFileName)
 
 
 // Read the eof marker
-    if (myRFMeshFile->readMeshFileEOF())
+    if(myRFMeshFile->readMeshFileEOF())
         handleError("Can't read Real Flow mesh file: eof marker");
 
 // Close the RF mesh file
-    if (myRFMeshFile->closeMeshFile())
+    if(myRFMeshFile->closeMeshFile(RF_FILE_READ))
         handleError("Can't close Real Flow mesh file");
 
 
@@ -153,7 +153,7 @@ void read_mesh_file(char *myFileName)
 
 
 
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
 
     std::cout << "dump_rf_mesh -  ver. 0.05 -  Digital Cinema Arts (C) 2003" << std::endl;

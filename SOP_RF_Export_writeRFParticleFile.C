@@ -34,7 +34,7 @@
 *
 ***************************************************************************** */
 
-OP_ERROR SOP_RF_Export::writeBINFile(OP_Context &context)
+OP_ERROR SOP_RF_Export::writeBINFile(OP_Context & context)
 {
 
     float now = context.getTime();
@@ -60,14 +60,14 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context &context)
 //    char       frame_str[32];
     long int   part_num = 0;
     UT_Vector3 foo_vec;
-    UT_Interrupt *boss = UTgetInterrupt();
+    UT_Interrupt * boss = UTgetInterrupt();
     UT_String  export_stat_str = "";
     long int   frame_offset, start_frame, end_frame;
 
     // If this cook was not inititiated by the user pressing the
     // "Write the File" button (the display flag was set), do not write the file.
-    if (!calledFromCallback) {
-        if (lockInputs(context) >= UT_ERROR_ABORT)
+    if(!calledFromCallback) {
+        if(lockInputs(context) >= UT_ERROR_ABORT)
             throw SOP_RF_Export_Exception(canNotLockInputsInWriteBINFile, exceptionError);
 
         // Duplicate the geometry from the first input
@@ -81,7 +81,7 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context &context)
     // If not called by the callback (to write the file, duplicate incoming geo so the attributes can be found
     // without having to turn on the OP's display flag
     else {
-        if (lockInputs(context) >= UT_ERROR_ABORT)
+        if(lockInputs(context) >= UT_ERROR_ABORT)
             throw SOP_RF_Export_Exception(canNotLockInputsInWriteBINFile, exceptionError);
 
         // Duplicate the geometry from the first input
@@ -134,7 +134,7 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context &context)
         #define ELASTICS 7
         */
 
-        switch (myFluidType) {
+        switch(myFluidType) {
         case 0:
             myFluidType = 1;
             break;
@@ -175,7 +175,7 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context &context)
 
         frame_offset = abs(int(myBeginEnd[0]));
 
-        if (int(myBeginEnd[0]) < 0) {
+        if(int(myBeginEnd[0]) < 0) {
             start_frame = int(myBeginEnd[0]) + frame_offset;
             end_frame = int(myBeginEnd[1]) + frame_offset;
         } else {
@@ -224,17 +224,17 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context &context)
         std::string tmp_str((const char *)myFileName) ;
 
         int found=tmp_str.find_last_of("0123456789");
-        while (found!=string::npos) {
+        while(found!=string::npos) {
             tmp_str[found]='0';
             found=tmp_str.find_first_of("0123456789",found+1);
         }
 
         // Open the Real Flow particle BIN2 file
-        if (myRFBINFile->open_part_file((char *)tmp_str.c_str(), RF_FILE_WRITE))
+        if(myRFBINFile->open_part_file((char *)tmp_str.c_str(), RF_FILE_WRITE))
             throw SOP_RF_Export_Exception(writeBINFileOpenRFFileErr, exceptionError);
 
         // Write Real Flow particle BIN2 header
-        if (myRFBINFile->write_part_file_header())
+        if(myRFBINFile->write_part_file_header())
             throw SOP_RF_Export_Exception(canNotBINFileWriteHeaderFrame0, exceptionError);
 
 //    // Write the "additional data" record
@@ -242,7 +242,7 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context &context)
 //      throw SOP_RF_Export_Exception(canNotWriteTheAdditionalDataSectionFrame0, exceptionError);
 
         // Close the Real Flow particle file
-        if (myRFBINFile->close_part_file(RF_FILE_WRITE))
+        if(myRFBINFile->close_part_file(RF_FILE_WRITE))
             throw SOP_RF_Export_Exception(canNotCloseTheRealFlowBINFileFrame0, exceptionError);
 
 
@@ -250,15 +250,15 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context &context)
         GA_ROHandleV3       v_h(gdp, GEO_POINT_DICT, "v");
         GA_RWHandleV3       p_h(gdp->getP());
 
-        if (v_h.isValid() && p_h.isValid()) {
-            for (GA_Iterator it(gdp->getPointRange()); !it.atEnd(); ++it)
+        if(v_h.isValid() && p_h.isValid()) {
+            for(GA_Iterator it(gdp->getPointRange()); !it.atEnd(); ++it)
                 p_h.add(it.getOffset(), v_h.get(it.getOffset()) * timestep);
         }
 
 
 
         // For each frame in our animation ...
-        for (cur_frame = start_frame; cur_frame <= end_frame; cur_frame++) {
+        for(cur_frame = start_frame; cur_frame <= end_frame; cur_frame++) {
 
             boss->opStart("Exporting Geometry");
 
@@ -267,14 +267,14 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context &context)
             // Set the current frame
             context.setFrame((long)cur_frame);
 
-            if (lockInputs(context) >= UT_ERROR_ABORT)
+            if(lockInputs(context) >= UT_ERROR_ABORT)
                 throw SOP_RF_Export_Exception(couldNotLockInputInWriteBINFile, exceptionError);
 
-            if (boss->opInterrupt())
+            if(boss->opInterrupt())
                 throw SOP_RF_Export_Exception(cookInterrupted, exceptionWarning);
 
             // Check to see that there hasn't been a critical error in cooking the SOP.
-            if (error() < UT_ERROR_ABORT) {
+            if(error() < UT_ERROR_ABORT) {
 
                 // Get current time and duplicate the geometry
                 now = context.getTime();
@@ -342,79 +342,79 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context &context)
                 part_num = myRFBINFile->part_header.num_particles;
 
                 // Open the Real Flow particle BIN2 file
-                if (myRFBINFile->open_part_file((char *)myFileName, RF_FILE_WRITE))
+                if(myRFBINFile->open_part_file((char *)myFileName, RF_FILE_WRITE))
                     throw SOP_RF_Export_Exception(canNotOpenTheRealFlowParticleBINFile, exceptionError);
 
                 // Write the header record
-                if (myRFBINFile->write_part_file_header())
+                if(myRFBINFile->write_part_file_header())
                     throw SOP_RF_Export_Exception(canNotWriteHeaderParticleBINFile, exceptionError);
 
 
-                GA_FOR_ALL_GPOINTS_NC (gdp, GEO_Point, ppt) {
+                GA_FOR_ALL_GPOINTS_NC(gdp, GEO_Point, ppt) {
 
-                    if (boss->opInterrupt())
+                    if(boss->opInterrupt())
                         throw SOP_RF_Export_Exception(cookInterrupted, exceptionWarning);
 
 
 
                     v_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "v", 3);
-                    if (v_ref.isInvalid())
+                    if(v_ref.isInvalid())
                         throw SOP_RF_Export_Exception(invalidAttrHandleVel, exceptionError);
 
                     force_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "force", 3);
-                    if (force_ref.isInvalid())
+                    if(force_ref.isInvalid())
                         throw SOP_RF_Export_Exception(invalidAttrHandleForce, exceptionError);
 
                     N_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "N", 3);
-                    if (N_ref.isInvalid())
+                    if(N_ref.isInvalid())
                         throw SOP_RF_Export_Exception(invalidAttrHandleNormal, exceptionError);
 
                     vorticity_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "vorticity", 3, 3);
-                    if (vorticity_ref.isInvalid())
+                    if(vorticity_ref.isInvalid())
                         throw SOP_RF_Export_Exception(invalidAttrHandleVorticity, exceptionError);
 
                     uv_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "uv", 3);
-                    if (uv_ref.isInvalid())
+                    if(uv_ref.isInvalid())
                         throw SOP_RF_Export_Exception(invalidAttrHandleUV, exceptionError);
 
                     info_bits_ref = gdp->findIntTuple(GA_ATTRIB_POINT, "info_bits", 1, 1);
-                    if (info_bits_ref.isInvalid())
+                    if(info_bits_ref.isInvalid())
                         throw SOP_RF_Export_Exception(invalidAttrHandleInfoBits, exceptionError);
 
                     age_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "age", 1, 1);
-                    if (age_ref.isInvalid())
+                    if(age_ref.isInvalid())
                         throw SOP_RF_Export_Exception(invalidAttrHandleAge, exceptionError);
 
                     isolation_time_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "isolation_time", 1, 1);
-                    if (isolation_time_ref.isInvalid())
+                    if(isolation_time_ref.isInvalid())
                         throw SOP_RF_Export_Exception(invalidAttrHandleIsolation, exceptionError);
 
                     viscosity_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "rf_viscosity", 1, 1);
-                    if (viscosity_ref.isInvalid())
+                    if(viscosity_ref.isInvalid())
                         throw SOP_RF_Export_Exception(invalidAttrHandleViscosity, exceptionError);
 
                     pressure_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "pressure", 1, 1);
-                    if (pressure_ref.isInvalid())
+                    if(pressure_ref.isInvalid())
                         throw SOP_RF_Export_Exception(invalidAttrHandlePressure, exceptionError);
 
                     density_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "rf_density", 1, 1);
-                    if (density_ref.isInvalid())
+                    if(density_ref.isInvalid())
                         throw SOP_RF_Export_Exception(invalidAttrHandleDensity, exceptionError);
 
                     mass_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "mass", 1, 1);
-                    if (mass_ref.isInvalid())
+                    if(mass_ref.isInvalid())
                         throw SOP_RF_Export_Exception(invalidAttrHandleMass, exceptionError);
 
                     temperature_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "temperature", 1, 1);
-                    if (temperature_ref.isInvalid())
+                    if(temperature_ref.isInvalid())
                         throw SOP_RF_Export_Exception(invalidAttrHandleTemperature, exceptionError);
 
                     num_neighbors_ref = gdp->findIntTuple(GA_ATTRIB_POINT, "num_neighbors", 1, 1);
-                    if (num_neighbors_ref.isInvalid())
+                    if(num_neighbors_ref.isInvalid())
                         throw SOP_RF_Export_Exception(invalidAttrHandleNumNeighbors, exceptionError);
 
                     id_ref = gdp->findIntTuple(GA_ATTRIB_POINT, "id", 1, 1);
-                    if (id_ref.isInvalid())
+                    if(id_ref.isInvalid())
                         throw SOP_RF_Export_Exception(invalidAttrHandleID, exceptionError);
 
                     // Set the particle data structure
@@ -462,7 +462,7 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context &context)
                     myRFBINFile->part_data.id = static_cast<int>(ppt->getValue<int>(id_ref));
 
                     // Write particle data to disk
-                    if (myRFBINFile->write_part_data())
+                    if(myRFBINFile->write_part_data())
                         throw SOP_RF_Export_Exception(canNotWriteParticleDataToBINFile, exceptionError);
                 }
 
@@ -471,7 +471,7 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context &context)
 //               throw SOP_RF_Export_Exception(canNotWriteTheAdditionalDataSection, exceptionError);
 
                 // We're done, close the file
-                if (myRFBINFile->close_part_file(RF_FILE_WRITE))
+                if(myRFBINFile->close_part_file(RF_FILE_WRITE))
                     throw SOP_RF_Export_Exception(canNotCloseTheRealFlowBINFile, exceptionError);
 
             }
@@ -485,21 +485,21 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context &context)
     }
 
 // Exception handler
-    catch (SOP_RF_Export_Exception e) {
+    catch(SOP_RF_Export_Exception e) {
         e.what();
 
-        if (e.getSeverity() == exceptionWarning)
+        if(e.getSeverity() == exceptionWarning)
             addWarning(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
-        else if (e.getSeverity() == exceptionError)
+        else if(e.getSeverity() == exceptionError)
             addError(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
 
         boss->opEnd();
         unlockInputs();
         context.setFrame((long)save_frame);
 
-        if (myRFBINFile->RFPartofstream.is_open()) {
+        if(myRFBINFile->RFPartofstream.is_open()) {
             // Close the RF particle file
-            if (myRFBINFile->close_part_file(RF_FILE_WRITE)) {
+            if(myRFBINFile->close_part_file(RF_FILE_WRITE)) {
                 addError(SOP_MESSAGE, "Can't close Real Flow particle file after SOP_RF_Export_Exception exception was thrown");
                 return error();
             }

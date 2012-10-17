@@ -40,15 +40,15 @@
 
 using namespace dca;
 
-RealFlow_SD_File *mySDFile;
+RealFlow_SD_File * mySDFile;
 
-void 	read_sd_file(char *file_name);
-void	dump_header();
-void	dump_objects();
-void	dump_cam_header();
-void	dump_frames();
+void  read_sd_file(char * file_name);
+void  dump_header();
+void  dump_objects();
+void  dump_cam_header();
+void  dump_frames();
 
-#define	MAX_NUM_OBJECTS 128
+#define  MAX_NUM_OBJECTS 128
 int     vertices_array[maxNumObjects];
 
 
@@ -65,7 +65,7 @@ int     vertices_array[maxNumObjects];
 *  Return Value :
 *
 ***************************************************************************** */
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
 
 // std::cout.precision(12);
@@ -96,13 +96,13 @@ int main(int argc, char *argv[])
 *  Return Value :
 *
 ***************************************************************************** */
-void read_sd_file(char *file_name)
+void read_sd_file(char * file_name)
 {
 
     mySDFile->myFileName.clear();
     mySDFile->myFileName.assign((const char *)file_name);
 
-    if (mySDFile->openSDFile(0)) {
+    if(mySDFile->openSDFile(0)) {
         std::cout << "Error opening file" << std::endl;
         return;
     }
@@ -114,7 +114,7 @@ void read_sd_file(char *file_name)
     dump_cam_header();
     dump_frames();
 
-    if (mySDFile->closeSDFile(0)) {
+    if(mySDFile->closeSDFile(0)) {
         std::cout << "Error closing file" << std::endl;
         return;
     }
@@ -147,14 +147,14 @@ void dump_header()
     std::cout << "->>>>>> file pos: " << mySDFile->SDifstream.tellg() << std::endl;
 
     std::cout << "file id: ";
-    for (i=0; i < 30; i++)
+    for(i=0; i < 30; i++)
         std::cout << mySDFile->myRF_SD_Header.file_id[i];
 
     std::cout << std::endl;
 
     std::cout << "version: " << mySDFile->myRF_SD_Header.version << std::endl;
 
-    if (mySDFile->myRF_SD_Header.version >= 5) {
+    if(mySDFile->myRF_SD_Header.version >= 5) {
         std::cout << "header_chk_size: " <<
                   mySDFile->myRF_SD_Header.header_chk_size << std::endl;
         std::cout << "frame_chk_size: " <<
@@ -192,12 +192,12 @@ void dump_header()
 
 void dump_objects()
 {
-    int 		obj_num;
-    int			i,j;
+    int     obj_num;
+    int        i,j;
 
     std::cout << std::endl << "Dumping objects " << std::endl << std::endl;
 
-    for (obj_num=0; obj_num < mySDFile->myRF_SD_Header.num_objects; obj_num++) {
+    for(obj_num=0; obj_num < mySDFile->myRF_SD_Header.num_objects; obj_num++) {
         std::cout << std::endl << "Object Number: " << obj_num + 1 << std::endl;
 
         // Read the SD file obj header
@@ -206,7 +206,7 @@ void dump_objects()
 
         std::cout << std::endl << "Object Header: " << std::endl;
 
-        if (mySDFile->myRF_SD_Obj_Header.obj_mode == 0)
+        if(mySDFile->myRF_SD_Obj_Header.obj_mode == 0)
             std::cout << "obj_mode: matrix mode " << std::endl;
         else
             std::cout << "obj_mode: vertex mode " << std::endl;
@@ -218,16 +218,16 @@ void dump_objects()
                   mySDFile->myRF_SD_Obj_Header.obj_name_len << std::endl;
 
         std::cout << "obj_name: ";
-        for (i=0; i < mySDFile->myRF_SD_Obj_Header.obj_name_len; i++)
+        for(i=0; i < mySDFile->myRF_SD_Obj_Header.obj_name_len; i++)
             std::cout << mySDFile->myRF_SD_Obj_Header.obj_name[i];
         std::cout << std::endl;
 
-        if (mySDFile->myRF_SD_Header.version >= 3) {
+        if(mySDFile->myRF_SD_Header.version >= 3) {
             std::cout << "obj_tex_len: " <<
                       mySDFile->myRF_SD_Obj_Header.obj_tex_len << std::endl;
 
             std::cout << "obj_tex_name: ";
-            for (i=0; i < mySDFile->myRF_SD_Obj_Header.obj_tex_len; i++)
+            for(i=0; i < mySDFile->myRF_SD_Obj_Header.obj_tex_len; i++)
                 std::cout << mySDFile->myRF_SD_Obj_Header.obj_tex_name[i];
             std::cout << std::endl;
         }
@@ -240,7 +240,7 @@ void dump_objects()
         std::cout << std::endl << "Vertex Data: " << std::endl;
 
         // For each vertex, read it's coordinates
-        for (i=0; i < mySDFile->myRF_SD_Obj_Header.num_vertices; i++) {
+        for(i=0; i < mySDFile->myRF_SD_Obj_Header.num_vertices; i++) {
 
             // Read the face coordinates
             mySDFile->readSDFaceCoord();
@@ -255,7 +255,7 @@ void dump_objects()
         std::cout << std::endl << "Face Data: " << std::endl;
 
         // For each face, read it's index
-        for (int cur_face=0; cur_face < mySDFile->myRF_SD_Obj_Header.num_faces; cur_face++) {
+        for(int cur_face=0; cur_face < mySDFile->myRF_SD_Obj_Header.num_faces; cur_face++) {
 
             // Read the face vertex index
             mySDFile->readSDFaceIndex();
@@ -271,13 +271,13 @@ void dump_objects()
                       << mySDFile->myRF_SD_Face_Data.vertex_idx[2] << std::endl;
 
             // Read the UVW values (version >= 3)
-            if (mySDFile->myRF_SD_Header.version >= 3) {
+            if(mySDFile->myRF_SD_Header.version >= 3) {
                 mySDFile->readSDFaceTexture();
 //std::cout << "->>>>>> file pos: " << mySDFile->SDifstream.tellg() << std::endl;
 
-                for (i = 0; i < 3; i++) {
+                for(i = 0; i < 3; i++) {
                     std::cout << "vertex texture coords: ";
-                    for (j=0; j < 3; j++)
+                    for(j=0; j < 3; j++)
                         std::cout << mySDFile->myRF_SD_Face_Data.vertex_tex[i][j]
                                   << "\t";
                     std::cout << std::endl;
@@ -289,7 +289,7 @@ void dump_objects()
 //std::cout << "->>>>>> file pos: " << mySDFile->SDifstream.tellg() << std::endl;
 
             std::cout << "vertex visibility flags: ";
-            for (i = 0; i < 3; i++)
+            for(i = 0; i < 3; i++)
                 std::cout << mySDFile->myRF_SD_Face_Data.visible[i] << " ";
             std::cout << std::endl;
 
@@ -298,7 +298,7 @@ void dump_objects()
 //std::cout << "->>>>>> file pos: " << mySDFile->SDifstream.tellg() << std::endl;
 
             std::cout << "face material indices: ";
-            for (i = 0; i < 3; i++)
+            for(i = 0; i < 3; i++)
                 std::cout << mySDFile->myRF_SD_Face_Data.mat_idx << " ";
             std::cout << std::endl;
         }
@@ -323,7 +323,7 @@ void dump_objects()
 void dump_cam_header()
 {
 
-    if (mySDFile->myRF_SD_Header.cam_data) {
+    if(mySDFile->myRF_SD_Header.cam_data) {
         std::cout << std::endl << "Dumping camera header" << std::endl << std::endl;
 
         mySDFile->readSDCamData();
@@ -358,11 +358,11 @@ void dump_frames()
 {
     int i, cur_frame = 0, obj_num, CurrentFrame;
 
-    if (mySDFile->myRF_SD_Header.end_frame >= mySDFile->myRF_SD_Header.beg_frame) {
+    if(mySDFile->myRF_SD_Header.end_frame >= mySDFile->myRF_SD_Header.beg_frame) {
 
         std::cout << std::endl << std::endl << "Dumping frames" << std::endl;
 
-        for (cur_frame = mySDFile->myRF_SD_Header.beg_frame;
+        for(cur_frame = mySDFile->myRF_SD_Header.beg_frame;
                 cur_frame <= (mySDFile->myRF_SD_Header.end_frame - mySDFile->myRF_SD_Header.beg_frame);
                 cur_frame ++) {
 
@@ -373,18 +373,18 @@ void dump_frames()
 
             std::cout << std::endl << "Current SD File frame number: " << CurrentFrame << std::endl;
 
-            for (obj_num = 0; obj_num < mySDFile->myRF_SD_Header.num_objects; obj_num++) {
+            for(obj_num = 0; obj_num < mySDFile->myRF_SD_Header.num_objects; obj_num++) {
 
                 std::cout << std::endl << "Object Number: " << obj_num + 1 << std::endl;
 
                 mySDFile->readSDObjFrameHdr();
                 std::cout << "->>>>>> file pos: " << mySDFile->SDifstream.tellg() << std::endl;
 
-                if (mySDFile->myRF_SD_Header.version >= 5) {
+                if(mySDFile->myRF_SD_Header.version >= 5) {
                     std::cout << "obj_name_len: " << mySDFile->myRF_SD_Obj_Frame_Header.obj_name_len << std::endl;
 
                     std::cout << "obj_name: ";
-                    for (i=0; i < mySDFile->myRF_SD_Obj_Frame_Header.obj_name_len; i++)
+                    for(i=0; i < mySDFile->myRF_SD_Obj_Frame_Header.obj_name_len; i++)
                         std::cout << mySDFile->myRF_SD_Obj_Frame_Header.obj_name[i];
                     std::cout << std::endl;
                 }
@@ -411,50 +411,50 @@ void dump_frames()
                 std::cout << std::endl;
 
                 std::cout << "Translation Vector: " << std::endl;
-                for (i=0; i < 3; i++)
+                for(i=0; i < 3; i++)
                     std::cout << mySDFile->myRF_SD_Obj_Frame_Header.obj_trans_vec[i] << "\t";
                 std::cout << std::endl;
 
                 std::cout << "Rotation Vector: " << std::endl;
-                for (i=0; i < 3; i++)
+                for(i=0; i < 3; i++)
                     std::cout << mySDFile->myRF_SD_Obj_Frame_Header.obj_rot_vec[i] * RAD2DEG << "\t";
                 std::cout << std::endl;
 
                 std::cout << "Scale Vector: " << std::endl;
-                for (i=0; i < 3; i++)
+                for(i=0; i < 3; i++)
                     std::cout << mySDFile->myRF_SD_Obj_Frame_Header.obj_scale_vec[i] << "\t";
                 std::cout << std::endl;
 
                 std::cout << "Pivot Position: " << std::endl;
-                for (i=0; i < 3; i++)
+                for(i=0; i < 3; i++)
                     std::cout << mySDFile->myRF_SD_Obj_Frame_Header.obj_pivot_pos[i] << "\t";
                 std::cout << std::endl << std::endl;
 
 
                 // Dump CG information (version >=4)
-                if (mySDFile->myRF_SD_Header.version >= 4) {
+                if(mySDFile->myRF_SD_Header.version >= 4) {
 
                     std::cout << "CG Position: " << std::endl;
-                    for (i=0; i < 3; i++)
+                    for(i=0; i < 3; i++)
                         std::cout << mySDFile->myRF_SD_Obj_Frame_Header.obj_CG_pos[i] << "\t";
                     std::cout << std::endl;
 
                     std::cout << "CG Velocity: " << std::endl;
-                    for (i=0; i < 3; i++)
+                    for(i=0; i < 3; i++)
                         std::cout << mySDFile->myRF_SD_Obj_Frame_Header.obj_CG_vel[i] << "\t";
                     std::cout << std::endl;
 
                     std::cout << "CG Rotation: " << std::endl;
-                    for (i=0; i < 3; i++)
+                    for(i=0; i < 3; i++)
                         std::cout << mySDFile->myRF_SD_Obj_Frame_Header.obj_CG_rot[i] << "\t";
                     std::cout << std::endl << std::endl;
                 }
 
 
                 // If vertex mode, dump coordinates
-                if (mySDFile->myRF_SD_Obj_Header.obj_mode) {
+                if(mySDFile->myRF_SD_Obj_Header.obj_mode) {
 
-                    for (i=0; i < vertices_array[obj_num]; i++) {
+                    for(i=0; i < vertices_array[obj_num]; i++) {
 
                         std::cout << "vertex  number: " << i + 1 << " of " << vertices_array[obj_num] << " vertices " << std::endl;
 
@@ -473,28 +473,28 @@ void dump_frames()
             }
 
             // Read the camera data
-            if (mySDFile->myRF_SD_Header.cam_data) {
+            if(mySDFile->myRF_SD_Header.cam_data) {
 
                 mySDFile->readSDCamFrameData();
                 std::cout << "->>>>>> file pos: " << mySDFile->SDifstream.tellg() << std::endl;
 
                 std::cout << "Camera Transform: " << std::endl;
-                for (i= 0; i < 16; i++)
+                for(i= 0; i < 16; i++)
                     std::cout << mySDFile->myRF_SD_Cam_Frame_Data.cam_world_xform[i] << "\t";
                 std::cout << std::endl;
 
                 std::cout << "Camera World Position: " << std::endl;
-                for (i= 0; i < 3; i++)
+                for(i= 0; i < 3; i++)
                     std::cout << mySDFile->myRF_SD_Cam_Frame_Data.cam_world_pos[i] << "\t";
                 std::cout << std::endl;
 
                 std::cout << "Camera Look At Position: " << std::endl;
-                for (i= 0; i < 3; i++)
+                for(i= 0; i < 3; i++)
                     std::cout << mySDFile->myRF_SD_Cam_Frame_Data.cam_look_at_pos[i] << "\t";
                 std::cout << std::endl;
 
                 std::cout << "Camera Up Vector: " << std::endl;
-                for (i= 0; i < 3; i++)
+                for(i= 0; i < 3; i++)
                     std::cout << mySDFile->myRF_SD_Cam_Frame_Data.cam_up_vector[i] << "\t";
                 std::cout << std::endl;
 

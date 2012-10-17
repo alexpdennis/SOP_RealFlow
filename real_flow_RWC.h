@@ -31,14 +31,16 @@
 #include <fstream>
 #include <string>
 
-namespace dca {
+namespace dca
+{
 
 #ifndef RF_FILE_READ
 #define RF_FILE_READ 0
 #define RF_FILE_WRITE 1
 #endif
 
-class RF_RWC_Exception {
+class RF_RWC_Exception
+{
     std::string e_msg;
 
 public:
@@ -50,23 +52,24 @@ public:
 };
 
 
-class RealFlow_RWC_File {
+class RealFlow_RWC_File
+{
 public:
     RealFlow_RWC_File();
     ~RealFlow_RWC_File();
 
     struct rf_RWC_header {
-        unsigned int	version;    // version = 3
-        bool			   use_magic_num;
-        unsigned int	ID_code;    // ID code = 0xFAFAFAFA
+        unsigned int version;    // version = 3
+        bool            use_magic_num;
+        unsigned int ID_code;    // ID code = 0xFAFAFAFA
         double         RW_pos_X;
         double         RW_pos_Y;
         double         RW_pos_Z;
         double         RW_rot_X;
         double         RW_rot_Y;
         double         RW_rot_Z;
-        long int			num_X_vtx;
-        long int			num_Z_vtx;
+        long int        num_X_vtx;
+        long int        num_Z_vtx;
     } RWC_header;
 
     struct rf_RWC_vertex_data {
@@ -81,7 +84,7 @@ public:
         double   Z;
     } RWC_vel_data;
 
-    int     openRWCFile(const char *file_name, int mode);
+    int     openRWCFile(const char * file_name, int mode);
     int     readRWCFileHeader();
     int     readRWCData();
     int     writeRWCFileHeader();

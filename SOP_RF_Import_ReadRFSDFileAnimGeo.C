@@ -31,20 +31,20 @@
 *  Return Value : int
 *
 ***************************************************************************** */
-inline int SOP_RF_Import::ReadRFSDCreateAnimGeo(UT_Interrupt *boss)
+inline int SOP_RF_Import::ReadRFSDCreateAnimGeo(UT_Interrupt * boss)
 {
 
     UT_XformOrder xformOrder(UT_XformOrder::SRT);
     UT_Matrix4 work_matrix;
-    GEO_Point *ppt;
+    GEO_Point * ppt;
 
     try {
 
         // For each object in the SD file, read it's frame header and geometry
-        for (int cur_object = 0; cur_object < myRFSDFile->myRF_SD_Header.num_objects; cur_object++) {
+        for(int cur_object = 0; cur_object < myRFSDFile->myRF_SD_Header.num_objects; cur_object++) {
 
             // read the object's frame header data
-            if (myRFSDFile->readSDObjFrameHdr())
+            if(myRFSDFile->readSDObjFrameHdr())
                 throw SOP_RF_Import_Exception(canNotReadSDObjectFrameHeader, exceptionError);
 
 
@@ -52,32 +52,32 @@ inline int SOP_RF_Import::ReadRFSDCreateAnimGeo(UT_Interrupt *boss)
             std::cout << "obj_name_len: " << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_name_len << std::endl;
             std::cout << "Object Name: " << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_name << std::endl;
             std::cout << "Object Transform:" << std::endl;
-            for (int i=0; i < 12; i++) std::cout << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_world_xform[i] << "\t";
+            for(int i=0; i < 12; i++) std::cout << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_world_xform[i] << "\t";
             std::cout << std::endl;
             std::cout << "Translation Vector: " << std::endl;
-            for (int i=0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_trans_vec[i] << "\t";
+            for(int i=0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_trans_vec[i] << "\t";
             std::cout << std::endl;
             std::cout << "Rotation Vector: " << std::endl;
-            for (int i=0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_rot_vec[i] << "\t";
+            for(int i=0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_rot_vec[i] << "\t";
             std::cout << std::endl;
             std::cout << "Scale Vector: " << std::endl;
-            for (int i=0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_scale_vec[i] << "\t";
+            for(int i=0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_scale_vec[i] << "\t";
             std::cout << std::endl;
             std::cout << "Pivot Position: " << std::endl;
-            for (int i=0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_pivot_pos[i] << "\t";
+            for(int i=0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_pivot_pos[i] << "\t";
             std::cout << std::endl << std::endl;
             std::cout << "CG Position: " << std::endl;
-            for (int i=0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_pos[i] << "\t";
+            for(int i=0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_pos[i] << "\t";
             std::cout << std::endl;
             std::cout << "CG Velocity: " << std::endl;
-            for (int i=0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_vel[i] << "\t";
+            for(int i=0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_vel[i] << "\t";
             std::cout << std::endl;
             std::cout << "CG Rotation: " << std::endl;
-            for (int i=0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_rot[i] << "\t";
+            for(int i=0; i < 3; i++) std::cout << myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_rot[i] << "\t";
             std::cout << std::endl << std::endl;
 #endif
 
-            if (myGUIState.t_sd_cg) {
+            if(myGUIState.t_sd_cg) {
                 work_matrix.identity();
                 work_matrix.xform(xformOrder,
                                   myRFSDFile->myRF_SD_Obj_Frame_Header.obj_trans_vec[0],
@@ -96,7 +96,7 @@ inline int SOP_RF_Import::ReadRFSDCreateAnimGeo(UT_Interrupt *boss)
                 gdp->transformPoints(work_matrix, (const GA_PointGroup *)objPrimitiveGrpList[cur_object]);
             }
 
-            if (myGUIState.t_sd_cg_xform) {
+            if(myGUIState.t_sd_cg_xform) {
                 work_matrix.identity();
                 work_matrix.xform(xformOrder,
                                   myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_pos[0],
@@ -119,19 +119,19 @@ inline int SOP_RF_Import::ReadRFSDCreateAnimGeo(UT_Interrupt *boss)
             GA_RWHandleV3 attrVector3Handle;
 
             // If the user wants the CG data, add it to the geo detail
-            if (myGUIState.t_sd_cg) {
+            if(myGUIState.t_sd_cg) {
 
-                if (myAttributeRefs.sd_CG_pos.isValid()) {
+                if(myAttributeRefs.sd_CG_pos.isValid()) {
                     attrVector3Handle.bind(myAttributeRefs.sd_CG_pos.getAttribute());
                     attrVector3Handle.set(0, UT_Vector3(myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_pos));
                 }
 
-                if (myAttributeRefs.sd_CG_vel.isValid()) {
+                if(myAttributeRefs.sd_CG_vel.isValid()) {
                     attrVector3Handle.bind(myAttributeRefs.sd_CG_vel.getAttribute());
                     attrVector3Handle.set(0, UT_Vector3(myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_vel));
                 }
 
-                if (myAttributeRefs.sd_CG_rot.isValid()) {
+                if(myAttributeRefs.sd_CG_rot.isValid()) {
                     attrVector3Handle.bind(myAttributeRefs.sd_CG_rot.getAttribute());
                     attrVector3Handle.set(0, UT_Vector3(myRFSDFile->myRF_SD_Obj_Frame_Header.obj_CG_rot));
                 }
@@ -140,9 +140,9 @@ inline int SOP_RF_Import::ReadRFSDCreateAnimGeo(UT_Interrupt *boss)
 
 
             // If vertex mode, update coordinates
-            if (myRFSDFile->myRF_SD_Obj_Header.obj_mode) {
+            if(myRFSDFile->myRF_SD_Obj_Header.obj_mode) {
 
-                for (int cur_point=0; cur_point < myRFSDFile->obj_detail[cur_object].num_points; cur_point++) {
+                for(int cur_point=0; cur_point < myRFSDFile->obj_detail[cur_object].num_points; cur_point++) {
 
 #ifdef DEBUG
                     std::cout << "vertex number: " << cur_point + 1 << " of "
@@ -150,7 +150,7 @@ inline int SOP_RF_Import::ReadRFSDCreateAnimGeo(UT_Interrupt *boss)
                               << " vertices " << std::endl;
 #endif
 
-                    if ( myRFSDFile->readSDFaceCoord())
+                    if(myRFSDFile->readSDFaceCoord())
                         throw SOP_RF_Import_Exception(canNotReadSDAnimFaceData, exceptionError);
 
 #ifdef DEBUG
@@ -161,7 +161,7 @@ inline int SOP_RF_Import::ReadRFSDCreateAnimGeo(UT_Interrupt *boss)
 #endif
 
                     // update points
-                    if (boss->opInterrupt())
+                    if(boss->opInterrupt())
                         throw SOP_RF_Import_Exception(theSDAnimGeoCreationInterrupt, exceptionWarning);
 
                     myCurrPoint = cur_point;
@@ -169,7 +169,7 @@ inline int SOP_RF_Import::ReadRFSDCreateAnimGeo(UT_Interrupt *boss)
                     // Get the current point to either update position
                     ppt = gdp->points().entry(cur_point);
 
-                    if (ppt == NULL)
+                    if(ppt == NULL)
                         throw SOP_RF_Import_Exception(theSDAnimGeoCreationPointNULL, exceptionError);
 
 #ifdef DEBUG
@@ -189,15 +189,15 @@ inline int SOP_RF_Import::ReadRFSDCreateAnimGeo(UT_Interrupt *boss)
         } // if vertex mode
 
 
-    } catch (SOP_RF_Import_Exception e) {
+    } catch(SOP_RF_Import_Exception e) {
         e.what();
 
-        if (e.getSeverity() == exceptionWarning)
+        if(e.getSeverity() == exceptionWarning)
             addWarning(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
-        else if (e.getSeverity() == exceptionError)
+        else if(e.getSeverity() == exceptionError)
             addError(SOP_MESSAGE, errorMsgs[e.getErrorCode()]);
 
-        if (myRFSDFile->SDifstream.is_open()) {
+        if(myRFSDFile->SDifstream.is_open()) {
             myRFSDFile->closeSDFile(RF_FILE_READ);
         }
 
