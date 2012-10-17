@@ -342,9 +342,9 @@ namespace dca
 
 
    /* ******************************************************************************
-   *  Function Name : readMeshTextureChunkCode()
+   *  Function Name : readMeshChunkCode()
    *
-   *  Description : Read the next texture chunk code
+   *  Description : Read the next chunk code
    *
    *
    *  Input Arguments : None
@@ -352,24 +352,38 @@ namespace dca
    *  Return Value : int
    *
    ***************************************************************************** */
-   inline int RealFlow_Mesh_File::readMeshTextureChunkCode()
+   inline int RealFlow_Mesh_File::readMeshChunkCode()
    {
 
 #ifdef DEBUG
-      std::cout << std::endl << "RealFlow_Mesh_File::readMeshTextureChunkCode() - Reading Mesh texture chunk code" << std::endl << std::endl;
+      std::cout << std::endl << "RealFlow_Mesh_File::readMeshChunkCode() - Reading Mesh chunk code" << std::endl << std::endl;
 #endif
 
       try {
+            unsigned int code = 0;
+            mesh_tex_data.code = 0;
+            mesh_vel_data.code = 0;
+
             // Read the chunk data
-            RFMeshifstream.read((char *) &mesh_tex_data.code, sizeof(unsigned int));
+            RFMeshifstream.read((char *) &code, sizeof(unsigned int));
+
+            if(code == 0xCCCCCC00) {
+                  // Found texture code
+                  mesh_tex_data.code = 0xCCCCCC00;
+               }
+            else
+               if(code == 0xCCCCCC11) {
+                     // Found velocity code
+                     mesh_vel_data.code = 0xCCCCCC11;
+                  }
 
 #ifdef DEBUG
-            std::cout << "texture chunk code  = " << std::hex <<  mesh_tex_data.code << std::dec << std::endl;
+            std::cout << "mesh chunk code  = " << std::hex <<  mesh_tex_data.code << std::dec << std::endl;
 #endif
 
          }
       catch(std::ios_base::failure & e) {
-            std::cerr << "RealFlow_Mesh_File::readMeshTextureChunkCode(): EXCEPTION: " << e.what() << std::endl;
+            std::cerr << "RealFlow_Mesh_File::readMeshChunkCode(): EXCEPTION: " << e.what() << std::endl;
             RFMeshifstream.clear();
             RFMeshifstream.close();
             return 1;
@@ -380,43 +394,6 @@ namespace dca
    }
 
 
-   /* ******************************************************************************
-   *  Function Name : readMeshVelocityChunkCode()
-   *
-   *  Description : Read the next velocity chunk code
-   *
-   *
-   *  Input Arguments : None
-   *
-   *  Return Value : int
-   *
-   ***************************************************************************** */
-   inline int RealFlow_Mesh_File::readMeshVelocityChunkCode()
-   {
-
-#ifdef DEBUG
-      std::cout << std::endl << "RealFlow_Mesh_File::readMeshVelocityChunkCode() - Reading Mesh velocity chunk code" << std::endl << std::endl;
-#endif
-
-      try {
-            // Read the chunk data
-            RFMeshifstream.read((char *) &mesh_vel_data.code, sizeof(unsigned int));
-
-#ifdef DEBUG
-            std::cout << "velocity chunk code  = " << std::hex << mesh_vel_data.code << std::dec << std::endl << std::endl;
-#endif
-
-         }
-      catch(std::ios_base::failure & e) {
-            std::cerr << "RealFlow_Mesh_File::readMeshVelocityChunkCode(): EXCEPTION: " << e.what() << std::endl;
-            RFMeshifstream.clear();
-            RFMeshifstream.close();
-            return 1;
-         }
-
-      return 0;
-
-   }
 
 
    /* ******************************************************************************
@@ -898,19 +875,21 @@ namespace dca
       float   a_float, texture_weight_sum;
 
       try {
-            texture_weight_sum = 0;
 
-            // For each fluid, calculate the contribution of each to the "texture weight".
-            for(i = 0; i <  mesh_tex_data.num_fluids - 1; i++) {
-                  RFMeshofstream.write((char *) &a_float, sizeof(float));
-                  mesh_tex_data.texture_weight[i]  = a_float;
-                  texture_weight_sum += mesh_tex_data.texture_weight[i];
+            // If more than one fluid, for each fluid, calculate the contribution of each to the "texture weight".
+            if(mesh_tex_data.num_fluids > 1) {
+                  texture_weight_sum = 0;
+                  for(i = 0; i <  mesh_tex_data.num_fluids - 1; i++) {
+                        RFMeshofstream.write((char *) &a_float, sizeof(float));
+                        mesh_tex_data.texture_weight[i]  = a_float;
+                        texture_weight_sum += mesh_tex_data.texture_weight[i];
+                        mesh_tex_data.texture_weight[mesh_tex_data.num_fluids - 1] = (1.0 - texture_weight_sum);
 
 #ifdef DEBUG
-                  std::cout << "mesh_tex_data.texture_weight[i] = " << mesh_tex_data.texture_weight[i] << std::endl;
+                        std::cout << "mesh_tex_data.texture_weight[i] = " << mesh_tex_data.texture_weight[i] << std::endl;
 #endif
+                     }
                }
-            mesh_tex_data.texture_weight[mesh_tex_data.num_fluids - 1] = (1.0 - texture_weight_sum);
 
             // Write texture coordinates
             RFMeshofstream.write((char *) &mesh_tex_data.W, sizeof(float));
@@ -1075,4 +1054,6 @@ namespace dca
 //
 //
 /**********************************************************************************/
+
+
 

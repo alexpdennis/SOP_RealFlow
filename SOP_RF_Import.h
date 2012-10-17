@@ -43,7 +43,7 @@
 
 using namespace dca;
 
-const std::string SOP_Version = "2.0.0";
+const std::string SOP_Version = "2.0.1";
 
 #define NUM_GUI_PARMS 28
 

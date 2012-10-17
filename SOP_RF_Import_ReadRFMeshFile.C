@@ -81,7 +81,7 @@ SOP_RF_Import::ReadRFMeshFile(OP_Context & context)
             boss->opStart("Importing Real Flow Mesh");
 
             // Open the Real Flow Mesh File
-            if(myRFMeshFile->openMeshFile((char *)myFileName))
+            if(myRFMeshFile->openMeshFile((const char *) myFileName, RF_FILE_READ))
                 throw SOP_RF_Import_Exception(canNotOpenRealFlowMeshFileForReading, exceptionError);
 
             // Read the header

@@ -98,8 +98,7 @@ public:
     int     readMeshVertexData();
     int     readMeshNumFaces();
     int     readMeshFaceData();
-    int     readMeshTextureChunkCode();
-    int     readMeshVelocityChunkCode();
+    int     readMeshChunkCode();
     int     readMeshNumFluids();
     int     readMeshTextureData();
     int     readMeshVelocityData();
