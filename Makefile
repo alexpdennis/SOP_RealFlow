@@ -73,7 +73,7 @@ archive_src:
 		dump_rf_sd.C dump_rf_part.C dump_rf_mesh.C dump_rf_rwc.C \
 		docs/	\
 		Makefile Doxyfile \
-		README.txt 
+		README.md 
 
 install:
 	cp SOP_RF_Import.so $(DCA_COMMON)/lib/houdini/dso_x86_64/
