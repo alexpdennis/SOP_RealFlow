@@ -168,10 +168,7 @@ SOP_RF_Import::ReadRFMeshFile(OP_Context & context)
                      if(myRFMeshFile->readMeshChunkCode(&chunk_code))
                         throw SOP_RF_Import_Exception(canNotReadTheMeshFileChunkCode, exceptionError);
 
-                     std::cout << "mesh chunk code  = " << std::hex <<  chunk_code << std::dec << std::endl;
-
                      switch(chunk_code)  {
-
 
                               // if texture chunk present, read the data and assign it to the point attribute
                            case 0xCCCCCC00:
@@ -180,12 +177,13 @@ SOP_RF_Import::ReadRFMeshFile(OP_Context & context)
                               if(myRFMeshFile->readMeshNumFluids())
                                  throw SOP_RF_Import_Exception(canNotReadTheMeshFileNumFluids, exceptionError);
 
-
                               // If the user wants to import the texture data, add the uv and texture weight attributes,
                               // and add number of fluids to the geo detail
                               char attr_str[12];
 
                               if(t_texture) {
+                                    // Add the point texture "uv" attribute
+                                    m_texture_uv = gdp->addFloatTuple(GA_ATTRIB_POINT, "uv", 3);
 
                                     // Set the number of fluids attribute for this mesh in the geometry detail
                                     attrRef = gdp->addFloatTuple(GA_ATTRIB_DETAIL, "num_fluids", 1);
@@ -193,22 +191,14 @@ SOP_RF_Import::ReadRFMeshFile(OP_Context & context)
                                           attrFloatHandle.bind(attrRef.getAttribute());
                                           attrFloatHandle.set(0, (float)myRFMeshFile->mesh_tex_data.num_fluids);
                                        }
+
+                                    // TODO: Get rid of this sprintf()!
+                                    // Loop for number of fluids, build the attribute name string, then create the point attribute with those names
+                                    for(int i = 0; i < myRFMeshFile->mesh_tex_data.num_fluids; i++) {
+                                          sprintf(attr_str, "text_wght%i", i);
+                                          m_text_wght[i]  = gdp->addFloatTuple(GA_ATTRIB_POINT, attr_str, 1);
+                                       }
                                  }
-
-                              // Add the point texture "uv" attribute
-                              if(t_texture)
-                                 m_texture_uv = gdp->addFloatTuple(GA_ATTRIB_POINT, "uv", 3);
-
-                              // TODO: Get rid of this sprintf()!
-                              // Loop for number of fluids, build the attribute name string, then create the point attribute with those names
-                              for(int i = 0; i < myRFMeshFile->mesh_tex_data.num_fluids; i++) {
-                                    sprintf(attr_str, "text_wght%i", i);
-                                    m_text_wght[i]  = gdp->addFloatTuple(GA_ATTRIB_POINT, attr_str, 1);
-                                 }
-
-#ifdef DEBUG
-                              std::cout << "ReadRFMeshFile(): Set num of fluids in geo detail" << endl;
-#endif
 
                               // For all the vertices in the geometry, get the texture data
                               for(i = 0; i < myRFMeshFile->mesh_vertex_data.num_vertices; i++) {
@@ -221,12 +211,8 @@ SOP_RF_Import::ReadRFMeshFile(OP_Context & context)
                                     if(myRFMeshFile->readMeshTextureData())
                                        throw SOP_RF_Import_Exception(canNotReadTheMeshFileTextureData, exceptionError);
 
-                                    // If the user want's texture data, assign it to the
-                                    // vertex's point attribute.
-                                    // Get the point and the pointer to the texure attribute
-
+                                    // If the user want's texture data, assign it to the vertex's point attribute.
                                     if(t_texture) {
-
                                           ppt = gdp->points().entry(i);
 
                                           attrVector3Handle.bind(m_texture_uv.getAttribute());
@@ -234,13 +220,14 @@ SOP_RF_Import::ReadRFMeshFile(OP_Context & context)
                                                                    (float)myRFMeshFile->mesh_tex_data.U,
                                                                    (float) myRFMeshFile->mesh_tex_data.V,
                                                                    (float) myRFMeshFile->mesh_tex_data.W));
+
+                                          // Set the texture weight values
+                                          for(int j = 0; j < (float) myRFMeshFile->mesh_tex_data.num_fluids; j++) {
+                                                attrFloatHandle.bind(m_text_wght[j].getAttribute());
+                                                attrFloatHandle.set(gdp->pointOffset(i), (float) myRFMeshFile->mesh_tex_data.texture_weight[j]);
+                                             }
                                        }
 
-                                    // Set the texture weight values
-                                    for(int j = 0; j < (float) myRFMeshFile->mesh_tex_data.num_fluids; j++) {
-                                          attrFloatHandle.bind(m_text_wght[j].getAttribute());
-                                          attrFloatHandle.set(gdp->pointOffset(i), (float) myRFMeshFile->mesh_tex_data.texture_weight[j]);
-                                       }
                                  } // for each vertice
 
 
@@ -260,8 +247,6 @@ SOP_RF_Import::ReadRFMeshFile(OP_Context & context)
                                     if(boss->opInterrupt())
                                        throw SOP_RF_Import_Exception(cookInterrupted, exceptionWarning);
 
-                                    myCurrPoint = i;
-
                                     // Read the velocity data
                                     if(myRFMeshFile->readMeshVelocityData())
                                        throw SOP_RF_Import_Exception(canNotReadTheMeshFileVelocityData, exceptionError);
@@ -275,7 +260,9 @@ SOP_RF_Import::ReadRFMeshFile(OP_Context & context)
                                                                    (float) myRFMeshFile->mesh_vel_data.Y,
                                                                    (float) myRFMeshFile->mesh_vel_data.Z));
                                        }
-                                 } // for each vertice
+
+                                     myCurrPoint = i;
+                                } // for each vertice
 
                               break;
 
@@ -349,3 +336,4 @@ SOP_RF_Import::ReadRFMeshFile(OP_Context & context)
 //
 //
 /**********************************************************************************/
+
