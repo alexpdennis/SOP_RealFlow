@@ -40,83 +40,83 @@ namespace dca
 
 #define MAX_NUM_FLUIDS 64
 
-class RF_Mesh_Exception
-{
-    std::string e_msg;
+   class RF_Mesh_Exception
+   {
+         std::string e_msg;
 
-public:
-    RF_Mesh_Exception(std::string msg);
+      public:
+         RF_Mesh_Exception(std::string msg);
 
-    void what() {
-        std::cout << "RF_Mesh_Exception: " << e_msg << std::endl;
-    }
-};
+         void what() {
+            std::cout << "RF_Mesh_Exception: " << e_msg << std::endl;
+         }
+   };
 
 
-class RealFlow_Mesh_File
-{
-public:
-    RealFlow_Mesh_File();
-    ~RealFlow_Mesh_File();
+   class RealFlow_Mesh_File
+   {
+      public:
+         RealFlow_Mesh_File();
+         ~RealFlow_Mesh_File();
 
-    struct rf_mesh_header {
-        unsigned int    ID_code;    // ID code = 0xDADADADA
-        unsigned int    version;    // version = 4
-        unsigned int    code;       // geometry chunk code = 0xCCCCCCCC
-    } mesh_header;
+         struct rf_mesh_header {
+            unsigned int    ID_code;    // ID code = 0xDADADADA
+            unsigned int    version;    // version = 4
+            unsigned int    code;       // geometry chunk code = 0xCCCCCCCC
+         } mesh_header;
 
-    struct rf_mesh_vertex_data {
-        int     num_vertices;
-        float   X;
-        float   Y;
-        float   Z;
-    } mesh_vertex_data;
+         struct rf_mesh_vertex_data {
+            int     num_vertices;
+            float   X;
+            float   Y;
+            float   Z;
+         } mesh_vertex_data;
 
-    struct rf_mesh_face_data {
-        int num_faces;
-        int vertex[3];
-    } mesh_face_data;
+         struct rf_mesh_face_data {
+            int num_faces;
+            int vertex[3];
+         } mesh_face_data;
 
-    struct rf_mesh_texture_data {
-        unsigned int    code;   // Texture chunk code = 0xCCCCCC00
-        int     num_fluids;
-        float   texture_weight[MAX_NUM_FLUIDS];
-        float   U;
-        float   V;
-        float   W;
-    } mesh_tex_data;
+         struct rf_mesh_texture_data {
+            unsigned int    code;   // Texture chunk code = 0xCCCCCC00
+            int     num_fluids;
+            float   texture_weight[MAX_NUM_FLUIDS];
+            float   U;
+            float   V;
+            float   W;
+         } mesh_tex_data;
 
-    struct rf_mesh_velocity_data {
-        unsigned int    code;   // ID code = 0xCCCCCC11
-        float   X;
-        float   Y;
-        float   Z;
-    } mesh_vel_data;
+         struct rf_mesh_velocity_data {
+            unsigned int    code;   // ID code = 0xCCCCCC11
+            float   X;
+            float   Y;
+            float   Z;
+         } mesh_vel_data;
 
-    int     openMeshFile(const char * file_name, int mode);
-    int     readMeshFileHeader(int * hdr_status);
-    int     readMeshVertexData();
-    int     readMeshNumFaces();
-    int     readMeshFaceData();
-    int     readMeshChunkCode();
-    int     readMeshNumFluids();
-    int     readMeshTextureData();
-    int     readMeshVelocityData();
-    int     readMeshFileEOF();
-    int     writeMeshFileHeader();
-    int     writeMeshVertexData();
-    int     writeMeshNumFaces();
-    int     writeMeshFaceData();
-    int     writeMeshTextureChunkCode();
-    int     writeMeshVelocityChunkCode();
-    int     writeMeshNumFluids();
-    int     writeMeshTextureData();
-    int     writeMeshVelocityData();
-    int     writeMeshFileEOF();
-    int     closeMeshFile(int mode);
-    std::ifstream RFMeshifstream;
-    std::ofstream RFMeshofstream;
-};
+         int     openMeshFile(const char * file_name, int mode);
+         int     readMeshFileHeader(int * hdr_status);
+         int     readMeshVertexData();
+         int     readMeshNumFaces();
+         int     readMeshFaceData();
+         int     readMeshChunkCode(unsigned int * code);
+         int     readMeshNumFluids();
+         int     readMeshTextureData();
+         int     readMeshVelocityData();
+         int     readMeshFileEOF();
+         int     writeMeshFileHeader();
+         int     writeMeshVertexData();
+         int     writeMeshNumFaces();
+         int     writeMeshFaceData();
+         int     writeMeshTextureChunkCode();
+         int     writeMeshVelocityChunkCode();
+         int     writeMeshNumFluids();
+         int     writeMeshTextureData();
+         int     writeMeshVelocityData();
+         int     writeMeshFileEOF();
+         int     closeMeshFile(int mode);
+         std::ifstream RFMeshifstream;
+         std::ofstream RFMeshofstream;
+   };
 
 #endif
 

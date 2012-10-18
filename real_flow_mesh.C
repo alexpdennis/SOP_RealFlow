@@ -347,12 +347,12 @@ namespace dca
    *  Description : Read the next chunk code
    *
    *
-   *  Input Arguments : None
+   *  Input Arguments : unsigned int * code
    *
    *  Return Value : int
    *
    ***************************************************************************** */
-   inline int RealFlow_Mesh_File::readMeshChunkCode()
+   inline int RealFlow_Mesh_File::readMeshChunkCode(unsigned int * code)
    {
 
 #ifdef DEBUG
@@ -360,25 +360,24 @@ namespace dca
 #endif
 
       try {
-            unsigned int code = 0;
             mesh_tex_data.code = 0;
             mesh_vel_data.code = 0;
 
             // Read the chunk data
-            RFMeshifstream.read((char *) &code, sizeof(unsigned int));
+            RFMeshifstream.read((char *) code, sizeof(unsigned int));
 
-            if(code == 0xCCCCCC00) {
+            if(*code == 0xCCCCCC00) {
                   // Found texture code
                   mesh_tex_data.code = 0xCCCCCC00;
                }
             else
-               if(code == 0xCCCCCC11) {
+               if(*code == 0xCCCCCC11) {
                      // Found velocity code
                      mesh_vel_data.code = 0xCCCCCC11;
                   }
 
 #ifdef DEBUG
-            std::cout << "mesh chunk code  = " << std::hex <<  mesh_tex_data.code << std::dec << std::endl;
+            std::cout << "RealFlow_Mesh_File::readMeshChunkCode() - mesh chunk code  = " << std::hex << *code << std::dec << std::endl;
 #endif
 
          }
@@ -721,10 +720,10 @@ namespace dca
             RFMeshofstream.write((char *) &mesh_face_data.vertex[1], sizeof(int));
             RFMeshofstream.write((char *) &mesh_face_data.vertex[0], sizeof(int));
 
-//#ifdef DEBUG
+#ifdef DEBUG
             std::cout << "mesh_face_data.vertex = " << mesh_face_data.vertex[0] << " "
                       << mesh_face_data.vertex[1] <<  " " << mesh_face_data.vertex[2] << std::endl;
-//#endif
+#endif
 
          }
       catch(std::ios_base::failure & e) {

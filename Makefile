@@ -71,10 +71,9 @@ archive_src:
 		$(import_src) $(export_src) \
 		$(real_flow_lib) \
 		dump_rf_sd.C dump_rf_part.C dump_rf_mesh.C dump_rf_rwc.C \
-		html/	\
+		docs/	\
 		Makefile Doxyfile \
-		README.txt \
-		rf_import.txt  rf_export.txt
+		README.txt 
 
 install:
 	cp SOP_RF_Import.so $(DCA_COMMON)/lib/houdini/dso_x86_64/

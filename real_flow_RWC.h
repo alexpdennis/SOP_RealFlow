@@ -39,61 +39,61 @@ namespace dca
 #define RF_FILE_WRITE 1
 #endif
 
-class RF_RWC_Exception
-{
-    std::string e_msg;
+   class RF_RWC_Exception
+   {
+         std::string e_msg;
 
-public:
-    RF_RWC_Exception(std::string msg);
+      public:
+         RF_RWC_Exception(std::string msg);
 
-    void what() {
-        std::cout << "RF_RWC_Exception: " << e_msg << endl;
-    }
-};
+         void what() {
+            std::cout << "RF_RWC_Exception: " << e_msg << endl;
+         }
+   };
 
 
-class RealFlow_RWC_File
-{
-public:
-    RealFlow_RWC_File();
-    ~RealFlow_RWC_File();
+   class RealFlow_RWC_File
+   {
+      public:
+         RealFlow_RWC_File();
+         ~RealFlow_RWC_File();
 
-    struct rf_RWC_header {
-        unsigned int version;    // version = 3
-        bool            use_magic_num;
-        unsigned int ID_code;    // ID code = 0xFAFAFAFA
-        double         RW_pos_X;
-        double         RW_pos_Y;
-        double         RW_pos_Z;
-        double         RW_rot_X;
-        double         RW_rot_Y;
-        double         RW_rot_Z;
-        long int        num_X_vtx;
-        long int        num_Z_vtx;
-    } RWC_header;
+         struct rf_RWC_header {
+            unsigned int version;    // version = 3
+            bool            use_magic_num;
+            unsigned int ID_code;    // ID code = 0xFAFAFAFA
+            double         RW_pos_X;
+            double         RW_pos_Y;
+            double         RW_pos_Z;
+            double         RW_rot_X;
+            double         RW_rot_Y;
+            double         RW_rot_Z;
+            long int        num_X_vtx;
+            long int        num_Z_vtx;
+         } RWC_header;
 
-    struct rf_RWC_vertex_data {
-        double   X;
-        double   Y;
-        double   Z;
-    } RWC_vtx_data;
+         struct rf_RWC_vertex_data {
+            double   X;
+            double   Y;
+            double   Z;
+         } RWC_vtx_data;
 
-    struct rf_RWC_vel_data {
-        double   X;
-        double   Y;
-        double   Z;
-    } RWC_vel_data;
+         struct rf_RWC_vel_data {
+            double   X;
+            double   Y;
+            double   Z;
+         } RWC_vel_data;
 
-    int     openRWCFile(const char * file_name, int mode);
-    int     readRWCFileHeader();
-    int     readRWCData();
-    int     writeRWCFileHeader();
-    int     writeRWCData();
-    int     closeRWCFile(int mode);
+         int     openRWCFile(const char * file_name, int mode);
+         int     readRWCFileHeader();
+         int     readRWCData();
+         int     writeRWCFileHeader();
+         int     writeRWCData();
+         int     closeRWCFile(int mode);
 
-    std::ifstream RWCifstream;
-    std::ofstream RWCofstream;
-};
+         std::ifstream RWCifstream;
+         std::ofstream RWCofstream;
+   };
 
 
 }

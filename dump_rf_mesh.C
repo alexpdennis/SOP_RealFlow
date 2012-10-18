@@ -95,68 +95,64 @@ void read_mesh_file(char * myFileName)
       } // for number of faces
 
    bool tex_found = false;
+   bool done = false;
+   unsigned int chunk_code = 0;
 
-   // Read the next chunk code to see if texture or velocity data is present
-   std::cout << std::endl << "checking for texture chunk" << std::endl;
-   if(myRFMeshFile->readMeshChunkCode())
-      handleError("Can't read chunk data");
+   while(!done) {
 
-   // if texture chunk present, read the data
-   if((myRFMeshFile->mesh_tex_data.code == 0xCCCCCC00)) {
+         myRFMeshFile->readMeshChunkCode(&chunk_code);
 
-         std::cout << std::endl << "mesh texture data found" << std::endl;
+         switch(chunk_code)  {
 
-         tex_found = true;
+               case 0xCCCCCC00:
 
-         // Read the number of fluids contributing to this mesh
-         if(myRFMeshFile->readMeshNumFluids())
-            handleError("Can't read Real Flow mesh file: num_fluids");
+                  std::cout << std::endl << "mesh texture data found" << std::endl;
 
-         // For all the vertices in the geometry, get the texture data
-         for(i = 0; i < myRFMeshFile->mesh_vertex_data.num_vertices; i++) {
+                  tex_found = true;
 
-               if(myRFMeshFile->readMeshTextureData())
-                  handleError("Can't read Real Flow mesh file: texture data");
+                  // Read the number of fluids contributing to this mesh
+                  if(myRFMeshFile->readMeshNumFluids())
+                     handleError("Can't read Real Flow mesh file: num_fluids");
 
-            } // for each vertex
+                  // For all the vertices in the geometry, get the texture data
+                  for(i = 0; i < myRFMeshFile->mesh_vertex_data.num_vertices; i++) {
 
-         // Read the next chunk code to see if velocity data is present
-         std::cout << std::endl << " now checking for velocity chunk" << std::endl;
+                        if(myRFMeshFile->readMeshTextureData())
+                           handleError("Can't read Real Flow mesh file: texture data");
 
-         if(myRFMeshFile->readMeshChunkCode())
-            handleError("Can't read velocity chunk data");
+                     } // for each vertex
 
-      } // if (texture chunk present)
-   else {
-         std::cout << std::endl << "texture chunk NOT found" << std::endl;
+                  break;
+
+               case 0xCCCCCC11:
+
+                  std::cout << std::endl << "mesh velocity  data found" << std::endl;
+
+
+                  // For all the vertices in the geometry, get the velocity data
+                  for(i = 0; i < myRFMeshFile->mesh_vertex_data.num_vertices; i++) {
+
+                        myCurrPoint = i;
+
+                        // Read the velocity data
+                        if(myRFMeshFile->readMeshVelocityData())
+                           handleError("Can't read Real Flow mesh file: velocity data");
+
+                     } // for each vertex
+
+
+                  break;
+
+               case 0xDEDEDEDE:
+                  done = true;
+
+                  break;
+
+
+            }
+
       }
 
-
-   // If the velocity chunk is present, read the velocity data
-   if(myRFMeshFile->mesh_vel_data.code == 0xCCCCCC11) {
-
-         std::cout << std::endl << "mesh velocity  data found" << std::endl;
-
-
-         // For all the vertices in the geometry, get the velocity data
-         for(i = 0; i < myRFMeshFile->mesh_vertex_data.num_vertices; i++) {
-
-               myCurrPoint = i;
-
-               // Read the velocity data
-               if(myRFMeshFile->readMeshVelocityData())
-                  handleError("Can't read Real Flow mesh file: velocity data");
-
-            } // for each vertex
-      } // if (velocity chunk present)
-   else {
-         std::cout << std::endl << "velocity chunk NOT found" << std::endl;
-      }
-
-
-// Read the eof marker
-   if(myRFMeshFile->readMeshFileEOF())
-      handleError("Can't read Real Flow mesh file: eof marker");
 
 // Close the RF mesh file
    if(myRFMeshFile->closeMeshFile(RF_FILE_READ))
@@ -200,4 +196,7 @@ Initial inport of the Real Flow plugin source to the new DCA cvs reporitory.
 
 
 */
+
+
+
 

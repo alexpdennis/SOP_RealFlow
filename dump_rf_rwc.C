@@ -44,10 +44,10 @@ using namespace dca;
 void print_RWC_data(RealFlow_RWC_File * myRWCFile)
 {
 
-    std::cout << "RWC_vertex_data = " <<
-              myRWCFile->RWC_vtx_data.X << "\t" << myRWCFile->RWC_vtx_data.Y << "\t" << myRWCFile->RWC_vtx_data.Z << std::endl;
-    std::cout << "RWC_vel_data = " << myRWCFile->RWC_vel_data.X
-              << "\t" << myRWCFile->RWC_vel_data.Y << "\t" << myRWCFile->RWC_vel_data.Z << std::endl;
+   std::cout << "RWC_vertex_data = " <<
+             myRWCFile->RWC_vtx_data.X << "\t" << myRWCFile->RWC_vtx_data.Y << "\t" << myRWCFile->RWC_vtx_data.Z << std::endl;
+   std::cout << "RWC_vel_data = " << myRWCFile->RWC_vel_data.X
+             << "\t" << myRWCFile->RWC_vel_data.Y << "\t" << myRWCFile->RWC_vel_data.Z << std::endl;
 
 }
 
@@ -56,25 +56,25 @@ void print_RWC_data(RealFlow_RWC_File * myRWCFile)
 // Dump the RWC file header
 void dump_header(RealFlow_RWC_File * myRWCFile)
 {
-    myRWCFile->readRWCFileHeader();
+   myRWCFile->readRWCFileHeader();
 
-    std::cout << "version = " << myRWCFile->RWC_header.version << std::endl;
-    std::cout << "use_magic_num = " << ((myRWCFile->RWC_header.use_magic_num)?"true":"false") << std::endl;
+   std::cout << "version = " << myRWCFile->RWC_header.version << std::endl;
+   std::cout << "use_magic_num = " << ((myRWCFile->RWC_header.use_magic_num) ? "true" : "false") << std::endl;
 
-    std::cout << std::hex << "ID_code = " << myRWCFile->RWC_header.ID_code << std::dec << std::endl;
+   std::cout << std::hex << "ID_code = " << myRWCFile->RWC_header.ID_code << std::dec << std::endl;
 
-    std::cout << "RW_pos_X = " << myRWCFile->RWC_header.RW_pos_X << std::endl;
-    std::cout << "RW_pos_Y = " << myRWCFile->RWC_header.RW_pos_Y << std::endl;
-    std::cout << "RW_pos_Z = " << myRWCFile->RWC_header.RW_pos_Z << std::endl;
+   std::cout << "RW_pos_X = " << myRWCFile->RWC_header.RW_pos_X << std::endl;
+   std::cout << "RW_pos_Y = " << myRWCFile->RWC_header.RW_pos_Y << std::endl;
+   std::cout << "RW_pos_Z = " << myRWCFile->RWC_header.RW_pos_Z << std::endl;
 
-    std::cout << "RW_rot_X = " << myRWCFile->RWC_header.RW_rot_X << std::endl;
-    std::cout << "RW_rot_Y = " << myRWCFile->RWC_header.RW_rot_Y << std::endl;
-    std::cout << "RW_rot_Z = " << myRWCFile->RWC_header.RW_rot_Z << std::endl;
+   std::cout << "RW_rot_X = " << myRWCFile->RWC_header.RW_rot_X << std::endl;
+   std::cout << "RW_rot_Y = " << myRWCFile->RWC_header.RW_rot_Y << std::endl;
+   std::cout << "RW_rot_Z = " << myRWCFile->RWC_header.RW_rot_Z << std::endl;
 
-    std::cout << "num_X_vtx = " << myRWCFile->RWC_header.num_X_vtx << std::endl;
-    std::cout << "num_Z_vtx = " << myRWCFile->RWC_header.num_Z_vtx << std::endl << std::endl;
+   std::cout << "num_X_vtx = " << myRWCFile->RWC_header.num_X_vtx << std::endl;
+   std::cout << "num_Z_vtx = " << myRWCFile->RWC_header.num_Z_vtx << std::endl << std::endl;
 
-    return;
+   return;
 }
 
 
@@ -84,29 +84,29 @@ void dump_header(RealFlow_RWC_File * myRWCFile)
 void dump_data(RealFlow_RWC_File * myRWCFile)
 {
 
-    long int row_count = 0;
+   long int row_count = 0;
 
-    for(long int i = 0; i < myRWCFile->RWC_header.num_X_vtx; i++) {
+   for(long int i = 0; i < myRWCFile->RWC_header.num_X_vtx; i++) {
 //   cout << "i: " << i << endl;
-        std::cout << "RWC row num: " << row_count << std::endl;
+         std::cout << "RWC row num: " << row_count << std::endl;
 
-        if(!(i%2))
+         if(!(i % 2))
             for(long int j = 0; j < myRWCFile->RWC_header.num_Z_vtx; j++) {
-                myRWCFile->readRWCData();
-                print_RWC_data(myRWCFile);
-            }
-        else
+                  myRWCFile->readRWCData();
+                  print_RWC_data(myRWCFile);
+               }
+         else
             for(long int k = 0; k < myRWCFile->RWC_header.num_Z_vtx + 1; k++) {
-                myRWCFile->readRWCData();
-                print_RWC_data(myRWCFile);
-            }
-        row_count++;
-    }
+                  myRWCFile->readRWCData();
+                  print_RWC_data(myRWCFile);
+               }
+         row_count++;
+      }
 
-    myRWCFile->readRWCData();
-    print_RWC_data(myRWCFile);
+   myRWCFile->readRWCData();
+   print_RWC_data(myRWCFile);
 
-    return;
+   return;
 
 }
 
@@ -114,28 +114,28 @@ void dump_data(RealFlow_RWC_File * myRWCFile)
 // Read the RWC file
 int read_RWC_file(char * file_name)
 {
-    int i;
+   int i;
 
-    RealFlow_RWC_File * myRWCFile = new RealFlow_RWC_File();
+   RealFlow_RWC_File * myRWCFile = new RealFlow_RWC_File();
 
-    if(myRWCFile->openRWCFile(file_name, 0)) {
-        cout << "Can't open Real Flow RWC file for reading: " << file_name << endl;
-        return 1;
-    }
+   if(myRWCFile->openRWCFile(file_name, 0)) {
+         cout << "Can't open Real Flow RWC file for reading: " << file_name << endl;
+         return 1;
+      }
 
 // Dump the header data
-    dump_header(myRWCFile);
+   dump_header(myRWCFile);
 
 // Dump the RWC data
-    dump_data(myRWCFile);
+   dump_data(myRWCFile);
 
 // Close the file
-    myRWCFile->closeRWCFile(0);
+   myRWCFile->closeRWCFile(0);
 
 
-    delete(myRWCFile);
+   delete(myRWCFile);
 
-    return 0;
+   return 0;
 }
 
 
@@ -146,13 +146,13 @@ int read_RWC_file(char * file_name)
 int main(int argc, char * argv[])
 {
 
-    cout << "dump_rf_rwc -  ver. 0.05 -  Digital Cinema Arts (C) 2008" << endl;
-    cout << "Dumping Real Flow Real Wave Cache File" << endl << endl;
+   cout << "dump_rf_rwc -  ver. 0.05 -  Digital Cinema Arts (C) 2008" << endl;
+   cout << "Dumping Real Flow Real Wave Cache File" << endl << endl;
 
-    if(read_RWC_file(argv[1]))
-        exit(1);
+   if(read_RWC_file(argv[1]))
+      exit(1);
 
-    exit(0);
+   exit(0);
 }
 
 

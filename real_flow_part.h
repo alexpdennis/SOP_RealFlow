@@ -42,81 +42,81 @@ namespace dca
 #define RF_PART_HDR_SIZE sizeof(part_header)
 #define RF_PART_DATA_SIZE sizeof(part_data)
 
-class RF_Particle_Exception
-{
-    std::string e_msg;
+   class RF_Particle_Exception
+   {
+         std::string e_msg;
 
-public:
-    RF_Particle_Exception(std::string msg);
+      public:
+         RF_Particle_Exception(std::string msg);
 
-    void what() {
-        std::cout << "RF_Particle_Exception: " << e_msg << std::endl;
-    }
-};
+         void what() {
+            std::cout << "RF_Particle_Exception: " << e_msg << std::endl;
+         }
+   };
 
 
-const int RF_PART_FLUID_NAME_SZ = 250;
+   const int RF_PART_FLUID_NAME_SZ = 250;
 
-class RealFlow_Particle_File
-{
-public:
-    RealFlow_Particle_File();
-    ~RealFlow_Particle_File();
+   class RealFlow_Particle_File
+   {
+      public:
+         RealFlow_Particle_File();
+         ~RealFlow_Particle_File();
 
-    // RealFlow particle file header structure
-    struct rf_part_header {
-        int         verify_code;        // verification code (0xFABADA)                   0
-        char        fluid_name[RF_PART_FLUID_NAME_SZ];    // name of the fluid (string)   4
-        short int   version;            // version (current = 11)                         254
-        float       scene_scale;        // scene scale                                    256
-        int         fluid_type;         // fluid type (gas, liquid..)                     260
-        float       elapsed_time;       // elapsed simulation time                        264
-        int         frame_number;       // frame number                                   268
-        int         fps;                // frames per second                              272
-        int         num_particles;      // number of particles                            276
-        float       radius;             // radius                                         280
-        float       pressure[3];        // pressure (max, min, average)                   284
-        float       speed[3];           // speed  (max, min, average)                     296
-        float       temperature[3];     // temperature  (max, min, average)               308
-        float       emitter_pos[3];     // emitter position                               320
-        float       emitter_rot[3];     // emitter rotation                               332
-        float       emitter_scale[3];   // emitter scale                                  344
-    } part_header;
+         // RealFlow particle file header structure
+         struct rf_part_header {
+            int         verify_code;        // verification code (0xFABADA)                   0
+            char        fluid_name[RF_PART_FLUID_NAME_SZ];    // name of the fluid (string)   4
+            short int   version;            // version (current = 11)                         254
+            float       scene_scale;        // scene scale                                    256
+            int         fluid_type;         // fluid type (gas, liquid..)                     260
+            float       elapsed_time;       // elapsed simulation time                        264
+            int         frame_number;       // frame number                                   268
+            int         fps;                // frames per second                              272
+            int         num_particles;      // number of particles                            276
+            float       radius;             // radius                                         280
+            float       pressure[3];        // pressure (max, min, average)                   284
+            float       speed[3];           // speed  (max, min, average)                     296
+            float       temperature[3];     // temperature  (max, min, average)               308
+            float       emitter_pos[3];     // emitter position                               320
+            float       emitter_rot[3];     // emitter rotation                               332
+            float       emitter_scale[3];   // emitter scale                                  344
+         } part_header;
 
-    // RealFlow particle data structure
-    struct rf_part_data {
-        float       pos[3];             // (X,Y,Z) particle position                      356
-        float       vel[3];             // (X,Y,Z) particle velocity                      368
-        float       force[3];           // (X,Y,Z) particle force                         380
-        float       vorticity[3];       // (X,Y,Z) particle vorticity                     392
-        float       normal[3];          // (X,Y,Z) particle normal                        404
-        int         num_neighbors;      // number of neighbors                            416
-        float       texture_vector[3];  // texture vector                                 420
-        short int   info_bits;          // "information bits"                             432
-        float       age;                // elapsed particle time (age)                    434
-        float       isolation_time;     // isolation time                                 438
-        float       viscosity;          // particle viscosity                             442
-        float       density;            // particle density                               446
-        float       pressure;           // particle pressure                              450
-        float       mass;               // particle mass                                  454
-        float       temperature;        // particle temperature                           458
-        int         id;                 // particle ID                                    462
-    } part_data;
+         // RealFlow particle data structure
+         struct rf_part_data {
+            float       pos[3];             // (X,Y,Z) particle position                      356
+            float       vel[3];             // (X,Y,Z) particle velocity                      368
+            float       force[3];           // (X,Y,Z) particle force                         380
+            float       vorticity[3];       // (X,Y,Z) particle vorticity                     392
+            float       normal[3];          // (X,Y,Z) particle normal                        404
+            int         num_neighbors;      // number of neighbors                            416
+            float       texture_vector[3];  // texture vector                                 420
+            short int   info_bits;          // "information bits"                             432
+            float       age;                // elapsed particle time (age)                    434
+            float       isolation_time;     // isolation time                                 438
+            float       viscosity;          // particle viscosity                             442
+            float       density;            // particle density                               446
+            float       pressure;           // particle pressure                              450
+            float       mass;               // particle mass                                  454
+            float       temperature;        // particle temperature                           458
+            int         id;                 // particle ID                                    462
+         } part_data;
 
-    int open_part_file(char * file_name, int mode);
-    int read_part_file_header();
-    int write_part_file_header();
-    int read_part_data();
-    int write_part_data();
-    int read_additional_data();
-    int write_additional_data();
-    int close_part_file(int mode);
+         int open_part_file(char * file_name, int mode);
+         int read_part_file_header();
+         int write_part_file_header();
+         int read_part_data();
+         int write_part_data();
+         int read_additional_data();
+         int write_additional_data();
+         int close_part_file(int mode);
 
-    char * myFileName;
-    std::ifstream RFPartifstream;
-    std::ofstream RFPartofstream;
+         char * myFileName;
+         std::ifstream RFPartifstream;
+         std::ofstream RFPartofstream;
 
-};
+   };
 
 }
 
