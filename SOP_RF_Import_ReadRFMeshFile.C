@@ -157,8 +157,6 @@ SOP_RF_Import::ReadRFMeshFile(OP_Context & context)
                   }     // for number of faces
 
 
-
-               bool tex_found = false;
                bool done = false;
                unsigned int chunk_code = 0;
 

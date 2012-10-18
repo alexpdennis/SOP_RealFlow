@@ -356,8 +356,6 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context & context)
                         if(boss->opInterrupt())
                            throw SOP_RF_Export_Exception(cookInterrupted, exceptionWarning);
 
-
-
                         v_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "v", 3);
                         if(v_ref.isInvalid())
                            throw SOP_RF_Export_Exception(invalidAttrHandleVel, exceptionError);
