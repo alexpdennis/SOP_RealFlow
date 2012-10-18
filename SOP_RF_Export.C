@@ -507,7 +507,7 @@ SOP_RF_Export::SOP_RF_Export(OP_Network * net, const char * name, OP_Operator * 
    errorMsgs[invalidAttrHandleInfoBits] = "Invalid Attribute-info bit";
    errorMsgs[invalidAttrHandleAge] = "Invalid Attribute-age";
    errorMsgs[invalidAttrHandleIsolation] = "Invalid Attribute-isolation time";
-   errorMsgs[invalidAttrHandleViscosity] = "Invalid Attribute-viscosicty";
+   errorMsgs[invalidAttrHandleViscosity] = "Invalid Attribute-viscosity";
    errorMsgs[invalidAttrHandlePressure] = "Invalid Attribute-pressure";
    errorMsgs[invalidAttrHandleDensity] = "Invalid Attribute-density";
    errorMsgs[invalidAttrHandleMass] = "Invalid Attribute-mass";

@@ -56,7 +56,7 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context & context)
    long int   save_frame = context.getFrame();
    UT_Vector3 normal, p;
    UT_Vector4 pos;
-//    GEO_Point  *ppt;
+    GEO_Point  *ppt;
 //    char       frame_str[32];
    long int   part_num = 0;
    UT_Vector3 foo_vec;
@@ -263,7 +263,8 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context & context)
 
                boss->opStart("Exporting Geometry");
 
-               std::cout << "Real Flow Export Particles-cur_frame: " << cur_frame << "\tend_frame: " << end_frame << std::endl;
+               if(myEchoData)
+                  std::cout << "Real Flow Export Particles-cur_frame: " << cur_frame << "\tend_frame: " << end_frame << std::endl;
 
                // Set the current frame
                context.setFrame((long)cur_frame);
@@ -350,72 +351,75 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context & context)
                      if(myRFBINFile->write_part_file_header())
                         throw SOP_RF_Export_Exception(canNotWriteHeaderParticleBINFile, exceptionError);
 
+                     // Find attribute references
+                     v_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "v", 3);
+                     force_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "force", 3);
+                     N_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "N", 3);
+                     vorticity_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "vorticity", 3, 3);
+                     uv_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "uv", 3);
+                     info_bits_ref = gdp->findIntTuple(GA_ATTRIB_POINT, "info_bits", 1, 1);
+                     age_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "age", 1, 1);
+                     isolation_time_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "isolation_time", 1, 1);
+                     viscosity_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "viscosity", 1, 1);
+                     pressure_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "pressure", 1, 1);
+                     density_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "density", 1, 1);
+                     mass_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "mass", 1, 1);
+                     temperature_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "temperature", 1, 1);
+                     num_neighbors_ref = gdp->findIntTuple(GA_ATTRIB_POINT, "num_neighbors", 1, 1);
+                     id_ref = gdp->findIntTuple(GA_ATTRIB_POINT, "id", 1, 1);
 
-                     GA_FOR_ALL_GPOINTS_NC(gdp, GEO_Point, ppt) {
 
-                        if(boss->opInterrupt())
-                           throw SOP_RF_Export_Exception(cookInterrupted, exceptionWarning);
+                     if(boss->opInterrupt())
+                        throw SOP_RF_Export_Exception(cookInterrupted, exceptionWarning);
 
-                        v_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "v", 3);
-                        if(v_ref.isInvalid())
-                           throw SOP_RF_Export_Exception(invalidAttrHandleVel, exceptionError);
+                     if(v_ref.isInvalid())
+                        throw SOP_RF_Export_Exception(invalidAttrHandleVel, exceptionError);
 
-                        force_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "force", 3);
-                        if(force_ref.isInvalid())
-                           throw SOP_RF_Export_Exception(invalidAttrHandleForce, exceptionError);
+                     if(force_ref.isInvalid())
+                        throw SOP_RF_Export_Exception(invalidAttrHandleForce, exceptionError);
 
-                        N_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "N", 3);
-                        if(N_ref.isInvalid())
-                           throw SOP_RF_Export_Exception(invalidAttrHandleNormal, exceptionError);
+                     if(N_ref.isInvalid())
+                        throw SOP_RF_Export_Exception(invalidAttrHandleNormal, exceptionError);
 
-                        vorticity_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "vorticity", 3, 3);
-                        if(vorticity_ref.isInvalid())
-                           throw SOP_RF_Export_Exception(invalidAttrHandleVorticity, exceptionError);
+                     if(vorticity_ref.isInvalid())
+                        throw SOP_RF_Export_Exception(invalidAttrHandleVorticity, exceptionError);
 
-                        uv_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "uv", 3);
-                        if(uv_ref.isInvalid())
-                           throw SOP_RF_Export_Exception(invalidAttrHandleUV, exceptionError);
+                     if(uv_ref.isInvalid())
+                        throw SOP_RF_Export_Exception(invalidAttrHandleUV, exceptionError);
 
-                        info_bits_ref = gdp->findIntTuple(GA_ATTRIB_POINT, "info_bits", 1, 1);
-                        if(info_bits_ref.isInvalid())
-                           throw SOP_RF_Export_Exception(invalidAttrHandleInfoBits, exceptionError);
+                     if(info_bits_ref.isInvalid())
+                        throw SOP_RF_Export_Exception(invalidAttrHandleInfoBits, exceptionError);
 
-                        age_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "age", 1, 1);
-                        if(age_ref.isInvalid())
-                           throw SOP_RF_Export_Exception(invalidAttrHandleAge, exceptionError);
+                     if(age_ref.isInvalid())
+                        throw SOP_RF_Export_Exception(invalidAttrHandleAge, exceptionError);
 
-                        isolation_time_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "isolation_time", 1, 1);
-                        if(isolation_time_ref.isInvalid())
-                           throw SOP_RF_Export_Exception(invalidAttrHandleIsolation, exceptionError);
+                     if(isolation_time_ref.isInvalid())
+                        throw SOP_RF_Export_Exception(invalidAttrHandleIsolation, exceptionError);
 
-                        viscosity_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "rf_viscosity", 1, 1);
-                        if(viscosity_ref.isInvalid())
-                           throw SOP_RF_Export_Exception(invalidAttrHandleViscosity, exceptionError);
+                     if(viscosity_ref.isInvalid())
+                        throw SOP_RF_Export_Exception(invalidAttrHandleViscosity, exceptionError);
 
-                        pressure_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "pressure", 1, 1);
-                        if(pressure_ref.isInvalid())
-                           throw SOP_RF_Export_Exception(invalidAttrHandlePressure, exceptionError);
+                     if(pressure_ref.isInvalid())
+                        throw SOP_RF_Export_Exception(invalidAttrHandlePressure, exceptionError);
 
-                        density_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "rf_density", 1, 1);
-                        if(density_ref.isInvalid())
-                           throw SOP_RF_Export_Exception(invalidAttrHandleDensity, exceptionError);
+                     if(density_ref.isInvalid())
+                        throw SOP_RF_Export_Exception(invalidAttrHandleDensity, exceptionError);
 
-                        mass_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "mass", 1, 1);
-                        if(mass_ref.isInvalid())
-                           throw SOP_RF_Export_Exception(invalidAttrHandleMass, exceptionError);
+                     if(mass_ref.isInvalid())
+                        throw SOP_RF_Export_Exception(invalidAttrHandleMass, exceptionError);
 
-                        temperature_ref = gdp->findFloatTuple(GA_ATTRIB_POINT, "temperature", 1, 1);
-                        if(temperature_ref.isInvalid())
-                           throw SOP_RF_Export_Exception(invalidAttrHandleTemperature, exceptionError);
+                     if(temperature_ref.isInvalid())
+                        throw SOP_RF_Export_Exception(invalidAttrHandleTemperature, exceptionError);
 
-                        num_neighbors_ref = gdp->findIntTuple(GA_ATTRIB_POINT, "num_neighbors", 1, 1);
-                        if(num_neighbors_ref.isInvalid())
-                           throw SOP_RF_Export_Exception(invalidAttrHandleNumNeighbors, exceptionError);
+                     if(num_neighbors_ref.isInvalid())
+                        throw SOP_RF_Export_Exception(invalidAttrHandleNumNeighbors, exceptionError);
 
-                        id_ref = gdp->findIntTuple(GA_ATTRIB_POINT, "id", 1, 1);
-                        if(id_ref.isInvalid())
-                           throw SOP_RF_Export_Exception(invalidAttrHandleID, exceptionError);
+                     if(id_ref.isInvalid())
+                        throw SOP_RF_Export_Exception(invalidAttrHandleID, exceptionError);
 
+
+                     // For each point in the incoming geometry,
+                     GA_FOR_ALL_GPOINTS(gdp, ppt) {
                         // Set the particle data structure
                         pos = ppt->getPos();
                         myRFBINFile->part_data.pos[0] = static_cast<float>(pos.x());
@@ -539,3 +543,4 @@ OP_ERROR SOP_RF_Export::writeBINFile(OP_Context & context)
 //
 //
 /**********************************************************************************/
+

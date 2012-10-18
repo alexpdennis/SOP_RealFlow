@@ -140,6 +140,10 @@ namespace dca
    int RealFlow_Particle_File::open_part_file(char * file_name, int mode)
    {
 
+#ifdef DEBUG
+      std::cout << "RealFlow_Particle_File::open_part_file() - file_name: " << file_name << std::endl;
+#endif
+
       if(mode == RF_FILE_READ) {
 
             try {
@@ -151,8 +155,8 @@ namespace dca
                   return 0;
                }
             catch(std::ios_base::failure & e) {
-//         std::cout << "RealFlow_Particle_File::open_part_file(): EXCEPTION: " << e.what () << std::endl;
-//         std::cout << "Can't open Real Flow particle file for reading" << std::endl;
+                  std::cout << "RealFlow_Particle_File::open_part_file() - RealFlow_Particle_File::open_part_file(): EXCEPTION: " << e.what() << std::endl;
+                  std::cout << "RealFlow_Particle_File::open_part_file() - Can't open Real Flow particle file for reading" << std::endl;
                   RFPartifstream.clear();
                   return 1;
                }
@@ -170,7 +174,8 @@ namespace dca
                   return 0;
                }
             catch(std::ios_base::failure & e) {
-                  std::cerr << "RealFlow_Particle_File::open_part_file(): EXCEPTION: " << e.what() << std::endl;
+                  std::cerr << "RealFlow_Particle_File::open_part_file(): RealFlow_Particle_File::open_part_file(): EXCEPTION: " << e.what() << std::endl;
+                  std::cout << "RealFlow_Particle_File::open_part_file() - Can't open Real Flow particle file for writing" << std::endl;
                   RFPartofstream.clear();
                   return 1;
                }

@@ -4,6 +4,7 @@ SRC_VER = 2.0.1
 TAGINFO = $(shell (echo -n "Compiled on:" `date`"\nby:" `whoami`@`hostname`"\n$(SESI_TAGINFO)") | sesitag -m)
 H_CFLAGS =  $(shell hcustom --cflags)
 CFLAGS := $(CFLAGS) $(H_CFLAGS) -DMAKING_DSO $(TAGINFO)
+INSTDIR = $(DCA_COMMON)/lib/houdini/dso_x86_64/
 
 real_flow_lib = real_flow_part.h real_flow_part.C real_flow_mesh.h real_flow_mesh.C real_flow_sd.h real_flow_sd.C real_flow_RWC.h real_flow_RWC.C
 
@@ -31,7 +32,7 @@ real_flow_mesh.h real_flow_mesh.C \
 real_flow_sd.h real_flow_sd.C \
 real_flow_RWC.h real_flow_RWC.C
 
-all: SOP_RF_Import SOP_RF_Export dump_rf_part dump_rf_mesh dump_rf_sd dump_rf_rwc
+all: SOP_RF_Import SOP_RF_Export dump_rf_part dump_rf_mesh dump_rf_sd dump_rf_rwc install
 DebugRFExport:  SOP_RF_Export install
 ReleaseRFExport: SOP_RF_Export install
 DebugRFImport:  SOP_RF_Import install
@@ -73,11 +74,11 @@ archive_src:
 		dump_rf_sd.C dump_rf_part.C dump_rf_mesh.C dump_rf_rwc.C \
 		docs/	\
 		Makefile Doxyfile \
-		README.md 
+		README.md
 
 install:
-	cp SOP_RF_Import.so $(DCA_COMMON)/lib/houdini/dso_x86_64/
-	cp SOP_RF_Export.so $(DCA_COMMON)/lib/houdini/dso_x86_64/
+	cp SOP_RF_Import.so $(INSTDIR)
+	cp SOP_RF_Export.so $(INSTDIR)
 
 clean:
 	rm -f *.o dump_rf_part dump_rf_mesh dump_rf_sd dump_rf_rwc *.so *.dylib

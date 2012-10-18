@@ -27,7 +27,7 @@
 
 #include <SOP/SOP_Node.h>
 
-//#define DEBUG
+// #define DEBUG
 
 #define RAD2DEG 180/M_PI
 #define DEG2RAD M_PI/180
